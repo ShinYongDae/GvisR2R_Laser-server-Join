@@ -1152,6 +1152,7 @@ void CVision::CropCadImg(short cell, short cx, short cy, int BufID, int nLayer)
 	}
 	else
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("Invalid CAD Img Info"));
 // 		AfxMessageBox(_T("Invalid CAD Img Info"));
 		return;
@@ -2501,6 +2502,7 @@ void CVision::ShowDispDef(int nIdxMkInfo, int nSerial, int nLayer, int nDefPcs) 
 			CString sMsg, sUpPath, sDnPath;
 			if (!pDoc->GetInnerFolderPath(nSerial, sUpPath, sDnPath))
 			{
+				pView->SetErrorRead2dCode(_PcId::_Engrave);
 				sMsg.Format(_T("GetInnerFolderPath가 설정되지 않았습니다."));
 				pView->MsgBox(sMsg);
 				return;
@@ -3150,6 +3152,7 @@ BOOL CVision::UploadPinImg()
 	//}
 	if (m_pIRayple->OneshotGrab() == FALSE || m_pMil->OneshotGrab(MilCapPinImgBuf, GRAB_COLOR_COLOR) == FALSE)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("Image Grab Fail !!"));
 		//AfxMessageBox(_T("Image Grab Fail !!"));
 		return FALSE;
@@ -3331,7 +3334,7 @@ double CVision::CalcCameraPixelSize()
 	{
 		if (MilGrabImg)
 			delete MilGrabImg;
-
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("Image Grab Fail !!"));
 		//AfxMessageBox(_T("Image Grab Fail !!"));
 		dVal = 0.0;
@@ -3395,7 +3398,7 @@ double CVision::CalcCameraPixelSize()
 				delete MilGrabImg;
 			//m_pMil->GmfFree();
 			m_pMil->PatternMatchingFree();
-
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("Image Grab Fail !!"));
 			//AfxMessageBox(_T("Image Grab Fail !!"));
 			dVal = 0.0;
@@ -3543,7 +3546,7 @@ double CVision::CalcCameraPixelSize()
 			if (MilGrabImg)
 				delete MilGrabImg;
 			m_pMil->PatternMatchingFree();
-
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("Image Grab Fail !!"));
 			//AfxMessageBox(_T("Image Grab Fail !!"));
 			dVal = 0.0;
@@ -3611,7 +3614,7 @@ double CVision::CalcCameraPixelSize()
 #endif
 
 	// 6. Save Cam Resolution
-	CString sItem, sData, sPath=PATH_WORKING_INFO;
+	CString sItem, sData, sPath= pDoc->WorkingInfo.System.sPathEngCurrInfo;
 
 	sItem.Format(_T("Vision%d"), m_nIdx);
 	sData.Format(_T("%f"), dPixelSizeX);
@@ -3729,7 +3732,10 @@ BOOL CVision::GrabIRayple(int nPos, BOOL bDraw)
 				m_pMil->PatternMatchingFree();
 
 				if (bDraw)
+				{
+					pView->SetErrorRead2dCode(_PcId::_Engrave);
 					pView->MsgBox(_T("Image Grab Fail !!"));
+				}
 				SetClrOverlay();
 
 				if (MilGrabImg)

@@ -23,6 +23,8 @@
 #define TIM_MYMSG01			215
 #define TIM_KILL_FOCUS01		216
 
+#define TIM_DISP_STS				450
+
 /////////////////////////////////////////////////////////////////////////////
 // CDlgMyMsgSub01 dialog
 
@@ -34,6 +36,7 @@ class CDlgMyMsgSub01 : public CDlgMyMsg
 	CWnd* m_pParent;
 	CMyPic myPic;
 	CMyBtn myBtn00, myBtn01;
+	BOOL m_bTIM_DISP_STS;
 
 	
 	CMyEdit myEdit00;

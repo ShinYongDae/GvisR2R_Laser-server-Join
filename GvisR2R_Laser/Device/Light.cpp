@@ -35,6 +35,7 @@ CLight::CLight(CWnd* pParent /*=NULL*/)
 #ifdef USE_LIGHT
 	if(!m_bRs232Run)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("조명 제어장치가 초기화되지 않았습니다."));
 // 		AfxMessageBox(_T("조명 제어장치가 초기화되지 않았습니다."));
 	}

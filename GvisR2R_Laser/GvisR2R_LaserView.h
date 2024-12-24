@@ -62,21 +62,24 @@
 #define ENG_ST					100	// m_nEngStAuto
 #define ENG_2D_ST				150	// m_nEngStAuto
 
-#define TIM_INIT_VIEW			0
-#define TIM_TOWER_WINKER		10
-#define TIM_BTN_WINKER			11
-#define TIM_BUZZER_WARN			12
-#define TIM_MB_TIME_OUT			13
-#define TIM_DISP_STATUS			14
-#define TIM_MPE_IO				15
-// #define TIM_MK_START			16
-#define TIM_SHOW_MENU01			18
-#define TIM_SHOW_MENU02			19
-#define TIM_CHK_TEMP_STOP		20
-#define TIM_SAFTY_STOP			21
-#define TIM_TCPIP_UPDATE		22
-#define TIM_START_UPDATE		100
-#define TIM_MENU01_UPDATE_WORK	101
+#define TIM_INIT_VIEW				0
+#define TIM_TOWER_WINKER			10
+#define TIM_BTN_WINKER				11
+#define TIM_BUZZER_WARN				12
+#define TIM_MB_TIME_OUT				13
+#define TIM_DISP_STATUS				14
+#define TIM_MPE_IO					15
+// #define TIM_MK_START				16
+#define TIM_SHOW_MENU01				18
+#define TIM_SHOW_MENU02				19
+#define TIM_CHK_TEMP_STOP			20
+#define TIM_SAFTY_STOP				21
+#define TIM_TCPIP_UPDATE			22
+#define TIM_START_UPDATE			100
+#define TIM_MENU01_UPDATE_WORK		101
+#define TIM_CHK_RCV_CURR_INFO_SIG	200
+#define TIM_CHK_RCV_MON_DISP_MAIN_SIG	201
+
 #define MAX_THREAD				3
 
 namespace Read2dIdx
@@ -209,6 +212,7 @@ class CGvisR2R_LaserView : public CFormView
 	int m_nPrevTotMk[2], m_nPrevCurMk[2]; // [0]: 좌 MK, [1]: 우 MK
 
 	BOOL m_bContEngraveF;
+	CString m_sMsg;
 
 
 	void InitMyMsg();
@@ -280,7 +284,7 @@ public:
 	DWORD m_dwRead2dSt, m_dwRead2dEd;
 
 	BOOL m_bRcvSig[_SigInx::_EndIdx];
-	stRcvSig m_stRcvSig;
+	//stRcvSig m_stRcvSig;
 	CMpDevice* m_pMpe;
 	CPtAlign m_Align[2];	// [0] : LeftCam , [1] : RightCam
 #ifdef USE_VISION
@@ -304,6 +308,9 @@ public:
 	BOOL m_bTIM_MENU01_UPDATE_WORK;
 	BOOL m_bTIM_INIT_VIEW;
 	BOOL m_bCam, m_bReview;
+
+	BOOL m_bTIM_CHK_RCV_CURR_INFO_SIG;
+	BOOL m_bTIM_CHK_RCV_MON_DISP_MAIN_SIG;
 
 	DWORD m_dwThreadTick[MAX_THREAD];
 	BOOL m_bThread[MAX_THREAD];
@@ -430,6 +437,8 @@ public:
 
 	CString m_sPathRmapUpdate[4];
 	int m_nSerialRmapUpdate;
+
+	BOOL m_bJobEnd;
 
 // 작업입니다.
 public:
@@ -823,6 +832,8 @@ public:
 	void InitAutoEng();
 	void InitAutoEngSignal();
 	void MarkingWith1PointAlign();
+	void CheckCurrentInfoSignal(int nMsgID, int nData);
+	void CheckMonDispMainSignal();
 
 	void Eng1PtReady();
 	void Eng1PtInit();
@@ -850,8 +861,6 @@ public:
 	void ReloadRstUpInner();
 	void ReloadRstAllUpInner();
 	void ReloadRstDnInner();
-	void ReloadRstAllDnInner();
-	void ReloadRstIts();
 
 
 	BOOL m_bSetSig, m_bSetSigF, m_bSetData, m_bSetDataF;
@@ -868,15 +877,17 @@ public:
 	void EngStop(BOOL bOn);
 	BOOL IsEngStop();
 	BOOL GetCurrentInfoSignal();
+	BOOL GetMonDispMainSignal();
 	int GetLastSerialEng();
 	void SetLastSerialEng(int nSerial);
 	CString GetCurrentInfoBufUp();
 	CString GetCurrentInfoBufDn();
 	void SetCurrentInfoEngShotNum(int nSerial);
+	void SetCurrentInfoReadShotNum(int nSerial);
 
 	CString m_sGetItsCode;
 	int m_nGetItsCodeSerial;
-	BOOL Get2dCode(CString &sLot, int &nSerial);
+	BOOL Get2dCode(CString &sItsCode, int &nSerial);
 
 	void SetTotOpRto(CString sVal);		// 전체진행율
 	void SetTotVel(CString sVal);		// 전체속도
@@ -909,9 +920,12 @@ public:
 	BOOL SetSerialReelmapInner(int nSerial, BOOL bDumy = FALSE);
 	BOOL SetSerialMkInfoInner(int nSerial, BOOL bDumy = FALSE);
 
-
+	void SetErrorRead2dCode(int nMcId); // PLC에 각인부 알람상태 ON
 
 	CString GetTimeIts();
+
+	void SwReset();
+	BOOL DoReset();
 
 // 재정의입니다.
 public:

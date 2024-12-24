@@ -124,6 +124,7 @@ int CMdx2500::OnClientReceived(WPARAM wParam, LPARAM lParam)
 			}
 			else
 			{
+				pView->SetErrorRead2dCode(_PcId::_Engrave);
 				pView->MsgBox(_T("Error-CheckResponse"));
 				//AfxMessageBox(_T("Error-CheckResponse"));
 			}			
@@ -169,6 +170,7 @@ BOOL CMdx2500::CheckResponse(int nCmd, CString sResponse)
 		{
 			m_strResponse = sResponse;
 			m_bWaitForResponse = FALSE;
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("Error-Mdx response"));
 			//AfxMessageBox(_T("Error-Mdx response"));
 		}
@@ -183,6 +185,7 @@ BOOL CMdx2500::CheckResponse(int nCmd, CString sResponse)
 		{
 			m_strResponse = sResponse;
 			m_bWaitForResponse = FALSE;
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			//AfxMessageBox(_T("Error-Mdx response"));
 			pView->MsgBox(_T("Error-Mdx response"));
 		}
@@ -197,6 +200,7 @@ BOOL CMdx2500::CheckResponse(int nCmd, CString sResponse)
 		{
 			m_strResponse = sResponse;
 			m_bWaitForResponse = FALSE;
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			//AfxMessageBox(_T("Error-Mdx response"));
 			pView->MsgBox(_T("Error-Mdx response"));
 		}
@@ -211,6 +215,7 @@ BOOL CMdx2500::CheckResponse(int nCmd, CString sResponse)
 		{
 			m_strResponse = sResponse;
 			m_bWaitForResponse = FALSE;
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			//AfxMessageBox(_T("Error-Mdx response"));
 			pView->MsgBox(_T("Error-Mdx response"));
 		}
@@ -228,6 +233,7 @@ BOOL CMdx2500::CheckResponse(int nCmd, CString sResponse)
 		{
 			m_strResponse = sResponse;
 			m_bWaitForResponse = FALSE;
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			//AfxMessageBox(_T("Error-Mdx response"));
 			pView->MsgBox(_T("Error-Mdx response"));
 		}
@@ -242,6 +248,7 @@ BOOL CMdx2500::CheckResponse(int nCmd, CString sResponse)
 		{
 			m_strResponse = sResponse;
 			m_bWaitForResponse = FALSE;
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			//AfxMessageBox(_T("Error-Mdx response"));
 			pView->MsgBox(_T("Error-Mdx response"));
 		}
@@ -278,6 +285,7 @@ BOOL CMdx2500::GuideLaserRect(BOOL bOn)
 {
 	if (m_bWaitForResponse)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		//AfxMessageBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		pView->MsgBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		return FALSE;
@@ -319,6 +327,7 @@ BOOL CMdx2500::IsLaserReady()
 {
 	if (m_bWaitForResponse)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		//AfxMessageBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		pView->MsgBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		return FALSE;
@@ -345,6 +354,7 @@ BOOL CMdx2500::LaserMarking(BOOL bOn)
 {
 	if (m_bWaitForResponse)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		//AfxMessageBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		pView->MsgBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		return FALSE;
@@ -385,6 +395,7 @@ BOOL CMdx2500::SetMdxOrderShotNum(CString sOrder, CString sShot, int nSet)
 {
 	if (m_bWaitForResponse)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		//AfxMessageBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		pView->MsgBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		return FALSE;
@@ -392,12 +403,14 @@ BOOL CMdx2500::SetMdxOrderShotNum(CString sOrder, CString sShot, int nSet)
 
 	if ((sOrder.GetLength() != 9) && (nSet & SET_ITS))
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		//AfxMessageBox(_T("Error - ITS CODE는 9자여야 합니다."));
 		pView->MsgBox(_T("Error - ITS CODE는 9자여야 합니다."));
 		return FALSE;
 	}
 	else if ((sShot.GetLength() != 3) && (nSet & SET_SHOT))
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		//AfxMessageBox(_T("Error - Shot넘버는 3자여야 합니다."));
 		pView->MsgBox(_T("Error - Shot넘버는 3자여야 합니다."));
 		return FALSE;
@@ -434,6 +447,7 @@ BOOL CMdx2500::GetMdxSettingData(CString& sOrderNum, CString& sShotNum)
 {
 	if (m_bWaitForResponse)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		//AfxMessageBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		pView->MsgBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		return FALSE;
@@ -460,6 +474,7 @@ BOOL CMdx2500::SetLaserPosZero()
 {
 	if (m_bWaitForResponse)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		//AfxMessageBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		pView->MsgBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		return FALSE;
@@ -492,6 +507,7 @@ BOOL CMdx2500::SetLaserPos(double* pData)
 {
 	if (m_bWaitForResponse)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		//AfxMessageBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		pView->MsgBox(_T("Error - m_bWaitForResponse[ID_MDX2500] is TRUE."));
 		return FALSE;
@@ -644,6 +660,7 @@ BOOL CMdx2500::WaitUntilLaserReady()
 		dwTick = GetTickCount() - dwStartTick;
 		if (dwTick > dwTimeOut)
 		{
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("Error - WaitUntilLaserReady[ID_MDX2500] is time over 10seconds."));
 			return FALSE;
 		}
@@ -682,6 +699,7 @@ BOOL CMdx2500::WaitForResponse(DWORD dwTimeOut, DWORD dwTimeLate)
 		dwTick = GetTickCount() - dwStartTick;
 		if (dwTick > dwTimeOut)
 		{
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("Error - WaitForResponse[ID_MDX2500] is time over."));
 			return FALSE;
 		}

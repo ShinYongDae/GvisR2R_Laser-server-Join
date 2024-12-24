@@ -26,9 +26,12 @@ CMyGL::CMyGL(CWnd* pParent)
 	m_nCtrlId = -1;
 
 	RECT rt={0,0,0,0};
-	if(!Create(NULL, NULL, WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN, rt, pParent, 0))
+	if (!Create(NULL, NULL, WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, rt, pParent, 0))
+	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("CMyGL::Create() Failed!!!"));
 		//AfxMessageBox(_T("CMyGL::Create() Failed!!!"));
+	}
 
 	m_hDC = NULL;
 	m_hRC = NULL;

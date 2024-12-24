@@ -120,7 +120,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>netapi32.lib;glut32.lib;glu32.lib;opengl32.lib;MVSDKmd.lib;VideoRender.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>netapi32.lib;glu32.lib;opengl32.lib;MVSDKmd.lib;VideoRender.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LargeAddressAware>true</LargeAddressAware>
     </Link>
     <Midl>

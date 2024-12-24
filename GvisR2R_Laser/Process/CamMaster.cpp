@@ -177,6 +177,7 @@ BOOL CCamMaster::LoadMasterSpec()
 
 	if(!findfile.FindFile(sPath))
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		sMsg.Format(_T("캠마스터 스팩 파일이 없습니다.\r\n%s"), sPath);
 		pView->MsgBox(sMsg);
 // 		AfxMessageBox(sMsg);
@@ -293,6 +294,7 @@ void CCamMaster::LoadPinImg()
 	{
 		if(!CreateDirectory(FileNLoc, NULL))
 		{
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("Can not Create Pin Directory"));
 // 			AfxMessageBox(_T("Can not Create CAD Directory"),MB_ICONSTOP|MB_OK);
 		}
@@ -566,6 +568,7 @@ BOOL CCamMaster::LoadStripRgnFromCam() // sprintf(FileNCam,"%s%s\\%s.mst",strSpe
 	
 	if(Rsize != SizeI)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("MST File is incorrected."));
 // 		AfxMessageBox(_T("MST File is incorrected."),MB_ICONSTOP|MB_OK);
 		file.Close();
@@ -583,6 +586,7 @@ BOOL CCamMaster::LoadStripRgnFromCam() // sprintf(FileNCam,"%s%s\\%s.mst",strSpe
 
 	if(RsizeStPosX != SizeI && RsizeStPosY != SizeI && RsizeEdPosX != SizeI && RsizeEdPosY != SizeI && RsizeXSwathPixPos != SizeIXSwathPixPos)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("MST File is incorrected."));
 // 		AfxMessageBox(_T("MST File is incorrected."),MB_ICONSTOP|MB_OK);
 		file.Close();
@@ -629,6 +633,7 @@ BOOL CCamMaster::LoadPcsRgnFromCam() // 기존 RTR
 		if (!file.Open(FileN, CFile::modeRead))
 		{
 			nPieceRgnNum = 0;
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("캠마스터에 피스정보가 설정되지 않았습니다."));
 // 			AfxMessageBox(_T("캠마스터에 피스정보가 설정되지 않았습니다."));
 			return FALSE;
@@ -757,6 +762,7 @@ BOOL CCamMaster::LoadStripPieceRegion_Binary()	//20121120-ndy for PairPanel
 
 	if (!find.FindFile(strFileNCam))
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("캠마스터에 피스정보가 설정되지 않았습니다."));
 		return(FALSE);
 	}
@@ -772,6 +778,7 @@ BOOL CCamMaster::LoadStripPieceRegion_Binary()	//20121120-ndy for PairPanel
 	{
 		if (!file.Open(FileNLoc, CFile::modeRead))
 		{
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("캠마스터에 피스정보파일을 Open하지 못했습니다."));
 			return(FALSE);
 		}
@@ -822,6 +829,7 @@ BOOL CCamMaster::LoadStripPieceRegion_Binary()	//20121120-ndy for PairPanel
 	if (PieceRgnNum > MAX_PIECE_RGN_NUM) // 110803 jsy
 	{
 		file.Close();
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("캠마스터에서 설정한 피스 갯수가 최대치를 초과했습니다."));
 		return FALSE;
 	}
@@ -903,6 +911,7 @@ BOOL CCamMaster::LoadStripPieceRegion_Binary()	//20121120-ndy for PairPanel
 	{
 		file.Close();
 		Size = 0;
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("캠마스터에서 설정한 피스 갯수가 없습니다."));
 		return(FALSE);
 	}
@@ -1137,6 +1146,7 @@ void CCamMaster::LoadPcsImg()
 	{
 		if(!CreateDirectory(FileD, NULL))
 		{
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("Can not Create PCS Directory"));
 		}
 	}
@@ -1205,6 +1215,7 @@ void CCamMaster::LoadCadImg()
 	{
 		if(!CreateDirectory(FileNLoc, NULL))
 		{
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("Can not Create CAD Directory"));
 // 			AfxMessageBox(_T("Can not Create CAD Directory"),MB_ICONSTOP|MB_OK);
 		}
@@ -1471,6 +1482,7 @@ void CCamMaster::LoadAlignImg()
 	{
 		if(!CreateDirectory(FileNLoc, NULL))
 		{
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("Can not Create Align Directory"));
 // 			AfxMessageBox(_T("Can not Create CAD Directory"),MB_ICONSTOP|MB_OK);
 		}

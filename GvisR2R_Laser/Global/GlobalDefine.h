@@ -10,7 +10,8 @@
 #endif // _MSC_VER > 1000
 
 
-#define TEST_MODE		1
+//#define TEST_MODE		1
+
 #ifndef MAX_STRIP
 	#define MAX_STRIP				4
 #endif
@@ -23,7 +24,6 @@
 #ifdef TEST_MODE
 	#define TEST_SHOT				2
 	#define PATH_REELMAP			_T("C:\\R2RSet\\Test\\ReelMap.txt")
-//#define PATH_REELMAP			_T("C:\\R2RSet\\Test\\ReelMapData.txt")
 	#define PATH_REELMAP_UP			PATH_REELMAP	//_T("C:\\R2RSet\\Test\\ReelMapDataUp.txt")
 	#define PATH_REELMAP_DN			PATH_REELMAP	//_T("C:\\R2RSet\\Test\\ReelMapDataDn.txt")
 	#define PATH_REELMAP_ALL_UP		PATH_REELMAP	//_T("C:\\R2RSet\\Test\\ReelMapDataAllUp.txt")
@@ -733,6 +733,7 @@ struct stLastJob
 	BOOL bUse2Layer;
 	CString sEngraveOrderNum, sEngraveLastShot;
 	CString sEngraveOrgX, sEngraveOrgY, sEngravePosOffsetX, sEngravePosOffsetY, sEngravePosTheta;
+	double dEngraveOrgX, dEngraveOrgY, dEngravePosOffsetX, dEngravePosOffsetY, dEngravePosTheta;
 	int nAlignMethode;
 	BOOL bUseAoiUpCleanRoler, bUseAoiDnCleanRoler;
 	BOOL bUseEngraveUltrasonic, bUseAoiDnUltrasonic;
@@ -791,7 +792,7 @@ struct stLastJob
 		bUseAoiUpCleanRoler = FALSE; bUseAoiDnCleanRoler = FALSE;
 		sEngItsCode = _T("");
 		bDispContRun = FALSE; bDispLotEnd = FALSE;
-
+		dEngraveOrgX = 0.0; dEngraveOrgY = 0.0; dEngravePosOffsetX = 0.0; dEngravePosOffsetY = 0.0; dEngravePosTheta = 0.0;
 	}
 };
 
@@ -1596,11 +1597,11 @@ struct stBtnUncoiler
 
 struct stBtnEngAuto
 {
-	BOOL Init, MkSt, OnMking, MkDone, Read2dSt, OnRead2d, Read2dDone, FdDone;
-	BOOL InitF, MkStF, OnMkingF, MkDoneF, Read2dStF, OnRead2dF, Read2dDoneF, FdDoneF;
+	BOOL Init, MkSt, OnMking, MkDone, Read2dSt, OnRead2d, Read2dDone, FdDone, GetCurrentInfoSignal, GetMonDispMainSignal;
+	BOOL InitF, MkStF, OnMkingF, MkDoneF, Read2dStF, OnRead2dF, Read2dDoneF, FdDoneF, GetCurrentInfoSignalF, GetMonDispMainSignalF;
 
-	BOOL IsInit, IsMkSt, IsOnMking, IsMkDone, IsRead2dSt, IsOnRead2d, IsRead2dDone, IsFdDone;
-	BOOL IsInitF, IsMkStF, IsOnMkingF, IsMkDoneF, IsRead2dStF, IsOnRead2dF, IsRead2dDoneF, IsFdDoneF;
+	BOOL IsInit, IsMkSt, IsOnMking, IsMkDone, IsRead2dSt, IsOnRead2d, IsRead2dDone, IsFdDone, IsGetCurrentInfoSignal, IsGetMonDispMainSignal;
+	BOOL IsInitF, IsMkStF, IsOnMkingF, IsMkDoneF, IsRead2dStF, IsOnRead2dF, IsRead2dDoneF, IsFdDoneF, IsGetCurrentInfoSignalF, IsGetMonDispMainSignalF;
 
 	stBtnEngAuto()
 	{
@@ -1609,11 +1610,11 @@ struct stBtnEngAuto
 
 	void _Init()
 	{
-		Init = FALSE; MkSt = FALSE; OnMking = FALSE; MkDone = FALSE; Read2dSt = FALSE; OnRead2d = FALSE; Read2dDone = FALSE; FdDone = FALSE;
-		InitF = FALSE; MkStF = FALSE; OnMkingF = FALSE; MkDoneF = FALSE; Read2dStF = FALSE; OnRead2dF = FALSE; Read2dDoneF = FALSE; FdDoneF = FALSE;
+		Init = FALSE; MkSt = FALSE; OnMking = FALSE; MkDone = FALSE; Read2dSt = FALSE; OnRead2d = FALSE; Read2dDone = FALSE; FdDone = FALSE; GetCurrentInfoSignal = FALSE; GetMonDispMainSignal = FALSE;
+		InitF = FALSE; MkStF = FALSE; OnMkingF = FALSE; MkDoneF = FALSE; Read2dStF = FALSE; OnRead2dF = FALSE; Read2dDoneF = FALSE; FdDoneF = FALSE; GetCurrentInfoSignalF = FALSE; GetMonDispMainSignalF = FALSE;
 
-		IsInit = FALSE; IsMkSt = FALSE; IsOnMking = FALSE; IsMkDone = FALSE; IsRead2dSt = FALSE; IsOnRead2d = FALSE; IsRead2dDone = FALSE; IsFdDone = FALSE;
-		IsInitF = FALSE; IsMkStF = FALSE; IsOnMkingF = FALSE; IsMkDoneF = FALSE; IsRead2dStF = FALSE; IsOnRead2dF = FALSE; IsRead2dDoneF = FALSE; IsFdDoneF = FALSE;
+		IsInit = FALSE; IsMkSt = FALSE; IsOnMking = FALSE; IsMkDone = FALSE; IsRead2dSt = FALSE; IsOnRead2d = FALSE; IsRead2dDone = FALSE; IsFdDone = FALSE; IsGetCurrentInfoSignal = FALSE; IsGetMonDispMainSignal = FALSE;
+		IsInitF = FALSE; IsMkStF = FALSE; IsOnMkingF = FALSE; IsMkDoneF = FALSE; IsRead2dStF = FALSE; IsOnRead2dF = FALSE; IsRead2dDoneF = FALSE; IsFdDoneF = FALSE; IsGetCurrentInfoSignalF = FALSE; IsGetMonDispMainSignalF = FALSE;
 	}
 };
 

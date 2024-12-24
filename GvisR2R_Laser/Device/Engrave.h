@@ -5,16 +5,20 @@
 #include "EngraveDef.h"
 
 #define TIM_CONNECT	1
+#define TIM_CHK_RCV_SIG	100
+
 
 class CEngrave : public CWnd
 {
 	HWND m_hParentWnd;
 	CTcpIpServer* m_pServer;
 
+	CString m_sSignalName[_SigInx::_EndIdx];
 	CString	m_strPortSvr, m_strAddrSvr;
 	CString	m_strAddrCli;
 	int m_nServerID;
 
+	BOOL m_bTIM_CHK_RCV_SIG;
 	BOOL m_bWaitForResponse;
 	CString m_strResponse;
 	int m_nCmd;
@@ -33,6 +37,8 @@ public:
 	CEngrave(CString sAddrCli, CString sAddrSvr, CString sPortSvr, CWnd* pParent = NULL);
 	~CEngrave();
 
+	BOOL m_bSendSig[_SigInx::_EndIdx], m_bRcvSig[_SigInx::_EndIdx];
+	int m_nSendSigData[_SigInx::_EndIdx], m_nRcvSigData[_SigInx::_EndIdx];
 	BOOL m_bGetOpInfo, m_bGetInfo, m_bGetEngInfo;
 	BOOL m_bGetSignalMain, m_bGetSignalTorqueMotor, m_bGetSignalInductionMotor, m_bGetSignalCore150mm, m_bGetSignalEtc;
 	BOOL m_bGetSignalRecoiler, m_bGetSignalPunch, m_bGetSignalAOIDn, m_bGetSignalAOIUp, m_bGetSignalEngrave, m_bGetSignalUncoiler;
@@ -88,6 +94,7 @@ public:
 	void GetSignalEngraveAutoSequence(SOCKET_DATA SockData);
 	void GetSignalMyMsg(SOCKET_DATA SockData);
 	void GetSignal2dEng(SOCKET_DATA SockData);
+	void GetCurrentInfoSignal(SOCKET_DATA SockData);
 
 	// GetSysData
 	void GetSysData(SOCKET_DATA SockData);
@@ -557,6 +564,14 @@ public:
 	void IsSetMyMsgNo();
 	void IsSetMyMsgOk();
 
+	// CurrentInfoSigna
+	void SetCurrentInfoSignal(int nMsgID, int nData);
+	void IsSetCurrentInfoSignal();
+
+	// MonDispMain
+	void SetMonDispMainSignal();
+	void IsSetMonDispMainSignal();
+
 	// Engrave Auto Sequence
 	void SwEngAutoInit(BOOL bOn); // 각인부 초기화(Reset)
 	void SwEngAutoMkSt(BOOL bOn);
@@ -605,6 +620,10 @@ public:
 	void SetDispContRun(BOOL bOn);
 	void IsSetDispContRun();
 
+	void SetSignal(int nMsgID, int nData);
+	CString GetSignalName(int nMsgID);
+	void SetSignalName();
+
 protected:
 	afx_msg LRESULT wmAcceptReceived(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT wmServerClosed(WPARAM wParam, LPARAM lParam);
@@ -613,5 +632,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 };
 

@@ -43,8 +43,10 @@ CDlgMenu02::CDlgMenu02(CWnd* pParent /*=NULL*/)
 	m_bTIM_LIGHT_UP = FALSE;
 	m_bTIM_LIGHT_DN = FALSE;
 	m_bTIM_BUF_ENC = FALSE;
+	m_bTIM_LIGHT_UP2 = FALSE;
+	m_bTIM_LIGHT_DN2 = FALSE;
 
-	m_bTIM_2D_READING = FALSE;
+	m_bTIM_PLC_SIG = FALSE;
 	m_bTIM_TEST_2D_READING = FALSE;
 	m_bTIM_MDX_RESPONSE = FALSE;
 	m_bTIM_MDX_READY = FALSE;
@@ -89,8 +91,10 @@ CDlgMenu02::~CDlgMenu02()
 	m_bTIM_LIGHT_UP = FALSE;
 	m_bTIM_LIGHT_DN = FALSE;
 	m_bTIM_BUF_ENC = FALSE;
+	m_bTIM_LIGHT_UP2 = FALSE;
+	m_bTIM_LIGHT_DN2 = FALSE;
 
-	m_bTIM_2D_READING = FALSE;
+	m_bTIM_PLC_SIG = FALSE;
 	m_bTIM_TEST_2D_READING = FALSE;
 	m_bTIM_MDX_RESPONSE = FALSE;
 	m_bTIM_MDX_READY = FALSE;
@@ -137,6 +141,7 @@ void CDlgMenu02::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CDlgMenu02)
 	DDX_Control(pDX, IDC_SLD_LT, m_LightSlider);
 	//}}AFX_DATA_MAP
+	DDX_Control(pDX, IDC_SLD_LT2, m_LightSlider2);
 }
 
 
@@ -144,6 +149,7 @@ BEGIN_MESSAGE_MAP(CDlgMenu02, CDialog)
 	//{{AFX_MSG_MAP(CDlgMenu02)
 	ON_WM_SHOWWINDOW()
 	ON_BN_CLICKED(IDC_CHK_LT_ON, OnChkLtOn)
+	ON_BN_CLICKED(IDC_CHK_LT_ON2, OnChkLtOn2)
 	ON_WM_VSCROLL()
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_CHK_JOG_VF, OnChkJogVf)
@@ -208,6 +214,7 @@ BEGIN_MESSAGE_MAP(CDlgMenu02, CDialog)
 	ON_STN_CLICKED(IDC_STC_52, &CDlgMenu02::OnStnClickedStc52)
 	ON_STN_CLICKED(IDC_STC_55, &CDlgMenu02::OnStnClickedStc55)
 	ON_BN_CLICKED(IDC_BTN_MOVE_INIT_OFFSET, &CDlgMenu02::OnBnClickedBtnMoveInitOffset)
+	ON_BN_CLICKED(IDC_BTN_LASER_POS_SAVE, &CDlgMenu02::OnBnClickedBtnLaserPosSave)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -283,12 +290,12 @@ void CDlgMenu02::LoadImg()
 
 	for(i=0; i<MAX_MENU02_BTN; i++)
 	{
-		if(i==1)
+		if (i == 1 || i == 48)
 		{
 			myBtn[i].LoadBkImage(IMG_JOG_UP_DlgMenu02, BTN_IMG_UP);
 			myBtn[i].LoadBkImage(IMG_JOG_UP_DlgMenu02, BTN_IMG_DN);
 		}
-		else if(i==2)
+		else if(i==2 || i == 49)
 		{
 			myBtn[i].LoadBkImage(IMG_JOG_DN_DlgMenu02, BTN_IMG_UP);
 			myBtn[i].LoadBkImage(IMG_JOG_DN_DlgMenu02, BTN_IMG_DN);
@@ -425,6 +432,20 @@ BOOL CDlgMenu02::OnInitDialog()
 	GetDlgItem(IDC_BTN_OFFSET_AOI_CCW)->ShowWindow(SW_HIDE);
 	GetDlgItem(IDC_BTN_OFFSET_MK_CCW)->ShowWindow(SW_HIDE);
 
+	GetDlgItem(IDC_GRP_LT6)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_STC_BUF_ROL1)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BTN_BUFF_HOME1)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BTN_BUFF_INIT_MOVE1)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BTN_BUFF_INIT_SAVE1)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_STC_BUF_POS1)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_STC_BUF_HI1)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BTN_BUFF_DN1)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BTN_BUFF_UP1)->ShowWindow(SW_HIDE);
+
+
+	m_bTIM_PLC_SIG = TRUE;
+	SetTimer(TIM_PLC_SIG, 100, NULL);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -477,6 +498,12 @@ void CDlgMenu02::InitSlider()
 	m_LightSlider.SetPageSize(10);
 	m_LightSlider.SetPos(100);
 	m_LightSlider.SetTicFreq(10);
+
+	m_LightSlider2.SetRange(0, 100);
+	m_LightSlider2.SetLineSize(1);
+	m_LightSlider2.SetPageSize(10);
+	m_LightSlider2.SetPos(100);
+	m_LightSlider2.SetTicFreq(10);
 }
 
 void CDlgMenu02::InitBtn()
@@ -641,6 +668,22 @@ void CDlgMenu02::InitBtn()
 	myBtn[45].SetHwnd(this->GetSafeHwnd(), IDC_BTN_MOVE_INIT_OFFSET);
 	myBtn[45].SetBtnType(BTN_TYPE_CHECK);
 
+	myBtn[46].SubclassDlgItem(IDC_BTN_LASER_POS_SAVE, this);
+	myBtn[46].SetHwnd(this->GetSafeHwnd(), IDC_BTN_LASER_POS_SAVE);
+	myBtn[46].SetBtnType(BTN_TYPE_CHECK);
+
+	myBtn[47].SubclassDlgItem(IDC_CHK_LT_ON2, this);
+	myBtn[47].SetHwnd(this->GetSafeHwnd(), IDC_CHK_LT_ON2);
+	myBtn[47].SetBtnType(BTN_TYPE_CHECK);
+
+	myBtn[48].SubclassDlgItem(IDC_BTN_LT_UP2, this);
+	myBtn[48].SetHwnd(this->GetSafeHwnd(), IDC_BTN_LT_UP2);
+	myBtn[48].SetBoarder(FALSE);
+
+	myBtn[49].SubclassDlgItem(IDC_BTN_LT_DN2, this);
+	myBtn[49].SetHwnd(this->GetSafeHwnd(), IDC_BTN_LT_DN2);
+	myBtn[49].SetBoarder(FALSE);
+
 	int i;
 	for(i=0; i<MAX_MENU02_BTN; i++)
 	{
@@ -698,6 +741,14 @@ void CDlgMenu02::InitStcTitle()
 	myLblTitle[11].SubclassDlgItem(IDC_STC_ALN_ANGL, this);
 	myLblTitle[12].SubclassDlgItem(IDC_STC_ALN_SCR, this);
 	myLblTitle[13].SubclassDlgItem(IDC_STC_ALN_SCR2, this);
+
+	myLblTitle[14].SubclassDlgItem(IDC_STATIC_014, this);
+	myLblTitle[15].SubclassDlgItem(IDC_STATIC_015, this);
+	myLblTitle[16].SubclassDlgItem(IDC_STATIC_016, this);
+	myLblTitle[17].SubclassDlgItem(IDC_STATIC_017, this);
+	myLblTitle[18].SubclassDlgItem(IDC_STATIC_018, this);
+	myLblTitle[19].SubclassDlgItem(IDC_STATIC_019, this);
+	myLblTitle[20].SubclassDlgItem(IDC_STATIC_020, this);
 
 	myStcTitle[0].SubclassDlgItem(IDC_STC_000, this);
 	myStcTitle[1].SubclassDlgItem(IDC_STC_2, this);
@@ -851,6 +902,8 @@ void CDlgMenu02::InitStcData()
 	myStcData[28].SubclassDlgItem(IDC_STC_49, this);
 	myStcData[29].SubclassDlgItem(IDC_STC_52, this);
 	myStcData[30].SubclassDlgItem(IDC_STC_55, this);
+
+	myStcData[31].SubclassDlgItem(IDC_STC_LT_VAL2, this);
 
 	for(int i=0; i<MAX_MENU02_STC_DATA; i++)
 	{
@@ -1075,6 +1128,19 @@ void CDlgMenu02::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 		pDoc->WorkingInfo.Light.sVal[0] = str;
 		::WritePrivateProfileString(_T("Light0"), _T("LIGHT_VALUE"), str, pDoc->WorkingInfo.System.sPathEngCurrInfo);
 	}
+
+	if (pScrollBar == (CScrollBar*)&m_LightSlider2)
+	{
+		nPos = m_LightSlider2.GetPos();
+		str = myStcData[31].GetText();
+		LightValue = (int)floor(((double)(100 - nPos) / 100.0)*255.0 + 0.5);
+		pView->m_pLight->Set(_tstoi(pDoc->WorkingInfo.Light.sCh[1]), LightValue);
+		str.Format(_T("%d"), LightValue);
+		myStcData[31].SetText(str);
+
+		pDoc->WorkingInfo.Light.sVal[1] = str;
+		::WritePrivateProfileString(_T("Light1"), _T("LIGHT_VALUE"), str, pDoc->WorkingInfo.System.sPathEngCurrInfo);
+	}
 	
 	CDialog::OnVScroll(nSBCode, nPos, pScrollBar);
 }
@@ -1129,6 +1195,20 @@ void CDlgMenu02::SwMyBtnDown(int nCtrlID)
 		if (pView->m_pMpe)
 			pView->m_pMpe->Write(_T("MB005514"), 1);
 		break;
+	case IDC_BTN_LT_UP2:
+		if (!m_bTIM_LIGHT_UP2)
+		{
+			m_bTIM_LIGHT_UP2 = TRUE;
+			SetTimer(TIM_LIGHT_UP2, 100, NULL);
+		}
+		break;
+	case IDC_BTN_LT_DN2:
+		if (!m_bTIM_LIGHT_DN2)
+		{
+			m_bTIM_LIGHT_DN2 = TRUE;
+			SetTimer(TIM_LIGHT_DN2, 100, NULL);
+		}
+		break;
 	}
 }
 
@@ -1166,6 +1246,12 @@ void CDlgMenu02::SwMyBtnUp(int nCtrlID)
 // 			MsClr(MS_X);
 			ResetMotion(MS_X0);
 		}
+		break;
+	case IDC_BTN_LT_UP2:
+		m_bTIM_LIGHT_UP2 = FALSE;
+		break;
+	case IDC_BTN_LT_DN2:
+		m_bTIM_LIGHT_DN2 = FALSE;
 		break;
 	}
 }
@@ -1277,7 +1363,7 @@ void CDlgMenu02::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 		switch(nIDEvent)
 		{
 		case TIM_LIGHT_UP:
-	//		KillTimer(TIM_LIGHT_UP);
+			KillTimer(TIM_LIGHT_UP);
 			nVal = pView->m_pLight->Get(_tstoi(pDoc->WorkingInfo.Light.sCh[0]));
 			nVal += 5;
 			if(nVal > 255)
@@ -1287,7 +1373,7 @@ void CDlgMenu02::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 				SetTimer(TIM_LIGHT_UP, 100, NULL);
 			break;
 		case TIM_LIGHT_DN:
-	//		KillTimer(TIM_LIGHT_DN);
+			KillTimer(TIM_LIGHT_DN);
 			nVal = pView->m_pLight->Get(_tstoi(pDoc->WorkingInfo.Light.sCh[0]));
 			nVal -= 5;
 			if(nVal < 0)
@@ -1307,15 +1393,15 @@ void CDlgMenu02::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 	//		KillTimer(TIM_MARKING_OFF);
 			MarkingOff();
 			break;
-	//	case TIM_2D_READING:
-	////		KillTimer(TIM_2D_READING);
-	//		if(!Disp2dCode())
-	//		{
-	//			SetTimer(TIM_2D_READING, 100, NULL);
-	//		}
-	//		else
-	//			m_bTIM_2D_READING = FALSE;
-	//		break;
+		case TIM_PLC_SIG:
+			KillTimer(TIM_PLC_SIG);
+			DispPlcSig();
+
+			if(m_bTIM_PLC_SIG)
+			{
+				SetTimer(TIM_PLC_SIG, 100, NULL);
+			}
+			break;
 	//	case TIM_TEST_2D_READING:
 	////		KillTimer(TIM_2D_READING);
 	//		if(!DispTest2dCode())
@@ -1408,6 +1494,26 @@ void CDlgMenu02::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 				}
 #endif
 			}
+		case TIM_LIGHT_UP2:
+			KillTimer(TIM_LIGHT_UP2);
+			nVal = pView->m_pLight->Get(_tstoi(pDoc->WorkingInfo.Light.sCh[1]));
+			nVal += 5;
+			if (nVal > 255)
+				nVal = 255;
+			SetLight2(nVal);
+			if (m_bTIM_LIGHT_UP2)
+				SetTimer(TIM_LIGHT_UP2, 100, NULL);
+			break;
+		case TIM_LIGHT_DN2:
+			KillTimer(TIM_LIGHT_DN2);
+			nVal = pView->m_pLight->Get(_tstoi(pDoc->WorkingInfo.Light.sCh[1]));
+			nVal -= 5;
+			if (nVal < 0)
+				nVal = 0;
+			SetLight2(nVal);
+			if (m_bTIM_LIGHT_DN2)
+				SetTimer(TIM_LIGHT_DN2, 100, NULL);
+			break;
 
 		}
 
@@ -1638,7 +1744,7 @@ void CDlgMenu02::SetPinPos(int nCam, CfPoint ptPnt)
 	if(pDoc->m_pSpecLocal)
 		pDoc->m_pSpecLocal->SavePinPos(nCam, ptPnt);
 
-	CString sData, sPath=PATH_WORKING_INFO;
+	CString sData;
 	sData.Format(_T("%.3f"), ptPnt.x);
 	pDoc->WorkingInfo.Motion.sPinPosX[nCam] = sData;
 	
@@ -1862,7 +1968,7 @@ void CDlgMenu02::OnChkMkOffsetEd()
 		dMkOffsetX += m_dStOffsetX-dCurPosX;
 		dMkOffsetY += m_dStOffsetY-dCurPosY;
 
-		CString sData, sPath=PATH_WORKING_INFO;
+		CString sData;
 
 		sData.Format(_T("%.3f"), dMkOffsetX);
 		pDoc->WorkingInfo.Vision[0].sMkOffsetX = sData;
@@ -2456,9 +2562,12 @@ void CDlgMenu02::MarkingOff()
 		pView->m_pMotion->GetSpeedProfile(TRAPEZOIDAL, AXIS_X0, fLen, fVel, fAcc, fJerk);
 		if(!pView->m_pMotion->Move(MS_X0Y0, pPos, fVel, fAcc, fAcc))
 		{
-			if(!pView->m_pMotion->Move(MS_X0Y0, pPos, fVel, fAcc, fAcc))
+			if (!pView->m_pMotion->Move(MS_X0Y0, pPos, fVel, fAcc, fAcc))
+			{
+				pView->SetErrorRead2dCode(_PcId::_Engrave);
 				pView->MsgBox(_T("Move XY Error..."));
 				//AfxMessageBox(_T("Move XY Error..."));
+			}
 		}
 	}
 }
@@ -2752,7 +2861,7 @@ void CDlgMenu02::Disp()
 	myStcData[12].SetText(str);					// IDC_STC_010	가속도
 
 	
-	//myStcData[17].SetText(pDoc->m_sOrderNum);	// IDC_STC_32	리더기 오더번호
+	//myStcData[17].SetText(pDoc->m_sItsCode);	// IDC_STC_32	리더기 오더번호
 	myStcData[17].SetText(pDoc->m_sItsCode);	// IDC_STC_32	리더기 ITS Code
 	myStcData[18].SetText(pDoc->m_sShotNum);	// IDC_STC_34	리더기 Shot번호
 	DispOneShotRemainLen();						// IDC_STC_36	1Shot - 리더기Offset
@@ -2763,7 +2872,7 @@ void CDlgMenu02::Disp()
 	str.Format(_T("%.1f"), _tstof(pDoc->WorkingInfo.Motion.sEngraveLaserAdjOffSetManual));
 	myStcData[14].SetText(str);					// IDC_STC_40	수동보정
 
-	//myStcData[15].SetText(pDoc->m_sOrderNum);	// IDC_STC_17	각인기 오더번호
+	//myStcData[15].SetText(pDoc->m_sItsCode);	// IDC_STC_17	각인기 오더번호
 	myStcData[15].SetText(pDoc->m_sItsCode);	// IDC_STC_17	각인기 ITS Code
 	myStcData[16].SetText(pDoc->m_sShotNum);	// IDC_STC_19	리더기 Shot번호
 
@@ -2811,7 +2920,6 @@ void CDlgMenu02::OnStnClickedStc5()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	Input_myStcData(10, IDC_STC_5);
 
-	CString sPath = PATH_WORKING_INFO;
 	CString sData;
 	GetDlgItem(IDC_STC_5)->GetWindowText(sData);
 	pDoc->SetEngraveReaderDist(_tstoi(sData));
@@ -2878,18 +2986,24 @@ void CDlgMenu02::OnStnClickedStc45()
 	CString sData;
 	GetDlgItem(IDC_STC_45)->GetWindowText(sData);
 	pView->SetEngraveFdPitch(_tstof(sData));
+
+#ifdef USE_ENGRAVE
+	if (pView && pView->m_pEngrave)
+		pView->m_pEngrave->SetEngLeadPitch();
+#endif
 }
 
 void CDlgMenu02::OnStnClickedStc180()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	Input_myStcData(21, IDC_STC_180);	// Push Off
 
-	CString sPath = PATH_WORKING_INFO;
-	CString sData;
-	GetDlgItem(IDC_STC_180)->GetWindowText(sData);
-	pDoc->WorkingInfo.Motion.sEngraveFdVacOff = sData;
-	::WritePrivateProfileString(_T("Motion"), _T("ENGRAVE_FEEDING_VACUUM_OFF"), sData, sPath);
+	//Input_myStcData(21, IDC_STC_180);	// Push Off
+
+	//CString sPath = PATH_WORKING_INFO;
+	//CString sData;
+	//GetDlgItem(IDC_STC_180)->GetWindowText(sData);
+	//pDoc->WorkingInfo.Motion.sEngraveFdVacOff = sData;
+	//::WritePrivateProfileString(_T("Motion"), _T("ENGRAVE_FEEDING_VACUUM_OFF"), sData, sPath);
 }
 
 void CDlgMenu02::OnStnClickedStc184()
@@ -2900,6 +3014,11 @@ void CDlgMenu02::OnStnClickedStc184()
 	CString sData;
 	GetDlgItem(IDC_STC_184)->GetWindowText(sData);
 	pDoc->SetMarkingToq(_tstoi(sData));
+
+#ifdef USE_ENGRAVE
+	if (pView && pView->m_pEngrave)
+		pView->m_pEngrave->SetEngTqVal();
+#endif
 
 //#ifdef USE_ENGRAVE
 //	if (pView && pView->m_pEngrave)
@@ -3008,6 +3127,7 @@ void CDlgMenu02::OnBnClickedBtn2dReading()
 	}
 	else
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("Error - DoRead2DCode()"));
 		//AfxMessageBox(_T("Error - DoRead2DCode()"));
 	}
@@ -3186,6 +3306,7 @@ BOOL CDlgMenu02::IsMdxReady()
 	CString sData;
 	if (!pView->m_pMdx2500->IsLaserReady())
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("Error - IsLaserReady()"));
 		return FALSE;
 	}
@@ -3342,23 +3463,23 @@ void CDlgMenu02::OnBnClickedBtnLaserAdjustUp()
 
 	CString sData;
 	GetDlgItem(IDC_STC_40)->GetWindowText(sData);
+	pDoc->WorkingInfo.LastJob.dEngravePosOffsetY += _tstof(sData);
 
 	double pData[5]; // X_org,Y_org,X_offset,Y_offset,Theta_offset
-	pData[0] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgX);								// X_org
-	pData[1] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgY);								// Y_org
-	pData[2] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetX);						// X_offset
-	pData[3] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetY) + _tstof(sData);		// Y_offset
-	pData[4] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosTheta);							// Theta_offset
+	pData[0] = pDoc->WorkingInfo.LastJob.dEngraveOrgX;						// X_org
+	pData[1] = pDoc->WorkingInfo.LastJob.dEngraveOrgY;						// Y_org
+	pData[2] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetX;				// X_offset
+	pData[3] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetY;				// Y_offset
+	pData[4] = pDoc->WorkingInfo.LastJob.dEngravePosTheta;					// Theta_offset
 
 	if (pView->m_pMdx2500->SetLaserPos(pData))
 	{
 		WaitResponse();
 
-		sData.Format(_T("%f"), pData[3]);
+		//sData.Format(_T("%f"), pData[3]);
 		//pDoc->WorkingInfo.LastJob.sEngravePosOffsetY = sData;
-		pDoc->WorkingInfo.LastJob.sEngravePosOffsetY.Format(_T("%.3f"), pData[3]);
-
-		::WritePrivateProfileString(_T("Last Job"), _T("Engrave Offset Y"), sData, PATH_WORKING_INFO);
+		//pDoc->WorkingInfo.LastJob.sEngravePosOffsetY.Format(_T("%.3f"), pData[3]);
+		//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Offset Y"), sData, PATH_WORKING_INFO);
 	}
 
 	if (bOn)
@@ -3381,23 +3502,23 @@ void CDlgMenu02::OnBnClickedBtnLaserAdjustRt()
 
 	CString sData;
 	GetDlgItem(IDC_STC_40)->GetWindowText(sData);
+	pDoc->WorkingInfo.LastJob.dEngravePosOffsetX += _tstof(sData);
 
 	double pData[5]; // X_org,Y_org,X_offset,Y_offset,Theta_offset
-	pData[0] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgX);								// X_org
-	pData[1] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgY);								// Y_org
-	pData[2] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetX) + _tstof(sData);		// X_offset
-	pData[3] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetY);						// Y_offset
-	pData[4] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosTheta);							// Theta_offset
+	pData[0] = pDoc->WorkingInfo.LastJob.dEngraveOrgX;						// X_org
+	pData[1] = pDoc->WorkingInfo.LastJob.dEngraveOrgY;						// Y_org
+	pData[2] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetX;				// X_offset
+	pData[3] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetY;				// Y_offset
+	pData[4] = pDoc->WorkingInfo.LastJob.dEngravePosTheta;					// Theta_offset
 
 	if (pView->m_pMdx2500->SetLaserPos(pData))
 	{
 		WaitResponse();
 
-		sData.Format(_T("%f"), pData[2]);
-		//pDoc->WorkingInfo.LastJob.sEngravePosOffsetX = sData;
-		pDoc->WorkingInfo.LastJob.sEngravePosOffsetX.Format(_T("%.3f"), pData[2]);
-
-		::WritePrivateProfileString(_T("Last Job"), _T("Engrave Offset X"), sData, PATH_WORKING_INFO);
+		//sData.Format(_T("%f"), pData[2]);
+		////pDoc->WorkingInfo.LastJob.sEngravePosOffsetX = sData;
+		//pDoc->WorkingInfo.LastJob.sEngravePosOffsetX.Format(_T("%.3f"), pData[2]);
+		//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Offset X"), sData, PATH_WORKING_INFO);
 	}
 
 	if (bOn)
@@ -3420,13 +3541,14 @@ void CDlgMenu02::OnBnClickedBtnLaserAdjustDn()
 
 	CString sData;
 	GetDlgItem(IDC_STC_40)->GetWindowText(sData);
+	pDoc->WorkingInfo.LastJob.dEngravePosOffsetY -= _tstof(sData);
 
 	double pData[5]; // X_org,Y_org,X_offset,Y_offset,Theta_offset
-	pData[0] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgX);								// X_org
-	pData[1] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgY);								// Y_org
-	pData[2] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetX);						// X_offset
-	pData[3] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetY) - _tstof(sData);		// Y_offset
-	pData[4] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosTheta);							// Theta_offset
+	pData[0] = pDoc->WorkingInfo.LastJob.dEngraveOrgX;						// X_org
+	pData[1] = pDoc->WorkingInfo.LastJob.dEngraveOrgY;						// Y_org
+	pData[2] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetX;				// X_offset
+	pData[3] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetY;				// Y_offset
+	pData[4] = pDoc->WorkingInfo.LastJob.dEngravePosTheta;					// Theta_offset
 
 	if (pView->m_pMdx2500->SetLaserPos(pData))
 	{
@@ -3434,9 +3556,8 @@ void CDlgMenu02::OnBnClickedBtnLaserAdjustDn()
 
 		sData.Format(_T("%f"), pData[3]);
 		//pDoc->WorkingInfo.LastJob.sEngravePosOffsetY = sData;
-		pDoc->WorkingInfo.LastJob.sEngravePosOffsetY.Format(_T("%.3f"), pData[3]);
-
-		::WritePrivateProfileString(_T("Last Job"), _T("Engrave Offset Y"), sData, PATH_WORKING_INFO);
+		//pDoc->WorkingInfo.LastJob.sEngravePosOffsetY.Format(_T("%.3f"), pData[3]);
+		//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Offset Y"), sData, PATH_WORKING_INFO);
 	}
 
 	if (bOn)
@@ -3459,13 +3580,14 @@ void CDlgMenu02::OnBnClickedBtnLaserAdjustLf()
 
 	CString sData;
 	GetDlgItem(IDC_STC_40)->GetWindowText(sData);
+	pDoc->WorkingInfo.LastJob.dEngravePosOffsetX -= _tstof(sData);
 
 	double pData[5]; // X_org,Y_org,X_offset,Y_offset,Theta_offset
-	pData[0] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgX);								// X_org
-	pData[1] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgY);								// Y_org
-	pData[2] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetX) - _tstof(sData);		// X_offset
-	pData[3] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetY);						// Y_offset
-	pData[4] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosTheta);							// Theta_offset
+	pData[0] = pDoc->WorkingInfo.LastJob.dEngraveOrgX;						// X_org
+	pData[1] = pDoc->WorkingInfo.LastJob.dEngraveOrgY;						// Y_org
+	pData[2] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetX;				// X_offset
+	pData[3] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetY;				// Y_offset
+	pData[4] = pDoc->WorkingInfo.LastJob.dEngravePosTheta;					// Theta_offset
 
 	if (pView->m_pMdx2500->SetLaserPos(pData))
 	{
@@ -3473,9 +3595,8 @@ void CDlgMenu02::OnBnClickedBtnLaserAdjustLf()
 
 		sData.Format(_T("%f"), pData[2]);
 		//pDoc->WorkingInfo.LastJob.sEngravePosOffsetX = sData;
-		pDoc->WorkingInfo.LastJob.sEngravePosOffsetX.Format(_T("%.3f"), pData[2]);
-
-		::WritePrivateProfileString(_T("Last Job"), _T("Engrave Offset X"), sData, PATH_WORKING_INFO);
+		//pDoc->WorkingInfo.LastJob.sEngravePosOffsetX.Format(_T("%.3f"), pData[2]);
+		//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Offset X"), sData, PATH_WORKING_INFO);
 	}
 
 	if (bOn)
@@ -3498,21 +3619,22 @@ void CDlgMenu02::OnBnClickedBtnLaserAdjustCw2()
 
 	CString sData;
 	GetDlgItem(IDC_STC_40)->GetWindowText(sData);
+	pDoc->WorkingInfo.LastJob.dEngravePosTheta -= _tstof(sData);
 
 	double pData[5]; // X_org,Y_org,X_offset,Y_offset,Theta_offset
-	pData[0] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgX);								// X_org
-	pData[1] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgY);								// Y_org
-	pData[2] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetX);						// X_offset
-	pData[3] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetY);						// Y_offset
-	pData[4] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosTheta) - _tstof(sData);			// Theta_offset
+	pData[0] = pDoc->WorkingInfo.LastJob.dEngraveOrgX;						// X_org
+	pData[1] = pDoc->WorkingInfo.LastJob.dEngraveOrgY;						// Y_org
+	pData[2] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetX;				// X_offset
+	pData[3] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetY;				// Y_offset
+	pData[4] = pDoc->WorkingInfo.LastJob.dEngravePosTheta;					// Theta_offset
 
 	if (pView->m_pMdx2500->SetLaserPos(pData))
 	{
 		WaitResponse();
 
-		sData.Format(_T("%f"), pData[4]);
-		pDoc->WorkingInfo.LastJob.sEngravePosTheta = sData;
-		::WritePrivateProfileString(_T("Last Job"), _T("Engrave Pos Theta"), sData, PATH_WORKING_INFO);
+		//sData.Format(_T("%f"), pData[4]);
+		//pDoc->WorkingInfo.LastJob.sEngravePosTheta = sData;
+		//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Pos Theta"), sData, PATH_WORKING_INFO);
 	}
 
 	if (bOn)
@@ -3535,22 +3657,22 @@ void CDlgMenu02::OnBnClickedBtnLaserAdjustCcw2()
 
 	CString sData;
 	GetDlgItem(IDC_STC_40)->GetWindowText(sData);
+	pDoc->WorkingInfo.LastJob.dEngravePosTheta += _tstof(sData);
 
 	double pData[5]; // X_org,Y_org,X_offset,Y_offset,Theta_offset
-	pData[0] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgX);								// X_org
-	pData[1] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgY);								// Y_org
-	pData[2] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetX);						// X_offset
-	pData[3] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetY);						// Y_offset
-	pData[4] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosTheta) + _tstof(sData);			// Theta_offset
-
+	pData[0] = pDoc->WorkingInfo.LastJob.dEngraveOrgX;						// X_org
+	pData[1] = pDoc->WorkingInfo.LastJob.dEngraveOrgY;						// Y_org
+	pData[2] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetX;				// X_offset
+	pData[3] = pDoc->WorkingInfo.LastJob.dEngravePosOffsetY;				// Y_offset
+	pData[4] = pDoc->WorkingInfo.LastJob.dEngravePosTheta;					// Theta_offset
 
 	if (pView->m_pMdx2500->SetLaserPos(pData))
 	{
 		WaitResponse();
 
-		sData.Format(_T("%f"), pData[4]);
-		pDoc->WorkingInfo.LastJob.sEngravePosTheta = sData;
-		::WritePrivateProfileString(_T("Last Job"), _T("Engrave Pos Theta"), sData, PATH_WORKING_INFO);
+		//sData.Format(_T("%f"), pData[4]);
+		//pDoc->WorkingInfo.LastJob.sEngravePosTheta = sData;
+		//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Pos Theta"), sData, PATH_WORKING_INFO);
 	}
 
 	if (bOn)
@@ -3785,3 +3907,209 @@ void CDlgMenu02::OnBnClickedBtnMoveInitOffset()
 		}
 	}
 }
+
+void CDlgMenu02::DispPlcSig()
+{
+	CString sEngSt, sRdSt;
+	CString sStepEng, sStepRd;
+
+	sEngSt.Format(_T("%d"), pDoc->BtnStatus.EngAuto.MkStF ? 1 : 0);
+	sStepEng.Format(_T("%d"), pView->m_nEngStAuto);
+	GetDlgItem(IDC_STATIC_ENG_ST)->SetWindowText(sEngSt);
+	GetDlgItem(IDC_STATIC_ENG_STEP)->SetWindowText(sStepEng);
+
+	sRdSt.Format(_T("%d"), pDoc->BtnStatus.EngAuto.Read2dStF ? 1 : 0);
+	sStepRd.Format(_T("%d"), pView->m_nEng2dStAuto);
+	GetDlgItem(IDC_STATIC_RD_ST)->SetWindowText(sRdSt);
+	GetDlgItem(IDC_STATIC_RD_STEP)->SetWindowText(sStepRd);
+}
+
+void CDlgMenu02::ShowDebugEngSig()
+{
+	if (pDoc->m_bUseDebugEngSig)
+	{
+		GetDlgItem(IDC_STATIC_1001)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_ENG_ST)->ShowWindow(SW_SHOW);
+
+		GetDlgItem(IDC_STATIC_1002)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_ENG_STEP)->ShowWindow(SW_SHOW);
+
+		GetDlgItem(IDC_STATIC_1003)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_RD_ST)->ShowWindow(SW_SHOW);
+
+		GetDlgItem(IDC_STATIC_1004)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_RD_STEP)->ShowWindow(SW_SHOW);
+
+		GetDlgItem(IDC_STATIC_1005)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_RD_START)->ShowWindow(SW_SHOW);
+
+		GetDlgItem(IDC_STATIC_1006)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_RD_ON)->ShowWindow(SW_SHOW);
+
+		GetDlgItem(IDC_STATIC_1007)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_RD_DONE)->ShowWindow(SW_SHOW);
+
+		GetDlgItem(IDC_STATIC_1008)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_ENG_START)->ShowWindow(SW_SHOW);
+
+		GetDlgItem(IDC_STATIC_1009)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_ENG_ON)->ShowWindow(SW_SHOW);
+
+		GetDlgItem(IDC_STATIC_1010)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_ENG_DONE)->ShowWindow(SW_SHOW);
+
+		GetDlgItem(IDC_STATIC_1011)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_STATIC_FD_DONE)->ShowWindow(SW_SHOW);
+	}
+	else
+	{
+		GetDlgItem(IDC_STATIC_1001)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_ENG_ST)->ShowWindow(SW_HIDE);
+
+		GetDlgItem(IDC_STATIC_1002)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_ENG_STEP)->ShowWindow(SW_HIDE);
+
+		GetDlgItem(IDC_STATIC_1003)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_RD_ST)->ShowWindow(SW_HIDE);
+
+		GetDlgItem(IDC_STATIC_1004)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_RD_STEP)->ShowWindow(SW_HIDE);
+
+		GetDlgItem(IDC_STATIC_1005)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_RD_START)->ShowWindow(SW_HIDE);
+
+		GetDlgItem(IDC_STATIC_1006)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_RD_ON)->ShowWindow(SW_HIDE);
+
+		GetDlgItem(IDC_STATIC_1007)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_RD_DONE)->ShowWindow(SW_HIDE);
+
+		GetDlgItem(IDC_STATIC_1008)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_ENG_START)->ShowWindow(SW_HIDE);
+
+		GetDlgItem(IDC_STATIC_1009)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_ENG_ON)->ShowWindow(SW_HIDE);
+
+		GetDlgItem(IDC_STATIC_1010)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_ENG_DONE)->ShowWindow(SW_HIDE);
+
+		GetDlgItem(IDC_STATIC_1011)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_STATIC_FD_DONE)->ShowWindow(SW_HIDE);
+	}
+}
+
+
+void CDlgMenu02::OnBnClickedBtnLaserPosSave()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	double pData[5]; // X_org,Y_org,X_offset,Y_offset,Theta_offset
+	CString sData;
+
+	BOOL bOn = myBtn[46].GetCheck();	// IDC_BTN_LASER_MARKING
+	if (bOn)
+	{
+		if (IDYES == pView->MsgBox(_T("2D 각인위치를 저장하시겠습니까?"), 0, MB_YESNO))
+		{
+			//// X_org,Y_org,X_offset,Y_offset,Theta_offset
+			//pDoc->WorkingInfo.LastJob.dEngraveOrgX += pDoc->WorkingInfo.LastJob.dEngravePosOffsetX;
+			//pDoc->WorkingInfo.LastJob.dEngraveOrgY += pDoc->WorkingInfo.LastJob.dEngravePosOffsetY;
+			//pDoc->WorkingInfo.LastJob.dEngravePosOffsetX = 0.0;
+			//pDoc->WorkingInfo.LastJob.dEngravePosOffsetY = 0.0;
+			////pDoc->WorkingInfo.LastJob.dEngravePosTheta;
+
+			//pDoc->WorkingInfo.LastJob.sEngraveOrgX.Format(_T("%.3f"), pDoc->WorkingInfo.LastJob.dEngraveOrgX);				// X_org
+			//pDoc->WorkingInfo.LastJob.sEngraveOrgY.Format(_T("%.3f"), pDoc->WorkingInfo.LastJob.dEngraveOrgY);				// Y_org
+			//pDoc->WorkingInfo.LastJob.sEngravePosOffsetX.Format(_T("%.3f"), pDoc->WorkingInfo.LastJob.dEngravePosOffsetX);	// X_offset
+			//pDoc->WorkingInfo.LastJob.sEngravePosOffsetY.Format(_T("%.3f"), pDoc->WorkingInfo.LastJob.dEngravePosOffsetY);	// Y_offset
+			//pDoc->WorkingInfo.LastJob.sEngravePosTheta.Format(_T("%.3f"), pDoc->WorkingInfo.LastJob.dEngravePosTheta);		// Theta_offset
+
+			//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Org X"), pDoc->WorkingInfo.LastJob.sEngraveOrgX, PATH_WORKING_INFO);
+			//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Org Y"), pDoc->WorkingInfo.LastJob.sEngraveOrgY, PATH_WORKING_INFO);
+			//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Offset X"), pDoc->WorkingInfo.LastJob.sEngravePosOffsetX, PATH_WORKING_INFO);
+			//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Offset Y"), pDoc->WorkingInfo.LastJob.sEngravePosOffsetY, PATH_WORKING_INFO);
+			//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Pos Theta"), pDoc->WorkingInfo.LastJob.sEngravePosTheta, PATH_WORKING_INFO);
+
+			//pData[0] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgX);								// X_org
+			//pData[1] = _tstof(pDoc->WorkingInfo.LastJob.sEngraveOrgY);								// Y_org
+			//pData[2] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetX);						// X_offset
+			//pData[3] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosOffsetY);						// Y_offset
+			//pData[4] = _tstof(pDoc->WorkingInfo.LastJob.sEngravePosTheta);							// Theta_offset
+
+			//if (pView->m_pMdx2500->SetLaserPos(pData))
+			//{
+			//	WaitResponse();
+			//}
+			myBtn[46].SetCheck(FALSE);	// IDC_BTN_LASER_POS_SAVE;
+		}
+		else
+		{
+			myBtn[46].SetCheck(FALSE);	// IDC_BTN_LASER_POS_SAVE;
+		}
+	}
+}
+
+void CDlgMenu02::SetLight2(int nVal)
+{
+	if (pView->m_pLight)
+	{
+		pView->m_pLight->Set(_tstoi(pDoc->WorkingInfo.Light.sCh[1]), nVal);
+
+		if (nVal)
+		{
+			if (!myBtn[47].GetCheck())
+				myBtn[47].SetCheck(TRUE);
+		}
+		else
+		{
+			if (myBtn[47].GetCheck())
+				myBtn[47].SetCheck(FALSE);
+		}
+
+		nVal = pView->m_pLight->Get(_tstoi(pDoc->WorkingInfo.Light.sCh[1]));
+
+		int nPos;
+		nPos = int(100.0*(1.0 - (nVal - 0.5) / 255.0));
+		m_LightSlider2.SetPos(nPos);
+		CString str;
+		str.Format(_T("%d"), nVal);
+		myStcData[31].SetText(str);
+
+		pDoc->WorkingInfo.Light.sVal[1] = str;
+		::WritePrivateProfileString(_T("Light1"), _T("LIGHT_VALUE"), str, pDoc->WorkingInfo.System.sPathEngCurrInfo);
+	}
+}
+
+
+void CDlgMenu02::ResetLight2()
+{
+	if (pView->m_pLight)
+	{
+		if (myBtn[47].GetCheck())
+			myBtn[47].SetCheck(FALSE);
+
+		pView->m_pLight->Reset(_tstoi(pDoc->WorkingInfo.Light.sCh[1]));
+	}
+}
+
+void CDlgMenu02::OnChkLtOn2()
+{
+	// TODO: Add your control notification handler code here
+	BOOL bOn = myBtn[47].GetCheck();
+	if (bOn)
+	{
+		myBtn[48].EnableWindow(TRUE);
+		GetDlgItem(IDC_SLD_LT2)->EnableWindow(TRUE);
+		myBtn[49].EnableWindow(TRUE);
+
+		SetLight2();
+	}
+	else
+	{
+		ResetLight2();
+
+		myBtn[48].EnableWindow(FALSE);
+		GetDlgItem(IDC_SLD_LT2)->EnableWindow(FALSE);
+		myBtn[49].EnableWindow(FALSE);
+	}
+}
+

@@ -150,6 +150,7 @@ int CDlgUser::ReadUserNameListFile()
 	}
 	else
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("파일이 존재하지 않습니다.\r\nC:\\R2RSet\\UserNameList.ini"));
 		//AfxMessageBox(_T("파일이 존재하지 않습니다.\r\nC:\\R2RSet\\UserNameList.ini"));
 	}
@@ -177,6 +178,7 @@ void CDlgUser::WriteUserNameListFile()
 	}
 	else
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("It is trouble to open UserNameList.ini"),MB_ICONWARNING|MB_OK);
 		//AfxMessageBox(_T("It is trouble to open UserNameList.ini"),MB_ICONWARNING|MB_OK);
 	}

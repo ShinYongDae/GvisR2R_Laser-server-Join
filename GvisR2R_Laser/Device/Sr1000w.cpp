@@ -124,6 +124,7 @@ int CSr1000w::OnClientReceived(WPARAM wParam, LPARAM lParam)
 			}
 			else
 			{
+				pView->SetErrorRead2dCode(_PcId::_Engrave);
 				pView->MsgBox(_T("Error-CheckResponse"));
 				//AfxMessageBox(_T("Error-CheckResponse"));
 			}
@@ -144,6 +145,7 @@ BOOL CSr1000w::CheckResponse(int nCmd, CString sResponse)
 	case SrTriggerInputOn:
 		if (nPos = sResponse.Find(_T("ERROR")) > 0)
 		{
+			pView->SetErrorRead2dCode(_PcId::_Engrave);
 			pView->MsgBox(_T("Error-Mdx response"));
 			//AfxMessageBox(_T("Error-Mdx response"));
 			m_strResponse = sResponse;
@@ -172,6 +174,7 @@ BOOL CSr1000w::DoRead2DCode()
 {
 	if (m_bWaitForResponse)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("Error - m_bWaitForResponse[ID_SR1000W] is TRUE."));
 		//AfxMessageBox(_T("Error - m_bWaitForResponse[ID_SR1000W] is TRUE."));
 		return FALSE;

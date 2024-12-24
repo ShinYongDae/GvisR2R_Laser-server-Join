@@ -42,6 +42,7 @@ void CYield::SetDef(int nSerial, int *pDef)	// int pDef[4];
 {
 	if(nSerial <= 0)
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("Serial Error.66"));
 		//AfxMessageBox(_T("Serial Error.66"));
 		return;

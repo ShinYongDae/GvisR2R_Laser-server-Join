@@ -52,6 +52,8 @@ BEGIN_MESSAGE_MAP(CDlgOption01, CDialog)
 	ON_BN_CLICKED(IDC_CHECK9, &CDlgOption01::OnBnClickedCheck9)
 	ON_BN_CLICKED(IDC_CHECK10, &CDlgOption01::OnBnClickedCheck10)
 	ON_BN_CLICKED(IDC_CHECK11, &CDlgOption01::OnBnClickedCheck11)
+	ON_BN_CLICKED(IDC_CHECK12, &CDlgOption01::OnBnClickedCheck12)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -62,17 +64,17 @@ void CDlgOption01::OnShowWindow(BOOL bShow, UINT nStatus)
 	CDialog::OnShowWindow(bShow, nStatus);
 
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
-	if (!m_pRect)
-	{
-		m_pRect = new CRect;
+	//if (!m_pRect)
+	//{
+	//	m_pRect = new CRect;
 
-		this->GetClientRect(m_pRect);
-		m_pRect->top = 375;
-		m_pRect->bottom += 375 + GetSystemMetrics(SM_CYSIZE);
-		m_pRect->left = 3;
-		m_pRect->right += 3;
-		this->MoveWindow(m_pRect, TRUE);
-	}
+	//	this->GetClientRect(m_pRect);
+	//	m_pRect->top = 375;
+	//	m_pRect->bottom += 375 + GetSystemMetrics(SM_CYSIZE);
+	//	m_pRect->left = 3;
+	//	m_pRect->right += 3;
+	//	this->MoveWindow(m_pRect, TRUE);
+	//}
 
 	if (bShow)
 	{
@@ -100,6 +102,7 @@ void CDlgOption01::AtDlgShow()
 
 	((CButton*)GetDlgItem(IDC_CHECK10))->SetCheck(pView->IsDispLotEnd());
 	((CButton*)GetDlgItem(IDC_CHECK11))->SetCheck(pView->IsDispContRun());
+	((CButton*)GetDlgItem(IDC_CHECK12))->SetCheck(pDoc->m_bUseDebugEngSig);
 }
 
 void CDlgOption01::AtDlgHide()
@@ -163,8 +166,23 @@ void CDlgOption01::OnBnClickedCheck11()
 	//}
 }
 
+void CDlgOption01::OnBnClickedCheck12()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	BOOL bOn = ((CButton*)GetDlgItem(IDC_CHECK12))->GetCheck();
+	pDoc->m_bUseDebugEngSig = bOn;
 
+	CString sData, sPath = pDoc->WorkingInfo.System.sPathEngCurrInfo;
+	if (bOn)
+		sData = _T("1");
+	else
+		sData = _T("0");
 
+	::WritePrivateProfileString(_T("Option"), _T("USE_DEBUG_ENG_SIG"), sData, sPath);
+
+	if (pView->m_pDlgMenu02)
+		pView->m_pDlgMenu02->ShowDebugEngSig();
+}
 
 void CDlgOption01::OnClose()
 {
@@ -183,5 +201,23 @@ void CDlgOption01::OnClose()
 }
 
 
+void CDlgOption01::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	if (nIDEvent == TIM_DISP_STS)
+	{
+		KillTimer(TIM_DISP_STS);
+		if (this->IsWindowVisible())
+		{
+			m_bTIM_DISP_STS = FALSE;
+		}
+		else
+		{
+			this->ShowWindow(SW_SHOW);
+		}
+		if (m_bTIM_DISP_STS)
+			SetTimer(TIM_DISP_STS, 100, NULL);
+	}
 
-
+	CDialog::OnTimer(nIDEvent);
+}

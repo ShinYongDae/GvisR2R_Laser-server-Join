@@ -27,7 +27,8 @@
 
 extern CMainFrame* pFrm;
 CGvisR2R_LaserDoc* pDoc;
-CString PATH_WORKING_INFO = _T("");
+CString PATH_WORKING_INFO = _T(""); // 펀칭부의 WorkingInfo.ini
+
 extern CGvisR2R_LaserView* pView;
 
 // CGvisR2R_LaserDoc
@@ -48,6 +49,8 @@ CGvisR2R_LaserDoc::CGvisR2R_LaserDoc()
 	m_strUserNameList = _T("");
 	m_AlignOffset.x = 0.0;
 	m_AlignOffset.y = 0.0;
+	m_TotalAlignOffset.x = 0.0;
+	m_TotalAlignOffset.y = 0.0;
 
 	m_bLoadMstInfo[0] = FALSE;
 	m_bLoadMstInfo[1] = FALSE;
@@ -189,6 +192,7 @@ CGvisR2R_LaserDoc::CGvisR2R_LaserDoc()
 	m_dShiftAdjustRatio = 0.0;
 	m_bUseAdjustLaser = FALSE;
 	m_bUseSkipError2dCode = FALSE;
+	m_bUseDebugEngSig = FALSE;
 	m_nSkipError2dCode = 3; // Default
 
 	m_nTestOrderNum = 0;
@@ -246,11 +250,18 @@ CGvisR2R_LaserDoc::CGvisR2R_LaserDoc()
 	m_sLayerDn = _T("");
 	m_nWritedItsSerial = 0;
 
+	SetCurrentInfoSignal(_SigInx::_MyMsgYes, FALSE);
+	SetCurrentInfoSignal(_SigInx::_MyMsgNo, FALSE);
+	SetCurrentInfoSignal(_SigInx::_MyMsgOk, FALSE);
 }
 
 CGvisR2R_LaserDoc::~CGvisR2R_LaserDoc()
 {
 	int k, i;
+
+	SetCurrentInfoSignal(_SigInx::_MyMsgYes, FALSE);
+	SetCurrentInfoSignal(_SigInx::_MyMsgNo, FALSE);
+	SetCurrentInfoSignal(_SigInx::_MyMsgOk, FALSE);
 
 	if (m_pFile)
 	{
@@ -1368,6 +1379,13 @@ BOOL CGvisR2R_LaserDoc::LoadWorkingInfo()
 	else
 		m_bUseSkipError2dCode = FALSE;
 
+	if (0 < ::GetPrivateProfileString(_T("Option"), _T("USE_DEBUG_ENG_SIG"), NULL, szData, sizeof(szData), WorkingInfo.System.sPathEngCurrInfo))
+	{
+		m_bUseDebugEngSig = (BOOL)(_ttoi(szData) ? TRUE : FALSE);
+	}
+	else
+		m_bUseDebugEngSig = FALSE;
+
 	if (0 < ::GetPrivateProfileString(_T("Option"), _T("NUM_SKIP_ERROR_2DCODE"), NULL, szData, sizeof(szData), WorkingInfo.System.sPathEngCurrInfo))
 	{
 		m_nSkipError2dCode = _ttoi(szData);
@@ -1381,23 +1399,38 @@ BOOL CGvisR2R_LaserDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sModelUp = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Current Model Up이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
-		WorkingInfo.LastJob.sModelUp = CString(_T(""));
+		if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Model Name"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
+			WorkingInfo.LastJob.sModelUp = CString(szData);
+		else
+		{
+			AfxMessageBox(_T("Current Model Up이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+			WorkingInfo.LastJob.sModelUp = CString(_T(""));
+		}
 	}
 	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("ModelDn Name"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
 		WorkingInfo.LastJob.sModelDn = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Current Model Dn이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
-		WorkingInfo.LastJob.sModelDn = CString(_T(""));
+		if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Model Name"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
+			WorkingInfo.LastJob.sModelDn = CString(szData);
+		else
+		{
+			AfxMessageBox(_T("Current Model Dn이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+			WorkingInfo.LastJob.sModelDn = CString(_T(""));
+		}
 	}
 
 	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("LotUp No"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
 		m_sLotNum = WorkingInfo.LastJob.sLotUp = WorkingInfo.LastJob.sLotDn = CString(szData);
 	else
 	{
-		AfxMessageBox(_T("Current Lot가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
-		m_sLotNum = WorkingInfo.LastJob.sLotUp = WorkingInfo.LastJob.sLotDn = CString(_T(""));
+		if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Lot No"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
+			m_sLotNum = WorkingInfo.LastJob.sLotUp = WorkingInfo.LastJob.sLotDn = CString(szData);
+		else
+		{
+			AfxMessageBox(_T("Current Lot가 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+			m_sLotNum = WorkingInfo.LastJob.sLotUp = WorkingInfo.LastJob.sLotDn = CString(_T(""));
+		}
 	}
 
 	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("LayerUp Name"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
@@ -1665,9 +1698,9 @@ BOOL CGvisR2R_LaserDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.bUseAoiDnCleanRoler = TRUE;
 
 	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Engrave Its Code"), NULL, szData, sizeof(szData), sPath))
-		m_sOrderNum = WorkingInfo.LastJob.sEngItsCode = CString(szData);
+		m_sItsCode = m_sOrderNum = WorkingInfo.LastJob.sEngItsCode = CString(szData);
 	else
-		m_sOrderNum = WorkingInfo.LastJob.sEngItsCode = _T("");
+		m_sItsCode = m_sOrderNum = WorkingInfo.LastJob.sEngItsCode = _T("");
 
 	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Light On"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.LastJob.bLightOn = _ttoi(szData) ? TRUE : FALSE;
@@ -1787,7 +1820,7 @@ BOOL CGvisR2R_LaserDoc::LoadWorkingInfo()
 	else
 		WorkingInfo.LastJob.sEngraveLastShot = _T("");
 
-	m_sOrderNum = m_sTestOrderNum = WorkingInfo.LastJob.sEngraveOrderNum;
+	m_sItsCode = m_sOrderNum = m_sTestOrderNum = WorkingInfo.LastJob.sEngraveOrderNum;
 	m_sShotNum = m_sTestShotNum = WorkingInfo.LastJob.sEngraveLastShot;
 
 	//Engrave Position : X_org,Y_org,X_offset,Y_offset,Theta_offset
@@ -1815,6 +1848,14 @@ BOOL CGvisR2R_LaserDoc::LoadWorkingInfo()
 		WorkingInfo.LastJob.sEngravePosTheta = CString(szData);
 	else
 		WorkingInfo.LastJob.sEngravePosTheta = _T("");
+
+
+	WorkingInfo.LastJob.dEngraveOrgX = _tstof(WorkingInfo.LastJob.sEngraveOrgX);					// X_org
+	WorkingInfo.LastJob.dEngraveOrgY = _tstof(WorkingInfo.LastJob.sEngraveOrgY);					// Y_org
+	WorkingInfo.LastJob.dEngravePosOffsetX = _tstof(WorkingInfo.LastJob.sEngravePosOffsetX);		// X_offset
+	WorkingInfo.LastJob.dEngravePosOffsetY = _tstof(WorkingInfo.LastJob.sEngravePosOffsetY);		// Y_offset
+	WorkingInfo.LastJob.dEngravePosTheta = _tstof(WorkingInfo.LastJob.sEngravePosTheta);			// Theta_offset
+
 
 	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Align Methode"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.LastJob.nAlignMethode = _ttoi(szData);
@@ -2437,6 +2478,24 @@ BOOL CGvisR2R_LaserDoc::LoadWorkingInfo()
 	{
 		AfxMessageBox(_T("조명0의 통신 밝기값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
 		WorkingInfo.Light.sVal[0] = CString(_T(""));
+	}
+
+	// [Light1]
+
+	if (0 < ::GetPrivateProfileString(_T("Light1"), _T("LIGHT_CHANNEL"), NULL, szData, sizeof(szData), WorkingInfo.System.sPathEngCurrInfo))
+		WorkingInfo.Light.sCh[1] = CString(szData);
+	else
+	{
+		AfxMessageBox(_T("조명1의 Channel이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.Light.sCh[1] = CString(_T(""));
+	}
+
+	if (0 < ::GetPrivateProfileString(_T("Light1"), _T("LIGHT_VALUE"), NULL, szData, sizeof(szData), WorkingInfo.System.sPathEngCurrInfo))
+		WorkingInfo.Light.sVal[1] = CString(szData);
+	else
+	{
+		AfxMessageBox(_T("조명1의 통신 밝기값이 설정되어 있지 않습니다."), MB_ICONWARNING | MB_OK);
+		WorkingInfo.Light.sVal[1] = CString(_T(""));
 	}
 
 	// [Vision0]
@@ -3444,6 +3503,13 @@ void CGvisR2R_LaserDoc::SaveWorkingInfo()
 	sData = WorkingInfo.Light.sVal[0];
 	::WritePrivateProfileString(_T("Light0"), _T("LIGHT_VALUE"), sData, WorkingInfo.System.sPathEngCurrInfo);
 
+	// [Light1]
+	sData = WorkingInfo.Light.sCh[1];
+	::WritePrivateProfileString(_T("Light1"), _T("LIGHT_CHANNEL"), sData, WorkingInfo.System.sPathEngCurrInfo);
+
+	sData = WorkingInfo.Light.sVal[1];
+	::WritePrivateProfileString(_T("Light1"), _T("LIGHT_VALUE"), sData, WorkingInfo.System.sPathEngCurrInfo);
+
 	// [Vision0]
 	sData = WorkingInfo.Vision[0].sPinImgSz;
 	::WritePrivateProfileString(_T("Vision0"), _T("PIN_IMG_SIZE"), sData, WorkingInfo.System.sPathEngCurrInfo);
@@ -4082,6 +4148,7 @@ BOOL CGvisR2R_LaserDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 
 	if (Status.PcrShare[0].sModel.IsEmpty() || Status.PcrShare[0].sLayer.IsEmpty() || Status.PcrShare[0].sLot.IsEmpty())
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("Error - Aoi Information."));
 		return FALSE;
 	}
@@ -4245,6 +4312,7 @@ BOOL CGvisR2R_LaserDoc::GetAoiInfoDn(int nSerial, int *pNewLot, BOOL bFromBuf) /
 
 	if (Status.PcrShare[1].sModel.IsEmpty() || Status.PcrShare[1].sLayer.IsEmpty() || Status.PcrShare[1].sLot.IsEmpty())
 	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("Error - Aoi Information."));
 		return FALSE;
 	}
@@ -7628,14 +7696,19 @@ void CGvisR2R_LaserDoc::UpdateProcessNum(CString sProcessNum)
 {
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
-	pDoc->m_pReelMapUp->UpdateProcessNum(sProcessNum, 0); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+	if (pDoc->m_pReelMapUp)
+		pDoc->m_pReelMapUp->UpdateProcessNum(sProcessNum, 0); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
 	if (bDualTest)
 	{
-		pDoc->m_pReelMapDn->UpdateProcessNum(sProcessNum, 1); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
-		pDoc->m_pReelMapAllUp->UpdateProcessNum(sProcessNum, 2); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
-		pDoc->m_pReelMapAllDn->UpdateProcessNum(sProcessNum, 3); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+		if (pDoc->m_pReelMapDn)
+			pDoc->m_pReelMapDn->UpdateProcessNum(sProcessNum, 1); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+		if (pDoc->m_pReelMapAllUp)
+			pDoc->m_pReelMapAllUp->UpdateProcessNum(sProcessNum, 2); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+		if (pDoc->m_pReelMapAllDn)
+			pDoc->m_pReelMapAllDn->UpdateProcessNum(sProcessNum, 3); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
 	}
-	pDoc->m_pReelMap->UpdateProcessNum(sProcessNum, pView->m_nSelRmap); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
+	if (pDoc->m_pReelMap)
+		pDoc->m_pReelMap->UpdateProcessNum(sProcessNum, pView->m_nSelRmap); // [0]:AOI-Up , [1]:AOI-Dn , [2]:AOI-AllUp , [3]:AOI-AllDn
 }
 
 void CGvisR2R_LaserDoc::SetProbWaitPos(int nProb, double dPos)
@@ -8096,12 +8169,12 @@ void CGvisR2R_LaserDoc::CheckCurrentInfo()
 
 	strFolder.Format(_T("%sCurrentInfo.ini"), m_strSharedDir);
 
-	if (0 < ::GetPrivateProfileString(_T("Infomation"), _T("Process Unit Code"), NULL, szData, sizeof(szData), strFolder))
+	if (0 < ::GetPrivateProfileString(_T("Infomation"), _T("Its Code"), NULL, szData, sizeof(szData), strFolder))
 	{
 		strTemp = CString(szData);
-		if (strTemp != m_sOrderNum)
+		if (strTemp != m_sItsCode)
 		{
-			m_sOrderNum = strTemp;
+			m_sItsCode = m_sOrderNum = strTemp;
 		}
 	}
 
@@ -8166,7 +8239,7 @@ BOOL CGvisR2R_LaserDoc::SetEngOffset(CfPoint &OfSt)
 	strTitle.Format(_T("OFFSET"));
 
 	strMenu.Format(_T("ALIGN X"));
-	strData.Format(_T("%.3f"), dOffX*1.75);
+	strData.Format(_T("%.3f"), dOffX*1.0);
 	::WritePrivateProfileString(strTitle, strMenu, strData, sPath);
 
 	strMenu.Format(_T("ALIGN Y"));
@@ -8177,16 +8250,21 @@ BOOL CGvisR2R_LaserDoc::SetEngOffset(CfPoint &OfSt)
 }
 
 
-void CGvisR2R_LaserDoc::SetCurrentInfoSignal(int nIdxSig, BOOL bOn)
+void CGvisR2R_LaserDoc::SetCurrentInfoSignal(int nMsgID, BOOL bOn)
 {
 	CString sData, sIdx, sPath = WorkingInfo.System.sPathEngSignalInfo;
 
 	if (sPath.IsEmpty())
 		return;
 
-	sIdx.Format(_T("%d"), nIdxSig);
+	sIdx.Format(_T("%d"), nMsgID);
 	sData.Format(_T("%d"), bOn ? 1 : 0);
 	::WritePrivateProfileString(_T("Signal"), sIdx, sData, sPath);
+
+	if (nMsgID == _SigInx::_MyMsgYes || nMsgID == _SigInx::_MyMsgNo || nMsgID == _SigInx::_MyMsgOk)
+		return;
+
+	pView->CheckCurrentInfoSignal(nMsgID, (bOn ? 1 : 0));
 }
 
 int CGvisR2R_LaserDoc::GetCurrentInfoEngShotNum()
@@ -8197,7 +8275,21 @@ int CGvisR2R_LaserDoc::GetCurrentInfoEngShotNum()
 	if (sPath.IsEmpty())
 		return 0;
 
-	if (0 < ::GetPrivateProfileString(_T("Work"), _T("Shot Num"), NULL, szData, sizeof(szData), sPath))
+	if (0 < ::GetPrivateProfileString(_T("Work"), _T("Eng Shot Num"), NULL, szData, sizeof(szData), sPath))
+		return _ttoi(szData);
+
+	return 0;
+}
+
+int CGvisR2R_LaserDoc::GetCurrentInfoReadShotNum()
+{
+	CString sData, sIdx, sPath = WorkingInfo.System.sPathEngCurrInfo;
+	TCHAR szData[200];
+
+	if (sPath.IsEmpty())
+		return 0;
+
+	if (0 < ::GetPrivateProfileString(_T("Work"), _T("Read Shot Num"), NULL, szData, sizeof(szData), sPath))
 		return _ttoi(szData);
 
 	return 0;
@@ -8211,11 +8303,22 @@ void CGvisR2R_LaserDoc::SetCurrentInfoEngShotNum(int nSerial)
 		return;
 
 	sData.Format(_T("%d"), nSerial);
-	::WritePrivateProfileString(_T("Work"), _T("Shot Num"), sData, sPath);
+	::WritePrivateProfileString(_T("Work"), _T("Eng Shot Num"), sData, sPath);
+}
+
+void CGvisR2R_LaserDoc::SetCurrentInfoReadShotNum(int nSerial)
+{
+	CString sData, sIdx, sPath = WorkingInfo.System.sPathEngCurrInfo;
+
+	if (sPath.IsEmpty())
+		return;
+
+	sData.Format(_T("%d"), nSerial);
+	::WritePrivateProfileString(_T("Work"), _T("Read Shot Num"), sData, sPath);
 }
 
 
-BOOL CGvisR2R_LaserDoc::GetCurrentInfoSignal(int nIdxSig)
+BOOL CGvisR2R_LaserDoc::GetCurrentInfoSignal(int nMsgID)
 {
 	TCHAR szData[200];
 	CString sData, sIdx, sPath = WorkingInfo.System.sPathMkSignalInfo;
@@ -8223,9 +8326,21 @@ BOOL CGvisR2R_LaserDoc::GetCurrentInfoSignal(int nIdxSig)
 	if (sPath.IsEmpty())
 		return FALSE;
 
-	sIdx.Format(_T("%d"), nIdxSig);
-	if (0 < ::GetPrivateProfileString(_T("Signal"), sIdx, NULL, szData, sizeof(szData), sPath))
-		return (_ttoi(szData) > 0 ? TRUE : FALSE);
+	CString sMsg;
+
+	CFileFind finder;
+	if (finder.FindFile(sPath))
+	{
+		sIdx.Format(_T("%d"), nMsgID);
+		if (0 < ::GetPrivateProfileString(_T("Signal"), sIdx, NULL, szData, sizeof(szData), sPath))
+			return (_ttoi(szData) > 0 ? TRUE : FALSE);
+	}
+	else
+	{
+		sMsg.Format(_T("%s파일의 Signal에 인덱스 정보가 없습니다."), sPath);
+		pView->ClrDispMsg();
+		AfxMessageBox(sMsg);
+	}
 
 	return FALSE;
 }
@@ -10171,6 +10286,7 @@ int CGvisR2R_LaserDoc::LoadPCRIts(int nSerial, BOOL bFromShare)	// return : 2(Fa
 	if (!m_pPcrIts)
 	{
 		pView->ClrDispMsg();
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("PCR[2]관련 메모리가 할당되지 않았습니다."));
 		return(2);
 	}
@@ -10600,6 +10716,7 @@ void CGvisR2R_LaserDoc::LoadPCRIts00(int nSerial) // 10 -> 외층 : 단면, 내층 : �
 	return;
 
 	pView->ClrDispMsg();
+	pView->SetErrorRead2dCode(_PcId::_Engrave);
 	pView->MsgBox(_T("LoadPCRIts00 - 내외층 모두 단면인 경우는 프로그램이 없습니다."));
 	return;
 }

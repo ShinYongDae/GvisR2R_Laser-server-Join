@@ -1,5 +1,7 @@
 #pragma once
 
+#define TIM_DISP_STS				450
+
 
 // CDlgOption01 대화 상자입니다.
 
@@ -8,6 +10,7 @@ class CDlgOption01 : public CDialog
 	//DECLARE_DYNAMIC(CDlgOption01)
 
 	CRect* m_pRect;
+	BOOL m_bTIM_DISP_STS;
 
 	BOOL Create();
 	void AtDlgShow();
@@ -33,4 +36,6 @@ public:
 	afx_msg void OnBnClickedCheck9();
 	afx_msg void OnBnClickedCheck10();
 	afx_msg void OnBnClickedCheck11();
+	afx_msg void OnBnClickedCheck12();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

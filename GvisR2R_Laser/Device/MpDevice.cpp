@@ -28,9 +28,12 @@ CMpDevice::CMpDevice(CWnd* pParent)
 #ifdef USE_MPE
 	m_hController = 0;	
 #endif
-	if(!Create(NULL, _T("MPE"), WS_CHILD, CRect(0,0,0,0), m_pParent, (UINT)this))
+	if (!Create(NULL, _T("MPE"), WS_CHILD, CRect(0, 0, 0, 0), m_pParent, (UINT)this))
+	{
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		pView->MsgBox(_T("CMpDevice::Create() Failed!!!"));
 		//AfxMessageBox(_T("CMpDevice::Create() Failed!!!"));
+	}
 }
 
 CMpDevice::~CMpDevice()

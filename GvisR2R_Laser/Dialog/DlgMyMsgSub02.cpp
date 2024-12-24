@@ -157,7 +157,10 @@ LRESULT CDlgMyMsgSub02::OnMyBtnDown(WPARAM wPara, LPARAM lPara)
 	{
 	case IDC_BTN_00: // Ok...
 		if (pView && pView->m_pEngrave)
-			pView->m_pEngrave->SetMyMsgOk();	//_SigInx::_MyMsgYes
+		{
+			pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgOk, TRUE);
+			//pView->m_pEngrave->SetMyMsgOk();	//_SigInx::_MyMsgOk
+		}
 		break;
 	}
 	return 0L;
@@ -262,6 +265,9 @@ BOOL CDlgMyMsgSub02::OnInitDialog()
 	InitEdit();
 	InitBtn();
 
+	m_bTIM_DISP_STS = TRUE;
+	SetTimer(TIM_DISP_STS, 100, NULL);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -326,6 +332,20 @@ void CDlgMyMsgSub02::KillFocus(int nID)
 void CDlgMyMsgSub02::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
+	if (nIDEvent == TIM_DISP_STS)
+	{
+		KillTimer(TIM_DISP_STS);
+		if (this->IsWindowVisible())
+		{
+			m_bTIM_DISP_STS = FALSE;
+		}
+		else
+		{
+			this->ShowWindow(SW_SHOW);
+		}
+		if (m_bTIM_DISP_STS)
+			SetTimer(TIM_DISP_STS, 100, NULL);
+	}
 
 	CDialog::OnTimer(nIDEvent);
 }

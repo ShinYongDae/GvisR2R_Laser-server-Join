@@ -236,6 +236,7 @@ BOOL CMyFileErrMap::LoadX(int nRow, int nIdx, CString sPath)
 			nIdx++;
 		}
 
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		//AfxMessageBox(_T("Error - Open FileErrMap X!!!"));
 		pView->MsgBox(_T("Error - Open FileErrMap X!!!"));
 
@@ -295,6 +296,7 @@ BOOL CMyFileErrMap::LoadY(int nRow, int nIdx, CString sPath)
 			nIdx++;
 		}
 
+		pView->SetErrorRead2dCode(_PcId::_Engrave);
 		//AfxMessageBox(_T("Error - Open FileErrMap Y!!!"));
 		pView->MsgBox(_T("Error - Open FileErrMap Y!!!"));
 

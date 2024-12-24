@@ -35,12 +35,14 @@ CDlgMyMsgSub01::CDlgMyMsgSub01(CWnd* pParent, int nIDD)
 	m_pParent = pParent;
 	m_pRect = NULL;
 	m_bLoadImg = FALSE;
-	
+	m_bTIM_DISP_STS = FALSE;
+
 	StartThread();	
 }
 
 CDlgMyMsgSub01::~CDlgMyMsgSub01()
 {
+	m_bTIM_DISP_STS = FALSE;
 	StopThread();
 
 	while(m_bThreadAlive)
@@ -156,13 +158,19 @@ LRESULT CDlgMyMsgSub01::OnMyBtnDown(WPARAM wPara, LPARAM lPara)
 	case IDC_BTN_00: // Yes
 #ifdef USE_ENGRAVE
 		if (pView && pView->m_pEngrave)
-			pView->m_pEngrave->SetMyMsgYes();	//_SigInx::_MyMsgYes
+		{
+			pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgYes, TRUE);
+			//pView->m_pEngrave->SetMyMsgYes();	//_SigInx::_MyMsgYes
+		}
 #endif
 		break;
 	case IDC_BTN_01: // No
 #ifdef USE_ENGRAVE
 		if (pView && pView->m_pEngrave)
-			pView->m_pEngrave->SetMyMsgNo();	//_SigInx::_MyMsgNo
+		{
+			pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgNo, TRUE);
+			//pView->m_pEngrave->SetMyMsgNo();	//_SigInx::_MyMsgNo
+		}
 #endif
 		break;
 	}
@@ -293,7 +301,10 @@ BOOL CDlgMyMsgSub01::OnInitDialog()
 	InitPic();
 	InitEdit();
 	InitBtn();
-	
+
+	m_bTIM_DISP_STS = TRUE;
+	SetTimer(TIM_DISP_STS, 100, NULL);
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -363,6 +374,21 @@ void CDlgMyMsgSub01::KillFocus(int nID)
 void CDlgMyMsgSub01::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
+	if (nIDEvent == TIM_DISP_STS)
+	{
+		KillTimer(TIM_DISP_STS);
+		if (this->IsWindowVisible())
+		{
+			m_bTIM_DISP_STS = FALSE;
+		}
+		else
+		{
+			this->ShowWindow(SW_SHOW);
+		}
+		if (m_bTIM_DISP_STS)
+			SetTimer(TIM_DISP_STS, 100, NULL);
+	}
+
 
 	CDialog::OnTimer(nIDEvent);
 }

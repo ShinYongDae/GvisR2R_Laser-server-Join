@@ -12,13 +12,14 @@
 #include "MyStatic.h"
 #include "MyGL.h"
 #include "../Global/MyData.h"
+#include "afxcmn.h"
 
 #define MAX_MENU02_LABEL			7
 
-#define MAX_MENU02_LBL				(14)
-#define MAX_MENU02_STC				(23+14+2+7+7)
-#define MAX_MENU02_STC_DATA			(10+10+5+1+2+3)
-#define MAX_MENU02_BTN				(22+6+5+6+1+4+1+1)
+#define MAX_MENU02_LBL				(21)
+#define MAX_MENU02_STC				(53)
+#define MAX_MENU02_STC_DATA			(32)
+#define MAX_MENU02_BTN				(50)
 
 #define MAX_MENU02_STC_DUO			15
 #define MAX_MENU02_STC_DATA_DUO		17
@@ -30,11 +31,14 @@
 #define TIM_MARKING_OFF				203
 #define TIM_SHOW_MK_TEST			206
 
-#define TIM_2D_READING				207
+#define TIM_PLC_SIG				207
 #define TIM_TEST_2D_READING			208
 #define TIM_MDX_RESPONSE			209
 #define TIM_MDX_READY				210
 #define TIM_MDX_READY_CHECK			211
+
+#define TIM_LIGHT_UP2				212
+#define TIM_LIGHT_DN2				213
 
 #define TIM_MPE_OFFSET_INITPOS_MOVE			220
 
@@ -59,7 +63,8 @@ class CDlgMenu02 : public CDialog
 	BOOL m_bLoadImg, m_bLockTimer;
 
 	BOOL m_bTIM_LIGHT_UP, m_bTIM_LIGHT_DN, m_bTIM_BUF_ENC;
-	BOOL m_bTIM_2D_READING, m_bTIM_TEST_2D_READING;
+	BOOL m_bTIM_LIGHT_UP2, m_bTIM_LIGHT_DN2;
+	BOOL m_bTIM_PLC_SIG, m_bTIM_TEST_2D_READING;
 	BOOL m_bTIM_MDX_READY, m_bTIM_MDX_READY_CHECK, m_bTIM_MDX_RESPONSE;
 	BOOL m_bTIM_MPE_OFFSET_INITPOS_MOVE;
 	double m_dStOffsetX, m_dStOffsetY;
@@ -143,6 +148,10 @@ public:
 	//BOOL TwoPointAlign(int nPos);
 	//BOOL TwoPointAlign0(int nPos);
 
+
+	void SetLight2(int nVal = -1);
+	void ResetLight2();
+
 	afx_msg LRESULT OnMyBtnDown(WPARAM wPara, LPARAM lPara);
 	afx_msg LRESULT OnMyBtnUp(WPARAM wPara, LPARAM lPara);
 
@@ -179,10 +188,14 @@ public:
 	void UpdateData();
 	void SetLed(int nIdx, BOOL bOn=TRUE);
 
+	void DispPlcSig();
+	void ShowDebugEngSig();
+
 // Dialog Data
 	//{{AFX_DATA(CDlgMenu02)
 	enum { IDD = IDD_DLG_MENU_02 };
 	CSliderCtrl	m_LightSlider;
+	CSliderCtrl m_LightSlider2;
 	//}}AFX_DATA
 
 
@@ -203,6 +216,7 @@ protected:
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	virtual BOOL OnInitDialog();
 	afx_msg void OnChkLtOn();
+	afx_msg void OnChkLtOn2();
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);// (UINT nIDEvent);
 	afx_msg void OnChkJogVf();
@@ -264,6 +278,7 @@ public:
 	afx_msg void OnStnClickedStc52();
 	afx_msg void OnStnClickedStc55();
 	afx_msg void OnBnClickedBtnMoveInitOffset();
+	afx_msg void OnBnClickedBtnLaserPosSave();
 };
 
 //{{AFX_INSERT_LOCATION}}

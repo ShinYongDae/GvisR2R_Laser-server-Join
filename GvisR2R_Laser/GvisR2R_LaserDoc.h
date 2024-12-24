@@ -29,7 +29,7 @@ protected: // serialization에서만 만들어집니다.
 
 // 특성입니다.
 public:
-	CfPoint m_AlignOffset; 
+	CfPoint m_AlignOffset, m_TotalAlignOffset; 
 	int m_nDelayShow;
 	BOOL m_bBufEmpty[2]; // [0]: Up, [1]: Dn
 	BOOL m_bBufEmptyF[2]; // [0]: Up, [1]: Dn
@@ -38,7 +38,7 @@ public:
 	// R2R Y Meander Adjusting....
 	BOOL m_bUseRTRYShiftAdjust;
 	double m_dRTRShiftVal;
-	BOOL m_bUseAdjustLaser, m_bUseSkipError2dCode;
+	BOOL m_bUseAdjustLaser, m_bUseSkipError2dCode, m_bUseDebugEngSig;
 	double m_dShiftAdjustRatio;
 	int m_nSkipError2dCode;
 
@@ -425,9 +425,11 @@ public:
 	int GetCurrentInfoTestMode();
 	void SetCurrentInfoTestMode(int nMode);
 	int GetCurrentInfoEngShotNum();
+	int GetCurrentInfoReadShotNum();
 	void SetCurrentInfoEngShotNum(int nSerial);
-	BOOL GetCurrentInfoSignal(int nIdxSig);
-	void SetCurrentInfoSignal(int nIdxSig, BOOL bOn);
+	void SetCurrentInfoReadShotNum(int nSerial);
+	BOOL GetCurrentInfoSignal(int nMsgID);
+	void SetCurrentInfoSignal(int nMsgID, BOOL bOn);
 
 	CString GetMonDispMain();
 	void SetMonDispMain(CString sDisp);
