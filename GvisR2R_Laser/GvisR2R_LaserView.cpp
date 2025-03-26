@@ -11531,7 +11531,7 @@ void CGvisR2R_LaserView::InitAutoEng()
 // DoAuto
 void CGvisR2R_LaserView::DoAutoEng()
 {
-	if (!IsAuto() || (MODE_INNER != pDoc->WorkingInfo.LastJob.nTestMode) || m_bJobEnd)
+	if (!IsAuto() || (MODE_INNER != pDoc->WorkingInfo.LastJob.nTestMode && MODE_LASER != pDoc->WorkingInfo.LastJob.nTestMode) || m_bJobEnd)
 		return;
 
 	CString str;
@@ -11703,7 +11703,7 @@ void CGvisR2R_LaserView::DoAtuoGet2dReadStSignal()
 
 void CGvisR2R_LaserView::DoAuto2dReading()
 {
-	if (MODE_INNER == pDoc->WorkingInfo.LastJob.nTestMode)// || MODE_OUTER == pDoc->WorkingInfo.LastJob.nTestMode)
+	if (MODE_INNER == pDoc->WorkingInfo.LastJob.nTestMode || MODE_LASER == pDoc->WorkingInfo.LastJob.nTestMode)// || MODE_OUTER == pDoc->WorkingInfo.LastJob.nTestMode)
 	{
 		Eng2dRead();
 	}
@@ -11714,7 +11714,7 @@ void CGvisR2R_LaserView::DoAuto2dReading()
 // DoAutoMarking
 void CGvisR2R_LaserView::DoAutoMarking()
 {
-	if (MODE_INNER == pDoc->WorkingInfo.LastJob.nTestMode)
+	if (MODE_INNER == pDoc->WorkingInfo.LastJob.nTestMode || MODE_LASER == pDoc->WorkingInfo.LastJob.nTestMode)
 	{
 		MarkingWith1PointAlign();
 	}
@@ -13663,7 +13663,7 @@ void CGvisR2R_LaserView::ChkErrorRead2dCode()
 {
 	if (IsAuto())
 	{
-		if (MODE_INNER == pDoc->WorkingInfo.LastJob.nTestMode || MODE_OUTER == pDoc->WorkingInfo.LastJob.nTestMode)
+		if (MODE_INNER == pDoc->WorkingInfo.LastJob.nTestMode || MODE_LASER == pDoc->WorkingInfo.LastJob.nTestMode)
 		{
 			if (pDoc->GetSignalAoiUp())
 			{
