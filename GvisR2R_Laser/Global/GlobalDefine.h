@@ -653,6 +653,7 @@ struct stSystem
 	BOOL bSaveMkImg;
 	BOOL bStripPcsRgnBin;
 	BOOL bUseDTS;
+	BOOL bUseDualIts, bUseDual2dIts;
 
 	stSystem()
 	{
@@ -692,6 +693,8 @@ struct stSystem
 		bSaveMkImg = FALSE;
 		bStripPcsRgnBin = FALSE;
 		bUseDTS = FALSE;
+		bUseDualIts = FALSE;
+		bUseDual2dIts = FALSE;
 	}
 };
 

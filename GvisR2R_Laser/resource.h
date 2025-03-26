@@ -1105,7 +1105,6 @@
 #define IDC_STC_DEF_13                  1430
 #define IDC_CHK_USE_AOI_DUAL_ITS        1430
 #define IDC_STC_DEF_14                  1431
-#define IDC_CHK_USE_AOI_DUAL_ITS2       1431
 #define IDC_CHK_USE_AOI_DUAL_2D_ITS     1431
 #define IDC_STC_DEF_15                  1432
 #define IDC_STC_DEF_16                  1433

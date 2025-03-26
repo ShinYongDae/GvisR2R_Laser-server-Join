@@ -109,6 +109,8 @@ BEGIN_MESSAGE_MAP(CDlgInfo, CDialog)
 	ON_BN_CLICKED(IDC_CHK_1188, &CDlgInfo::OnBnClickedChk1188)
 	ON_STN_CLICKED(IDC_STC_36, &CDlgInfo::OnStnClickedStc36)
 	ON_STN_CLICKED(IDC_STC_17, &CDlgInfo::OnStnClickedStc17)
+	ON_BN_CLICKED(IDC_CHK_USE_AOI_DUAL_ITS, &CDlgInfo::OnBnClickedChkUseAoiDualIts)
+	ON_BN_CLICKED(IDC_CHK_USE_AOI_DUAL_2D_ITS, &CDlgInfo::OnBnClickedChkUseAoiDual2dIts)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -313,11 +315,19 @@ void CDlgInfo::InitBtn()
 	myBtn[24].SetHwnd(this->GetSafeHwnd(), IDC_CHK_USE_AOI_OUTER);
 	myBtn[24].SetBtnType(BTN_TYPE_CHECK);
 
+	myBtn[25].SubclassDlgItem(IDC_CHK_USE_AOI_DUAL_ITS, this); //WORK_MODE : MODE_NONE
+	myBtn[25].SetHwnd(this->GetSafeHwnd(), IDC_CHK_USE_AOI_DUAL_ITS);
+	myBtn[25].SetBtnType(BTN_TYPE_CHECK);
+
+	myBtn[26].SubclassDlgItem(IDC_CHK_USE_AOI_DUAL_2D_ITS, this); //WORK_MODE : MODE_LASER
+	myBtn[26].SetHwnd(this->GetSafeHwnd(), IDC_CHK_USE_AOI_DUAL_2D_ITS);
+	myBtn[26].SetBtnType(BTN_TYPE_CHECK);
+
 
 	int i;
 	for(i=0; i<MAX_INFO_BTN; i++)
 	{
-		if(0 == i || 12 == i || 13 == i || 14 == i  || 23 == i || 24 == i)
+		if(0 == i || 12 == i || 13 == i || 14 == i  || 23 == i || 24 == i || 25 == i || 26 == i)
 		{
 			myBtn[i].SetFont(_T("굴림체"),16,TRUE);
 			myBtn[i].SetTextColor(RGB_BLACK);
@@ -330,7 +340,7 @@ void CDlgInfo::InitBtn()
 			//myBtn[i].SetBtnType(BTN_TYPE_CHECK);
 		}
 
-		if(0 != i && 12 != i && 13 != i && 14 != i && 15 != i && 16 != i && 23 != i && 24 != i)
+		if(0 != i && 12 != i && 13 != i && 14 != i && 15 != i && 16 != i && 23 != i && 24 != i && 25 != i && 26 != i)
 		{
 			myBtn[i].SetFont(_T("굴림체"),16,TRUE);
 			myBtn[i].SetTextColor(RGB_BLACK);
@@ -716,6 +726,7 @@ void CDlgInfo::Disp()
 		break;
 	}
 
+	DispDualTest();
 }
 
 void CDlgInfo::OnStc0008() 
@@ -1515,6 +1526,7 @@ void CDlgInfo::SetDualTest(BOOL bOn)
 	if (pView && pView->m_pEngrave)
 		pView->m_pEngrave->SetDualTest();	//_stSigInx::_DualTest
 #endif
+	DispDualTest();
 }
 
 void CDlgInfo::SetTwoMetal(BOOL bOn)
@@ -1632,6 +1644,8 @@ void CDlgInfo::OnChkUseAoiInner()
 		SetTestMode(MODE_OUTER);
 	else
 		SetTestMode(MODE_NONE);
+
+	DispDualTest();
 }
 
 void CDlgInfo::OnChkUseAoiOuter() 
@@ -1656,6 +1670,8 @@ void CDlgInfo::OnChkUseAoiOuter()
 	}
 	else
 		SetTestMode(MODE_NONE);
+
+	DispDualTest();
 }
 
 void CDlgInfo::OnChkUseAoiDual() 
@@ -1986,4 +2002,116 @@ void CDlgInfo::OnStnClickedStc17()
 	if (pView && pView->m_pEngrave)
 		pView->m_pEngrave->SetEngItsCode();	//_ItemInx::_EngItsCode
 #endif
+}
+
+
+void CDlgInfo::OnBnClickedChkUseAoiDualIts()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString sData;
+	BOOL bOn = myBtn[25].GetCheck();
+	if (bOn)
+	{
+		pDoc->WorkingInfo.System.bUseDualIts = TRUE;
+
+		myBtn[26].SetCheck(FALSE);
+		pDoc->WorkingInfo.System.bUseDual2dIts = FALSE;
+		//pView->MpeWrite(_T("MB40009A"), 1);															// 각인부\r미사용
+		SetTestMode(MODE_NONE);
+		sData = pDoc->WorkingInfo.System.bUseDual2dIts ? _T("1") : _T("0");
+		::WritePrivateProfileString(_T("System"), _T("UseDual2dIts"), sData, PATH_WORKING_INFO);
+		pDoc->SetMkInfo(_T("Signal"), _T("UseDual2dIts"), pDoc->WorkingInfo.System.bUseDual2dIts);	// 펀칭부만\r사용Off
+	}
+	else
+	{
+		pDoc->WorkingInfo.System.bUseDualIts = FALSE;
+	}
+
+	sData = pDoc->WorkingInfo.System.bUseDualIts ? _T("1") : _T("0");
+	::WritePrivateProfileString(_T("System"), _T("UseDualIts"), sData, PATH_WORKING_INFO);
+	pDoc->SetMkInfo(_T("Signal"), _T("UseDualIts"), pDoc->WorkingInfo.System.bUseDualIts);			// 펀칭부만\r사용Off
+}
+
+
+void CDlgInfo::OnBnClickedChkUseAoiDual2dIts()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CString sData;
+	BOOL bOn = myBtn[26].GetCheck();
+	if (bOn)
+	{
+		pDoc->WorkingInfo.System.bUseDual2dIts = TRUE;
+		//pView->MpeWrite(_T("MB40009A"), 1);															// 각인부\r미사용
+		SetTestMode(MODE_LASER);
+
+		myBtn[25].SetCheck(FALSE);
+		pDoc->WorkingInfo.System.bUseDualIts = FALSE;
+		sData = pDoc->WorkingInfo.System.bUseDualIts ? _T("1") : _T("0");
+		::WritePrivateProfileString(_T("System"), _T("UseDualIts"), sData, PATH_WORKING_INFO);
+		pDoc->SetMkInfo(_T("Signal"), _T("UseDualIts"), pDoc->WorkingInfo.System.bUseDualIts);		// 펀칭부만\r사용Off
+	}
+	else
+	{
+		pDoc->WorkingInfo.System.bUseDual2dIts = FALSE;
+		//pView->MpeWrite(_T("MB40009A"), 1);															// 각인부\r미사용
+		SetTestMode(MODE_NONE);
+	}
+
+	sData = pDoc->WorkingInfo.System.bUseDual2dIts ? _T("1") : _T("0");
+	::WritePrivateProfileString(_T("System"), _T("UseDual2dIts"), sData, PATH_WORKING_INFO);
+	pDoc->SetMkInfo(_T("Signal"), _T("UseDual2dIts"), pDoc->WorkingInfo.System.bUseDual2dIts);		// 펀칭부만\r사용Off
+}
+
+void CDlgInfo::DispDualTest()
+{
+	CString sMsg;
+	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+	//#ifdef USE_MPE
+	//	bDualTest = pView->MpeRead(pView->Plc.DlgInfo.TwoMetal) > 0 ? TRUE : FALSE;
+	//#endif
+
+	if (!pDoc->WorkingInfo.LastJob.nTestMode && bDualTest)
+	{
+		GetDlgItem(IDC_CHK_USE_AOI_DUAL_ITS)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_CHK_USE_AOI_DUAL_2D_ITS)->ShowWindow(SW_SHOW);
+
+		if (pDoc->WorkingInfo.System.bUseDualIts)
+		{
+			myBtn[25].SetCheck(TRUE);
+			pDoc->SetMkInfo(_T("Signal"), _T("UseDualIts"), pDoc->WorkingInfo.System.bUseDualIts);
+
+			myBtn[26].SetCheck(FALSE);
+			pDoc->WorkingInfo.System.bUseDual2dIts = FALSE;
+			//pView->MpeWrite(_T("MB40009A"), 1);															// 각인부\r미사용
+			SetTestMode(MODE_NONE);
+			pDoc->SetMkInfo(_T("Signal"), _T("UseDual2dIts"), pDoc->WorkingInfo.System.bUseDual2dIts);
+		}
+		else if (pDoc->WorkingInfo.System.bUseDual2dIts)
+		{
+			myBtn[26].SetCheck(TRUE);
+			//pView->MpeWrite(_T("MB40009A"), 0);															// 각인부 사용
+			SetTestMode(MODE_LASER);
+			pDoc->SetMkInfo(_T("Signal"), _T("UseDual2dIts"), pDoc->WorkingInfo.System.bUseDual2dIts);
+
+			myBtn[25].SetCheck(FALSE);
+			pDoc->WorkingInfo.System.bUseDualIts = FALSE;
+			pDoc->SetMkInfo(_T("Signal"), _T("UseDualIts"), pDoc->WorkingInfo.System.bUseDualIts);
+		}
+	}
+	else
+	{
+		GetDlgItem(IDC_CHK_USE_AOI_DUAL_ITS)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_CHK_USE_AOI_DUAL_2D_ITS)->ShowWindow(SW_HIDE);
+		//pView->MpeWrite(_T("MB40009A"), 1);															// 각인부\r미사용
+		SetTestMode(MODE_NONE);
+		pDoc->WorkingInfo.System.bUseDualIts = FALSE;
+		pDoc->WorkingInfo.System.bUseDual2dIts = FALSE;
+		pDoc->SetMkInfo(_T("Signal"), _T("UseDualIts"), pDoc->WorkingInfo.System.bUseDualIts);
+		pDoc->SetMkInfo(_T("Signal"), _T("UseDual2dIts"), pDoc->WorkingInfo.System.bUseDual2dIts);
+	}
+	//if (pDoc->WorkingInfo.LastJob.bDualTest != bDualTest)
+	//{
+	//	sMsg.Format(_T("PLC 양면모드: %d , PC 양면모드: %d \r\n설정 오류입니다."), bDualTest ? 1 : 0, pDoc->WorkingInfo.LastJob.bDualTest ? 1 : 0);
+	//	pView->MsgBox(sMsg);
+	//}
 }

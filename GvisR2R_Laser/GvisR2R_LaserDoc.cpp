@@ -940,6 +940,20 @@ BOOL CGvisR2R_LaserDoc::LoadWorkingInfo()
 
 	// [System]
 
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("UseDualIts"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.bUseDualIts = _ttoi(szData);
+	else
+	{
+		WorkingInfo.System.bUseDualIts = FALSE;
+	}
+
+	if (0 < ::GetPrivateProfileString(_T("System"), _T("UseDual2dIts"), NULL, szData, sizeof(szData), sPath))
+		WorkingInfo.System.bUseDual2dIts = _ttoi(szData);
+	else
+	{
+		WorkingInfo.System.bUseDual2dIts = FALSE;
+	}
+
 	if (0 < ::GetPrivateProfileString(_T("System"), _T("USE_RTR_SHIFT_ADJUST"), NULL, szData, sizeof(szData), sPath))
 	{
 		m_bUseRTRYShiftAdjust = (BOOL)(_ttoi(szData) ? TRUE : FALSE);

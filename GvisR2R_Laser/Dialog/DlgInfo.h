@@ -13,7 +13,7 @@
 
 #define MAX_INFO_STC				63
 #define MAX_INFO_STC_DATA			17
-#define MAX_INFO_BTN				25
+#define MAX_INFO_BTN				27
 
 /////////////////////////////////////////////////////////////////////////////
 // CDlgInfo dialog
@@ -52,6 +52,7 @@ public:
 	void AtDlgHide();
 
 	void UpdateData();
+	void DispDualTest();
 
 // Dialog Data
 	//{{AFX_DATA(CDlgInfo)
@@ -121,6 +122,8 @@ public:
 	afx_msg void OnBnClickedChk1188();
 	afx_msg void OnStnClickedStc36();
 	afx_msg void OnStnClickedStc17();
+	afx_msg void OnBnClickedChkUseAoiDualIts();
+	afx_msg void OnBnClickedChkUseAoiDual2dIts();
 };
 
 //{{AFX_INSERT_LOCATION}}
