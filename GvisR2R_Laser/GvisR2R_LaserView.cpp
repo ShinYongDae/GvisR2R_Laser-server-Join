@@ -12244,6 +12244,10 @@ void CGvisR2R_LaserView::Eng2dRead()
 							pView->MsgBox(sMsg);
 						}
 					}
+					else
+					{
+						m_nGetItsCodeSerial++;
+					}
 					if (pDoc->m_bUseSkipError2dCode)
 						m_nCntSkipError2dCode = 0;
 					SetCurrentInfoReadShotNum(m_nGetItsCodeSerial);

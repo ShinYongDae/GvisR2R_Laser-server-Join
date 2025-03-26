@@ -1673,20 +1673,20 @@ void CDlgInfo::OnChkUseAoiSingle()
 void CDlgInfo::OnChkSampleTest() 
 {
 	// TODO: Add your control notification handler code here
-//	BOOL bOn = myBtn[14].GetCheck();
-//	pDoc->WorkingInfo.LastJob.bSampleTest = bOn;
-//
-//	CString sData = bOn ? _T("1") : _T("0");
-//	::WritePrivateProfileString(_T("Last Job"), _T("Sample Test On"), sData, PATH_WORKING_INFO);
-//
-//#ifdef USE_MPE
-//	pView->m_pMpe->Write(_T("MB44017B"), (pDoc->WorkingInfo.LastJob.bSampleTest)?1:0);		// Sample 검사 On
-//#endif
-//
-//#ifdef USE_ENGRAVE
-//	if (pView && pView->m_pEngrave)
-//		pView->m_pEngrave->SetSampleTest();	//_stSigInx::_SampleTest
-//#endif
+	BOOL bOn = myBtn[14].GetCheck();
+	pDoc->WorkingInfo.LastJob.bSampleTest = bOn;
+
+	CString sData = bOn ? _T("1") : _T("0");
+	::WritePrivateProfileString(_T("Last Job"), _T("Sample Test On"), sData, PATH_WORKING_INFO);
+
+#ifdef USE_MPE
+	pView->m_pMpe->Write(_T("MB44017B"), (pDoc->WorkingInfo.LastJob.bSampleTest)?1:0);		// Sample 검사 On
+#endif
+
+#ifdef USE_ENGRAVE
+	if (pView && pView->m_pEngrave)
+		pView->m_pEngrave->SetSampleTest();	//_stSigInx::_SampleTest
+#endif
 }
 
 void CDlgInfo::OnChkOneMetal() 
@@ -1750,31 +1750,31 @@ void CDlgInfo::OnChkTwoMetal()
 void CDlgInfo::OnStc181() 
 {
 	// TODO: Add your control notification handler code here
-//	myStcData[12].SetBkColor(RGB_RED);
-//	myStcData[12].RedrawWindow();
-//
-//	CPoint pt;	CRect rt;
-//	GetDlgItem(IDC_STC_181)->GetWindowRect(&rt);
-//	pt.x = rt.right; pt.y = rt.bottom;
-//	ShowKeypad(IDC_STC_181, pt, TO_BOTTOM|TO_RIGHT);
-//
-//	myStcData[12].SetBkColor(RGB_WHITE);
-//	myStcData[12].RedrawWindow();
-//	
-//	CString sVal;
-//	GetDlgItem(IDC_STC_181)->GetWindowText(sVal);
-//	pDoc->WorkingInfo.LastJob.sSampleTestShotNum = sVal;
-//	::WritePrivateProfileString(_T("Last Job"), _T("Sample Test Shot Num"), sVal, PATH_WORKING_INFO);
-//	
-//	long lData = (long)_tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum);//atoi
-//#ifdef USE_MPE
-//	pView->m_pMpe->Write(_T("ML45126"), lData);	// 샘플검사 Shot수
-//#endif
-//
-//#ifdef USE_ENGRAVE
-//	if (pView && pView->m_pEngrave)
-//		pView->m_pEngrave->SetSampleShotNum();	//_stSigInx::_SampleShotNum
-//#endif
+	myStcData[12].SetBkColor(RGB_RED);
+	myStcData[12].RedrawWindow();
+
+	CPoint pt;	CRect rt;
+	GetDlgItem(IDC_STC_181)->GetWindowRect(&rt);
+	pt.x = rt.right; pt.y = rt.bottom;
+	ShowKeypad(IDC_STC_181, pt, TO_BOTTOM|TO_RIGHT);
+
+	myStcData[12].SetBkColor(RGB_WHITE);
+	myStcData[12].RedrawWindow();
+	
+	CString sVal;
+	GetDlgItem(IDC_STC_181)->GetWindowText(sVal);
+	pDoc->WorkingInfo.LastJob.sSampleTestShotNum = sVal;
+	::WritePrivateProfileString(_T("Last Job"), _T("Sample Test Shot Num"), sVal, PATH_WORKING_INFO);
+	
+	long lData = (long)_tstoi(pDoc->WorkingInfo.LastJob.sSampleTestShotNum);//atoi
+#ifdef USE_MPE
+	pView->m_pMpe->Write(_T("ML45126"), lData);	// 샘플검사 Shot수
+#endif
+
+#ifdef USE_ENGRAVE
+	if (pView && pView->m_pEngrave)
+		pView->m_pEngrave->SetSampleShotNum();	//_stSigInx::_SampleShotNum
+#endif
 }
 
 

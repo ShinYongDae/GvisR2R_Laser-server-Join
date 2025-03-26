@@ -27,8 +27,7 @@
 
 extern CMainFrame* pFrm;
 CGvisR2R_LaserDoc* pDoc;
-CString PATH_WORKING_INFO = _T(""); // ÆÝÄªºÎÀÇ WorkingInfo.ini
-
+CString PATH_WORKING_INFO = _T("");
 extern CGvisR2R_LaserView* pView;
 
 // CGvisR2R_LaserDoc

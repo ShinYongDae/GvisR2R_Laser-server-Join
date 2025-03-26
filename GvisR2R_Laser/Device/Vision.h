@@ -16,8 +16,10 @@
 #define PIN_IMG_DISP_SIZEX			200		// 1pixel is 33um , 6.6mm / 0.033mm = 200 pixel
 #define PIN_IMG_DISP_SIZEY			200		// 1pixel is 33um , 6.6mm / 0.033mm = 200 pixel
 
-#define ALIGN_IMG_DISP_SIZEX		200		// 1pixel is 33um , 6.6mm / 0.033mm = 200 pixel
-#define ALIGN_IMG_DISP_SIZEY		200		// 1pixel is 33um , 6.6mm / 0.033mm = 200 pixel
+#define ALIGN_IMG_DISP_SIZEX		160		// 1pixel is 33um , 6.6mm / 0.033mm = 200 pixel
+#define ALIGN_IMG_DISP_SIZEY		120		// 1pixel is 33um , 6.6mm / 0.033mm = 200 pixel
+//#define ALIGN_IMG_DISP_SIZEX		200		// 1pixel is 33um , 6.6mm / 0.033mm = 200 pixel
+//#define ALIGN_IMG_DISP_SIZEY		200		// 1pixel is 33um , 6.6mm / 0.033mm = 200 pixel
 
 #define PCS_IMG_DISP_SIZEX			520		// 1pixel is 33um
 #define PCS_IMG_DISP_SIZEY			440		// 1pixel is 33um

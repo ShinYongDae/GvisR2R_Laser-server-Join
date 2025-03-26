@@ -3764,7 +3764,7 @@ BOOL CVision::GrabIRayple(int nPos, BOOL bDraw)
 		//Sleep(30);
 
 
-		MimBinarize(MilGrabImg->m_MilImage, MilGrabBinImg->m_MilImage, M_GREATER, 128, 0);
+		MimBinarize(MilGrabImg->m_MilImage, MilGrabBinImg->m_MilImage, M_GREATER, 200, 0);
 
 		MimConvolve(MilGrabImg->m_MilImage, MilGrabImg->m_MilImage, M_SMOOTH);
 		MimConvolve(MilGrabImg->m_MilImage, MilGrabImg->m_MilImage, M_SMOOTH);

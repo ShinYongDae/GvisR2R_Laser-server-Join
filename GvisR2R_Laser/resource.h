@@ -480,7 +480,6 @@
 #define IDC_STC_WK_ALL                  1155
 #define IDC_BTN_START_SAVE              1155
 #define IDC_STC_015                     1155
-#define IDC_STC_228                     1155
 #define IDC_STC_GD_RA_1                 1156
 #define IDC_STC_0016                    1156
 #define IDC_STC_ALN_SCR2                1156
@@ -521,11 +520,9 @@
 #define IDC_STC_GD_RA_ALL_UP            1165
 #define IDC_STC_021                     1165
 #define IDC_STC_19                      1165
-#define IDC_STC_229                     1165
 #define IDC_STC_ST                      1166
 #define IDC_STC_020                     1166
 #define IDC_BTN_LASER_MARKING           1166
-#define IDC_STC_230                     1166
 #define IDC_STC_ST_UP                   1167
 #define IDC_STC_21                      1167
 #define IDC_BTN_LASER_ALIGN             1167
@@ -818,7 +815,6 @@
 #define IDC_STC_12_18                   1242
 #define IDC_STC_73                      1242
 #define IDC_SLD_LT2                     1242
-#define IDC_CHK_89                      1242
 #define IDC_STC_12_20                   1243
 #define IDC_STC_74                      1243
 #define IDC_GRP_LT8                     1243
@@ -847,7 +843,6 @@
 #define IDC_STC_85                      1254
 #define IDC_CHK_24                      1255
 #define IDC_STC_86                      1255
-#define IDC_STC_231                     1255
 #define IDC_CHK_25                      1256
 #define IDC_STC_87                      1256
 #define IDC_CHK_26                      1257
