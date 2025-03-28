@@ -159,8 +159,8 @@ LRESULT CDlgMyMsgSub01::OnMyBtnDown(WPARAM wPara, LPARAM lPara)
 #ifdef USE_ENGRAVE
 		if (pView && pView->m_pEngrave)
 		{
-			pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgYes, TRUE);
-			//pView->m_pEngrave->SetMyMsgYes();	//_SigInx::_MyMsgYes
+			//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgYes, TRUE);
+			pView->m_pEngrave->SetMyMsgYes();	//_SigInx::_MyMsgYes
 		}
 #endif
 		break;
@@ -168,8 +168,8 @@ LRESULT CDlgMyMsgSub01::OnMyBtnDown(WPARAM wPara, LPARAM lPara)
 #ifdef USE_ENGRAVE
 		if (pView && pView->m_pEngrave)
 		{
-			pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgNo, TRUE);
-			//pView->m_pEngrave->SetMyMsgNo();	//_SigInx::_MyMsgNo
+			//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgNo, TRUE);
+			pView->m_pEngrave->SetMyMsgNo();	//_SigInx::_MyMsgNo
 		}
 #endif
 		break;

@@ -7092,6 +7092,22 @@ void CGvisR2R_LaserDoc::SetCurrentInfoTestMode(int nMode)
 	pDoc->WorkingInfo.LastJob.nTestMode = nMode;
 	sData.Format(_T("%d"), nMode);
 	::WritePrivateProfileString(_T("Infomation"), _T("Test Mode"), sData, sPath);
+
+	if (pDoc->WorkingInfo.LastJob.nTestMode == MODE_LASER)
+	{
+		pDoc->WorkingInfo.System.bUseDual2dIts = TRUE;
+		pDoc->WorkingInfo.System.bUseDualIts = FALSE;
+	}
+	else if (pDoc->WorkingInfo.LastJob.nTestMode == MODE_ITS)
+	{
+		pDoc->WorkingInfo.System.bUseDual2dIts = FALSE;
+		pDoc->WorkingInfo.System.bUseDualIts = TRUE;
+	}
+	else
+	{
+		pDoc->WorkingInfo.System.bUseDual2dIts = FALSE;
+		pDoc->WorkingInfo.System.bUseDualIts = FALSE;
+	}
 }
 
 int CGvisR2R_LaserDoc::GetCurrentInfoTestMode()
@@ -7138,7 +7154,7 @@ void CGvisR2R_LaserDoc::GetCurrentInfo()
 	CString sPath = WorkingInfo.System.sPathEngCurrInfo;
 	TCHAR szData[512];
 
-	if (sPath.IsEmpty() || (GetTestMode() != MODE_INNER && GetTestMode() != MODE_OUTER))
+	if (sPath.IsEmpty() || (GetTestMode() != MODE_INNER && GetTestMode() != MODE_OUTER && GetTestMode() != MODE_LASER))
 		return;
 
 	if (0 < ::GetPrivateProfileString(_T("Infomation"), _T("Dual Test"), NULL, szData, sizeof(szData), sPath))
@@ -8357,6 +8373,33 @@ BOOL CGvisR2R_LaserDoc::GetCurrentInfoSignal(int nMsgID)
 
 	return FALSE;
 }
+
+BOOL CGvisR2R_LaserDoc::ResetCurrentInfoSignal(int nMsgID)
+{
+	TCHAR szData[200];
+	CString sData, sIdx, sPath = WorkingInfo.System.sPathMkSignalInfo;
+
+	if (sPath.IsEmpty())
+		return FALSE;
+
+	CString sMsg;
+
+	CFileFind finder;
+	if (finder.FindFile(sPath))
+	{
+		sIdx.Format(_T("%d"), nMsgID);
+		::WritePrivateProfileString(_T("Signal"), sIdx, _T("0"), sPath);
+	}
+	else
+	{
+		sMsg.Format(_T("%s파일의 Signal에 인덱스 정보가 없습니다."), sPath);
+		pView->ClrDispMsg();
+		AfxMessageBox(sMsg);
+	}
+
+	return FALSE;
+}
+
 
 CString CGvisR2R_LaserDoc::GetCurrentInfoBufUp()
 {

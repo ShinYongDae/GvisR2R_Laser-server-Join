@@ -430,6 +430,7 @@ public:
 	void SetCurrentInfoReadShotNum(int nSerial);
 	BOOL GetCurrentInfoSignal(int nMsgID);
 	void SetCurrentInfoSignal(int nMsgID, BOOL bOn);
+	BOOL ResetCurrentInfoSignal(int nMsgID);
 
 	CString GetMonDispMain();
 	void SetMonDispMain(CString sDisp);

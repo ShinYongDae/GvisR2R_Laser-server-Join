@@ -12561,16 +12561,19 @@ BOOL CGvisR2R_LaserView::GetCurrentInfoSignal()
 	{
 		pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgYes, FALSE);
 		m_pEngrave->m_bRcvSig[_SigInx::_MyMsgYes] = TRUE;
+		pDoc->ResetCurrentInfoSignal(_SigInx::_MyMsgYes);
 	}
 	if (pDoc->GetCurrentInfoSignal(_SigInx::_MyMsgNo) && !m_pEngrave->m_bRcvSig[_SigInx::_MyMsgNo])
 	{
 		pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgNo, FALSE);
 		m_pEngrave->m_bRcvSig[_SigInx::_MyMsgNo] = TRUE;
+		pDoc->ResetCurrentInfoSignal(_SigInx::_MyMsgNo);
 	}
 	if (pDoc->GetCurrentInfoSignal(_SigInx::_MyMsgOk) && !m_pEngrave->m_bRcvSig[_SigInx::_MyMsgOk])
 	{
 		pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgOk, FALSE);
 		m_pEngrave->m_bRcvSig[_SigInx::_MyMsgOk] = TRUE;
+		pDoc->ResetCurrentInfoSignal(_SigInx::_MyMsgOk);
 	}
 
 	return TRUE;
@@ -13499,15 +13502,15 @@ void CGvisR2R_LaserView::ChkRcvSig()
 				break;
 			case _SigInx::_MyMsgYes:
 				SetMyMsgYes();
-				pView->m_pEngrave->SetMyMsgYes();	//_SigInx::_MyMsgYes
+				//pView->m_pEngrave->SetMyMsgYes();	//_SigInx::_MyMsgYes
 				break;
 			case _SigInx::_MyMsgNo:
 				SetMyMsgNo();
-				pView->m_pEngrave->SetMyMsgNo();	//_SigInx::_MyMsgNo
+				//pView->m_pEngrave->SetMyMsgNo();	//_SigInx::_MyMsgNo
 				break;
 			case _SigInx::_MyMsgOk:
 				SetMyMsgOk();
-				pView->m_pEngrave->SetMyMsgOk();	//_SigInx::_MyMsgOk
+				//pView->m_pEngrave->SetMyMsgOk();	//_SigInx::_MyMsgOk
 				break;
 			//case _SigInx::_TestMode:
 			//	pDoc->SetCurrentInfoTestMode(pDoc->WorkingInfo.LastJob.nTestMode);
