@@ -129,7 +129,7 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
     LTEXT           "GvisR2R_Laser, 버전 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2025.03.28",IDC_STATIC,42,26,114,8
+    LTEXT           "Copyright (C) 2025.03.29",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,40,50,14,WS_GROUP
     LTEXT           "핀 위치 패턴매칭 200",IDC_STATIC,7,37,104,8
     LTEXT           "Mode Laser 추가",IDC_STATIC,7,46,104,8

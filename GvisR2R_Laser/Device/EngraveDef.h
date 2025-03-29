@@ -222,7 +222,7 @@ typedef enum _stSigInx {
 	// Menu04 (Engrave)
 	_EngBuffJogCw, _EngBuffJogCcw, _EngBuffOrgMv, _EngBuffOrgMvDone, _EngBuffInitPosMv, _EngBuffInitPosMvDone, _EngBuffInitPosSave,
 	// EngraveAutoSequence
-	_EngAutoInit, _EngAutoSeqMkSt, _EngAutoSeqOnMkIng, _EngAutoSeqMkDone, _EngAutoSeq2dReadSt, _EngAutoSeqOnReading2d, _EngAutoSeq2dReadDone, _EngAutoSeqFdDone,
+	_EngAutoInit, _EngAutoInitCont, _EngAutoSeqMkSt, _EngAutoSeqOnMkIng, _EngAutoSeqMkDone, _EngAutoSeq2dReadSt, _EngAutoSeqOnReading2d, _EngAutoSeq2dReadDone, _EngAutoSeqFdDone,
 	// Command
 	_JobEnd,
 	// DlgMyMsg

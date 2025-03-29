@@ -1535,6 +1535,9 @@ void CEngrave::GetSignalEngraveAutoSequence(SOCKET_DATA SockData)
 			pView->SwReset();
 			//pDoc->BtnStatus.EngAuto.Init = (SockData.nData1 > 0) ? TRUE : FALSE;
 			break;
+		case _SigInx::_EngAutoInitCont:
+			pView->EngAutoInitCont();
+			break;
 		case _SigInx::_EngAutoSeqMkSt:
 			//m_bRcvSig[_SigInx::_EngAutoSeqMkSt] = TRUE;
 			if(!pView->m_bEngSt)
@@ -1647,21 +1650,24 @@ void CEngrave::GetSignalMyMsg(SOCKET_DATA SockData)
 		switch (nMsgId)
 		{
 		case _SigInx::_MyMsgYes:
-			pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgYes, FALSE);
-			//m_bRcvSig[_SigInx::_MyMsgYes] = TRUE;
-			//pView->m_bRcvSig[_SigInx::_MyMsgYes] = TRUE;
+			//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgYes, FALSE);
+
+			m_bRcvSig[_SigInx::_MyMsgYes] = TRUE;
+			pView->m_bRcvSig[_SigInx::_MyMsgYes] = TRUE;
 			//pView->SetMyMsgYes();
 			break;
 		case _SigInx::_MyMsgNo:
-			pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgNo, FALSE);
-			//m_bRcvSig[_SigInx::_MyMsgNo] = TRUE;
-			//pView->m_bRcvSig[_SigInx::_MyMsgNo] = TRUE;
+			//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgNo, FALSE);
+
+			m_bRcvSig[_SigInx::_MyMsgNo] = TRUE;
+			pView->m_bRcvSig[_SigInx::_MyMsgNo] = TRUE;
 			//pView->SetMyMsgNo();
 			break;
 		case _SigInx::_MyMsgOk:
 			pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgOk, FALSE);
-			//m_bRcvSig[_SigInx::_MyMsgOk] = TRUE;
-			//pView->m_bRcvSig[_SigInx::_MyMsgOk] = TRUE;
+
+			m_bRcvSig[_SigInx::_MyMsgOk] = TRUE;
+			pView->m_bRcvSig[_SigInx::_MyMsgOk] = TRUE;
 			//pView->SetMyMsgOk();
 			break;
 			// Is
@@ -9735,8 +9741,8 @@ int CEngrave::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  여기에 특수화된 작성 코드를 추가합니다.
-	m_bTIM_CHK_RCV_SIG = TRUE;
-	SetTimer(TIM_CHK_RCV_SIG, 500, NULL);
+	//m_bTIM_CHK_RCV_SIG = TRUE;
+	//SetTimer(TIM_CHK_RCV_SIG, 500, NULL);
 
 	return 0;
 }

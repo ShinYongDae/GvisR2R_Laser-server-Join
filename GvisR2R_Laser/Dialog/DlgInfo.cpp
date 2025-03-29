@@ -1468,7 +1468,11 @@ void CDlgInfo::SetTestMode(int nMode)
 	pDoc->SetCurrentInfoTestMode(nMode);
 #ifdef USE_ENGRAVE
 	if (pView && pView->m_pEngrave)
+	{
 		pView->m_pEngrave->SetTestMode();	//_ItemInx::_TestMode
+		Sleep(300);
+		pView->m_pEngrave->SetTestMode();	//_ItemInx::_TestMode
+	}
 #endif
 
 	switch (nMode)
@@ -2013,11 +2017,12 @@ void CDlgInfo::OnBnClickedChkUseAoiDualIts()
 	if (bOn)
 	{
 		pDoc->WorkingInfo.System.bUseDualIts = TRUE;
+		ShowDlg(IDD_DLG_UTIL_02);
 
 		myBtn[26].SetCheck(FALSE);
 		pDoc->WorkingInfo.System.bUseDual2dIts = FALSE;
 		//pView->MpeWrite(_T("MB40009A"), 1);															// 각인부\r미사용
-		SetTestMode(MODE_ITS);
+		SetTestMode(MODE_ITS); 
 		sData = pDoc->WorkingInfo.System.bUseDual2dIts ? _T("1") : _T("0");
 		::WritePrivateProfileString(_T("System"), _T("UseDual2dIts"), sData, PATH_WORKING_INFO);
 		pDoc->SetMkInfo(_T("Signal"), _T("UseDual2dIts"), pDoc->WorkingInfo.System.bUseDual2dIts);	// 펀칭부만\r사용Off
@@ -2087,7 +2092,6 @@ void CDlgInfo::DispDualTest()
 			myBtn[26].SetCheck(FALSE);
 			pDoc->WorkingInfo.System.bUseDual2dIts = FALSE;
 			//pView->MpeWrite(_T("MB40009A"), 1);															// 각인부\r미사용
-			SetTestMode(MODE_NONE);
 			pDoc->SetMkInfo(_T("Signal"), _T("UseDual2dIts"), pDoc->WorkingInfo.System.bUseDual2dIts);
 		}
 		else if (pDoc->WorkingInfo.System.bUseDual2dIts)

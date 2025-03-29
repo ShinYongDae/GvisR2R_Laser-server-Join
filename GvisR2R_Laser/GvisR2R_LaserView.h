@@ -926,6 +926,7 @@ public:
 
 	void SwReset();
 	BOOL DoReset();
+	void EngAutoInitCont();
 
 // 재정의입니다.
 public:

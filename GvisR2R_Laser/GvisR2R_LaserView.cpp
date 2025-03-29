@@ -832,7 +832,7 @@ void CGvisR2R_LaserView::OnTimer(UINT_PTR nIDEvent)
 		ChkMyMsg();
 
 		if (m_bTIM_MPE_IO)
-			SetTimer(TIM_MPE_IO, 500, NULL);
+			SetTimer(TIM_MPE_IO, 100, NULL);
 	}
 
 	if (nIDEvent == TIM_TOWER_WINKER)
@@ -4791,11 +4791,14 @@ void CGvisR2R_LaserView::DispTime()
 		pDoc->WorkingInfo.Lot.CurTime.nMonth = LotTime.nMonth;
 		pDoc->WorkingInfo.Lot.CurTime.nDay = LotTime.nDay;
 		pDoc->WorkingInfo.Lot.CurTime.nHour = LotTime.nHour;
-		pDoc->WorkingInfo.Lot.CurTime.nMin = LotTime.nMin;
-		pDoc->WorkingInfo.Lot.CurTime.nSec = LotTime.nSec;
+		pDoc->WorkingInfo.Lot.CurTime.nMin = LotTime.nMin;		
 
 		if (m_pDlgMenu01)
-			m_pDlgMenu01->DispRunTime();
+		{
+			if(pDoc->WorkingInfo.Lot.CurTime.nSec != LotTime.nSec)
+				m_pDlgMenu01->DispRunTime();
+		}
+		pDoc->WorkingInfo.Lot.CurTime.nSec = LotTime.nSec;	
 	}
 }
 
@@ -12386,7 +12389,7 @@ void CGvisR2R_LaserView::SetMyMsgYes()
 {
 	//if (pDoc->GetCurrentInfoSignal(_SigInx::_MyMsgYes))
 	{
-		pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgYes, FALSE);
+		//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgYes, FALSE);
 
 		if (m_pDlgMyMsg)
 		{
@@ -12559,19 +12562,19 @@ BOOL CGvisR2R_LaserView::GetCurrentInfoSignal()
 	// 상대방의 로컬파일에서 확인
 	if (pDoc->GetCurrentInfoSignal(_SigInx::_MyMsgYes) && !m_pEngrave->m_bRcvSig[_SigInx::_MyMsgYes])
 	{
-		pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgYes, FALSE);
+		//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgYes, FALSE);
 		m_pEngrave->m_bRcvSig[_SigInx::_MyMsgYes] = TRUE;
 		pDoc->ResetCurrentInfoSignal(_SigInx::_MyMsgYes);
 	}
 	if (pDoc->GetCurrentInfoSignal(_SigInx::_MyMsgNo) && !m_pEngrave->m_bRcvSig[_SigInx::_MyMsgNo])
 	{
-		pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgNo, FALSE);
+		//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgNo, FALSE);
 		m_pEngrave->m_bRcvSig[_SigInx::_MyMsgNo] = TRUE;
 		pDoc->ResetCurrentInfoSignal(_SigInx::_MyMsgNo);
 	}
 	if (pDoc->GetCurrentInfoSignal(_SigInx::_MyMsgOk) && !m_pEngrave->m_bRcvSig[_SigInx::_MyMsgOk])
 	{
-		pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgOk, FALSE);
+		//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgOk, FALSE);
 		m_pEngrave->m_bRcvSig[_SigInx::_MyMsgOk] = TRUE;
 		pDoc->ResetCurrentInfoSignal(_SigInx::_MyMsgOk);
 	}
@@ -13684,6 +13687,10 @@ void CGvisR2R_LaserView::ChkErrorRead2dCode()
 	}
 }
 
+void CGvisR2R_LaserView::EngAutoInitCont()
+{
+	pView->m_bCont = TRUE;
+}
 void CGvisR2R_LaserView::SwReset()
 {
 	ClrDispMsg();
@@ -13713,26 +13720,26 @@ BOOL CGvisR2R_LaserView::DoReset()
 
 		pView->ClrDispMsg();
 
-		if (IDNO == pView->MsgBox(_T("초기화를 하시겠습니까?"), 0, MB_YESNO))
-			bInit = FALSE;
-		else
-		{
+		//if (IDNO == pView->MsgBox(_T("초기화를 하시겠습니까?"), 0, MB_YESNO))
+		//	bInit = FALSE;
+		//else
+		//{
 			pDoc->m_bDoneChgLot = FALSE;
 			pView->m_nNewLot = 0;
 			pDoc->SetEngraveLastShot(0);
 			pDoc->SetCurrentInfoEngShotNum(0);
 			pDoc->SetCurrentInfoReadShotNum(0);
-		}
-
-		if (!bInit)
-		{
-			if (IDNO == pView->MsgBox(_T("이어가기를 하시겠습니까?"), 0, MB_YESNO))
-			{
-				pView->m_bCont = FALSE;
-				return FALSE;
-			}
-			pView->m_bCont = TRUE;
-		}
+		//}
+			pView->m_bCont = FALSE;
+		//if (!bInit)
+		//{
+		//	if (IDNO == pView->MsgBox(_T("이어가기를 하시겠습니까?"), 0, MB_YESNO))
+		//	{
+		//		pView->m_bCont = FALSE;
+		//		return FALSE;
+		//	}
+		//	pView->m_bCont = TRUE;
+		//}
 
 		InitAutoEng();
 		return TRUE;
