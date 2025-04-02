@@ -267,7 +267,7 @@ typedef enum _stSigInx {
 	// Is Menu04 (Engrave)
 	_IsEngBuffJogCw, _IsEngBuffJogCcw, _IsEngBuffOrgMv, _IsEngBuffOrgMvDone, _IsEngBuffInitPosMv, _IsEngBuffInitPosMvDone, _IsEngBuffInitPosSave,
 	// Is EngraveAutoSequence
-	_IsEngAutoInit, _IsEngAutoSeqMkSt, _IsEngAutoSeqOnMkIng, _IsEngAutoSeqMkDone, _IsEngAutoSeq2dReadSt, _IsEngAutoSeqOnReading2d, _IsEngAutoSeq2dReadDone, _IsEngAutoSeqFdDone,
+	_IsEngAutoInit, _IsEngAutoInitCont, _IsEngAutoSeqMkSt, _IsEngAutoSeqOnMkIng, _IsEngAutoSeqMkDone, _IsEngAutoSeq2dReadSt, _IsEngAutoSeqOnReading2d, _IsEngAutoSeq2dReadDone, _IsEngAutoSeqFdDone,
 	// Is DlgMyMsg
 	_IsMyMsgYes, _IsMyMsgNo, _IsMyMsgCancel, _IsMyMsgOk, _IsMyMsg,
 	// Is PLC

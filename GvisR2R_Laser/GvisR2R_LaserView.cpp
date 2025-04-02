@@ -11582,7 +11582,7 @@ void CGvisR2R_LaserView::DoAtuoGetEngStSignal()
 				pDoc->BtnStatus.EngAuto.MkDone = FALSE;
 				pDoc->BtnStatus.EngAuto.IsMkDone = FALSE;
 				
-				pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeqMkSt, TRUE);
+				//pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeqMkSt, TRUE); //20250402
 				//CheckCurrentInfoSignal();
 				if (m_pDlgMenu02)
 					m_pDlgMenu02->SetLed(0, TRUE);
@@ -11622,7 +11622,8 @@ void CGvisR2R_LaserView::DoAtuoGet2dReadStSignal()
 
 				m_bEng2dSt = TRUE;
 				m_nEng2dStAuto = ENG_2D_ST;
-				pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeq2dReadSt, TRUE);
+				//pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeq2dReadSt, TRUE); //20250402
+
 				//CheckCurrentInfoSignal();
 				if (m_pDlgMenu02)
 					m_pDlgMenu02->SetLed(3, TRUE);
@@ -11789,7 +11790,7 @@ void CGvisR2R_LaserView::Eng1PtReady()
 			//}
 			break;
 		case ENG_ST + (Mk1PtIdx::Start) :	// 2
-			if(pDoc->BtnStatus.EngAuto.IsOnMking)
+			if(pDoc->BtnStatus.EngAuto.IsOnMking) // 펀칭부에서 각인중 신호를 받았는 확인 신호
 				m_nEngStAuto++;
 			break;
 		case ENG_ST + (Mk1PtIdx::Start) + 1:
@@ -12022,9 +12023,10 @@ void CGvisR2R_LaserView::Eng1PtDoMarking()
 			//	SetCurrentInfoEngShotNum(nSerial);
 			SetCurrentInfoEngShotNum(nEngraveSerial);
 
-			Sleep(300);
-			pDoc->BtnStatus.EngAuto.IsOnMking = FALSE;
-			pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeqOnMkIng, TRUE);
+			// 20250402
+			//Sleep(300);
+			//pDoc->BtnStatus.EngAuto.IsOnMking = FALSE;
+			//pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeqOnMkIng, TRUE);
 			m_nEngStAuto++;
 			break;
 		case ENG_ST + (Mk1PtIdx::DoMk) + 2:
@@ -12036,16 +12038,16 @@ void CGvisR2R_LaserView::Eng1PtDoMarking()
 			break;
 		case ENG_ST + (Mk1PtIdx::DoneMk) :
 			//if (IsRun())
-			{
+			//{
 				//m_pEngrave->SwEngAutoOnMking(FALSE);
 				//Sleep(100);
-				//pDoc->BtnStatus.EngAuto.IsOnMking = FALSE;
-				//pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeqOnMkIng, FALSE);
+				pDoc->BtnStatus.EngAuto.IsOnMking = FALSE;
+				pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeqOnMkIng, FALSE);
 				//CheckCurrentInfoSignal();
 				if (m_pDlgMenu02)
 					m_pDlgMenu02->SetLed(1, FALSE);
 				m_nEngStAuto++;
-			}
+			//}
 			break;
 		case ENG_ST + (Mk1PtIdx::DoneMk) + 1:
 			//if (m_pEngrave)
@@ -12054,7 +12056,8 @@ void CGvisR2R_LaserView::Eng1PtDoMarking()
 			//	pDoc->BtnStatus.EngAuto.MkStF = FALSE;
 			//	Sleep(100);
 			//}
-			if (pDoc->BtnStatus.EngAuto.IsOnMking)
+
+			if (pDoc->BtnStatus.EngAuto.IsOnMking) // 펀칭부 신호 확인 후
 			{
 				pDoc->BtnStatus.EngAuto.IsMkDone = FALSE;
 				pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeqMkDone, TRUE);
@@ -12083,8 +12086,11 @@ void CGvisR2R_LaserView::Eng1PtDoMarking()
 				if (m_nGetItsCodeSerial == 0 || nEngraveSerial == nLastSerialNext)
 					SetLastSerialEng(nLastSerialNext); // (_ttoi(pDoc->m_sShotNum));
 				//SetLastSerialEng(pDoc->m_nShotNum); // (_ttoi(pDoc->m_sShotNum));
-				pDoc->BtnStatus.EngAuto.IsFdDone = FALSE;
-				pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeqFdDone, TRUE);
+
+				//20250402
+				//pDoc->BtnStatus.EngAuto.IsFdDone = FALSE;
+				//pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeqFdDone, TRUE);
+
 				//CheckCurrentInfoSignal();
 				if (m_pDlgMenu02)
 					m_pDlgMenu02->SetLed(6, TRUE);
@@ -12092,7 +12098,7 @@ void CGvisR2R_LaserView::Eng1PtDoMarking()
 			}
 			break;
 		case ENG_ST + (Mk1PtIdx::DoneMk) + 4:
-			if (pDoc->BtnStatus.EngAuto.IsFdDone)
+			//if (pDoc->BtnStatus.EngAuto.IsFdDone)//20250402
 			{
 				//pDoc->SetCurrentInfoSignal(_SigInx::_EngAutoSeqFdDone, FALSE);
 				//CheckCurrentInfoSignal();
