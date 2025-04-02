@@ -11512,7 +11512,7 @@ void CGvisR2R_LaserView::InitAutoEng()
 
 	m_nGetItsCodeSerial = 0;
 	pDoc->m_nShotNum = 0;
-	pDoc->m_bUploadPinImg = FALSE;
+	//pDoc->m_bUploadPinImg = FALSE;
 	pDoc->BtnStatus.EngAuto._Init();
 	InitAutoEngSignal();
 
