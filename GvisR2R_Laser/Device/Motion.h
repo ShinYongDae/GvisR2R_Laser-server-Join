@@ -29,7 +29,6 @@ class CMotion : public CWnd
 	int		m_nGroupID_Interpolation[2];
 
 #ifdef USE_NMC
-	//CXmpControl *m_pMotionCard;
 	CNmcDevice *m_pMotionCard;
 #endif
 	DWORD m_dwSt, m_dwEd;
@@ -86,18 +85,12 @@ public:
 	double GetSpeedProfile(int nMode,int nAxisID,double fMovingLength,double &fVel,double &fAcc,double &fJerk,int nSpeedType = HIGH_SPEED);
 	double GetSpeedProfile0(int nMode,int nAxisID,double fMovingLength,double &fVel,double &fAcc,double &fJerk,int nSpeedType = HIGH_SPEED);
 	double GetSpeedProfile1(int nMode,int nAxisID,double fMovingLength,double &fVel,double &fAcc,double &fJerk,int nSpeedType = HIGH_SPEED);
-	//long SetNotifyFlush();
-	//float GetEStopTime(int nMotionId);
-	//void SetEStopTime(int nMotionId, float fEStopTime);
-	//void ResetEStopTime(int nMotionId);
 	
 	BOOL Abort(int nMotionId);
-	//long SetInposition(int nAxis, double fInpRange);
 	long GetState(int nMotionId);
 	void LoadConfig();
 	BOOL ObjectMapping();
 	BOOL InitBoard();
-// 	BOOL SearchHomeBuf(BOOL bInitPos=TRUE);
 	BOOL SearchHome();
 	BOOL SearchHomePos(int nMotionId, BOOL bThread=TRUE);
 	BOOL IsHome(int nMotionId);
@@ -111,10 +104,7 @@ public:
 	BOOL Move(int nMotionId, double *pTgtPos, double dRatio, BOOL bAbs=ABS, BOOL bWait=NO_WAIT);
 	BOOL Move(int nMotionId, double *pTgtPos, double dSpd, double dAcc, double dDec, BOOL bAbs=ABS, BOOL bWait=WAIT);
 	BOOL Move0(int nMotionId, double *pTgtPos, double dSpd, double dAcc, double dDec, BOOL bAbs=ABS, BOOL bWait=WAIT);
-	//BOOL Move1(int nMotionId, double *pTgtPos, double dSpd, double dAcc, double dDec, BOOL bAbs=ABS, BOOL bWait=WAIT);
 	BOOL Move(int nMotionId, double dTgtPos, double dSpd, double dAcc, double dDec, BOOL bAbs=ABS, BOOL bWait=WAIT);
-	//BOOL MovePath(int nMotionId);
-	//BOOL SetErrMap(CMyFileErrMap *pMyFile);
 	double GetActualPosition(int nAxisId);  
 	BOOL Stop(int nMotionId);
 	BOOL EStop(int nMotionId);
@@ -122,21 +112,9 @@ public:
 	BOOL SetVMove(int nMotionId, double fVel, double fAcc);
 	BOOL VMove(int nMotionId, int nDir=1);
 
-	//long ReadAdc(int nSegment, int nCh);
-	//BOOL ReadBit(BYTE cBit, BOOL bInput=TRUE);
-	//unsigned long ReadAllBit(BOOL bInput);
-	//void WriteBit(BYTE cBit, BOOL bOn);
-	//void WriteData(long lData);
-	//
-	//unsigned short Read(int nSegment);
-	//void Write(int nSegment, unsigned short nOut);
-
-	//int GetElementID(int nMotionId);
-//	BOOL SetFeedRate(int nMotionId, double dFeedRate);
 	void SetPinPos(int nCam, int nMotionId, double &dX, double &dY);
 	void SetPinPos(int nCam, double dX, double dY);
 	void GetPinPos(int nCam, double &dX, double &dY);
-// 	void SetStBufPos(double dPos);
 
 
 	BOOL VMoveStop(int nMotionId, int nDir);
@@ -150,17 +128,12 @@ public:
 	BOOL SetTorque(int nAxisId, double dKgf);
 	double GetActualVelocity(int nAxisId);
 
-// 	void SetLeadPitch(int nAxisId, double dPitch);
 	double GetLeadPitch(int nAxisId);
 
 	afx_msg LRESULT OnBufThreadDone(WPARAM wPara, LPARAM lPara);
-	//long SetOriginPos(int nAxisId);
-// 	void SetBufInitPos(double dPos);
 	BOOL IsEnable(int nMsId);
 	BOOL IsServoOn(int nMotorID);
 
-	BOOL SetCollision(double dCollisionMargin);
-	//BOOL ChkCollision();
 	void GetData(long *addressActPos1, long *addressActPos2, long *addressDifferenceStored);
 
 	void WriteData(long lData);

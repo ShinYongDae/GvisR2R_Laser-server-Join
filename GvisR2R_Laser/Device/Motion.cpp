@@ -2278,27 +2278,12 @@ BOOL CMotion::IsServoOn(int nMotorID)
 #endif
 }
 
-BOOL CMotion::SetCollision(double dCollisionMargin)
-{
-	//return (m_pMotionCard->SetCollision(dCollisionMargin));
-	return TRUE;
-}
-
-//BOOL CMotion::ChkCollision()
-//{
-//	//return (m_pMotionCard->ChkXmpCollision());
-//	return FALSE;
-//}
-
 void CMotion::GetData(long *addressActPos1, long *addressActPos2, long *addressDifferenceStored)
 {
-	//m_pMotionCard->GetData(addressActPos1, addressActPos2, addressDifferenceStored);
 	long lDiff = 0;
 #ifdef USE_NMC
 	*addressActPos1 = (long)m_pMotionCard->GetActualPosition(AXIS_X0);
-	//*addressActPos2 = (long)m_pMotionCard->GetActualPosition(AXIS_X1);
 #endif
-	//*addressDifferenceStored = (lDiff = *addressActPos1 - *addressActPos2) > 0 ? lDiff : -lDiff;
 	*addressDifferenceStored = (lDiff = *addressActPos1) > 0 ? lDiff : -lDiff;
 }
 

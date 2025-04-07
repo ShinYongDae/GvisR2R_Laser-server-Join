@@ -12,17 +12,12 @@
 #include "Dialog/DlgInfo.h"
 #include "Dialog/DlgMenu01.h"
 #include "Dialog/DlgMenu02.h"
-//#include "Dialog/DlgMenu03.h"
-//#include "Dialog/DlgMenu04.h"
-//#include "Dialog/DlgMenu05.h"
 #include "Dialog/DlgUtil01.h"
 #include "Dialog/DlgUtil02.h"
 
 #include "Device/Motion.h"
 #include "Device/Light.h"
 #include "Device/Vision.h"
-#include "Device/MpDevice.h"
-//#include "Device/TcpIpClient.h"
 #include "Device/SR1000W.h"
 #include "Device/MDX2500.h"
 #include "Device/Engrave.h"
@@ -41,12 +36,6 @@
 #define FROM_DOMARK1			50
 #define FROM_DISPDEFIMG			100
 
-#define AT_LP					10
-#define MK_DONE_CHECK			30	// m_nStepMk
-#define MK_LIGHT_ERR			50	// m_nStepMk
-#define MK_END					100	// m_nStepMk
-
-#define MK_ST					100	// m_nMkStAuto
 #define ERR_PROC				120	// m_nMkStAuto
 #define REJECT_ST				200	// m_nMkStAuto
 #define ERROR_ST				250	// m_nMkStAuto
@@ -63,13 +52,10 @@
 #define ENG_2D_ST				150	// m_nEngStAuto
 
 #define TIM_INIT_VIEW				0
-#define TIM_TOWER_WINKER			10
-#define TIM_BTN_WINKER				11
 #define TIM_BUZZER_WARN				12
 #define TIM_MB_TIME_OUT				13
 #define TIM_DISP_STATUS				14
 #define TIM_MPE_IO					15
-// #define TIM_MK_START				16
 #define TIM_SHOW_MENU01				18
 #define TIM_SHOW_MENU02				19
 #define TIM_CHK_TEMP_STOP			20
@@ -77,7 +63,6 @@
 #define TIM_TCPIP_UPDATE			22
 #define TIM_START_UPDATE			100
 #define TIM_MENU01_UPDATE_WORK		101
-#define TIM_CHK_RCV_CURR_INFO_SIG	200
 #define TIM_CHK_RCV_MON_DISP_MAIN_SIG	201
 
 #define MAX_THREAD				3
@@ -169,8 +154,7 @@ class CGvisR2R_LaserView : public CFormView
 	int m_nRtnMyMsgBoxIdx;
 
 	int m_nPrevStepAuto, m_nPrevMkStAuto;
-	int m_nStepMk[4], m_nMkPcs[4]; 	// [0] Auto-Left, [1] Auto-Right, [2] Manual-Left, [3] Manual-Right 
-	int m_nMkStrip[2][4]; // [nCam][nStrip]
+	int m_nMkPcs[4]; 	// [0] Auto-Left, [1] Auto-Right, [2] Manual-Left, [3] Manual-Right 
 	int m_nErrCnt;
 	int m_nStepInitView;
 
@@ -179,9 +163,8 @@ class CGvisR2R_LaserView : public CFormView
 	int m_nStepDispMsg[10];
 	CString m_sFixMsg[2]; //[0]:up , [1]:dn
 
-	int m_nCntTowerWinker, m_nCntBtnWinker[4], m_nDlyWinker[4], m_nCntBz;
-	BOOL m_bTimTowerWinker, m_bTimBtnWinker, m_bTimBuzzerWarn;
-	BOOL m_bTowerWinker[3], m_bBtnWinker[4]; // [R/G/Y] , [Ready/Reset/Run/Stop]
+	int m_nCntBz;
+	BOOL m_bTimBuzzerWarn;
 	BOOL m_bTIM_DISP_STATUS, m_bTIM_MPE_IO;
 
 	CString m_sPrevMyMsg;
@@ -219,37 +202,23 @@ class CGvisR2R_LaserView : public CFormView
 	void CloseMyMsg();
 
 	void DispStsBar();
-
-	void SetMainMc(BOOL bOn);
 	void ExitProgram();
 	void HideAllDlg();
 	void DelAllDlg();
 	BOOL HwInit();
 	BOOL TcpIpInit();
-	void InitPLC();
 	void HwKill();
 	void ThreadInit();
 	void ThreadKill();
-	void GetMpeIO();
-	void GetMpeSignal();
-	void GetMpeData();
 	void DispTime();
 	void Init();
-	void InitIO();
 	BOOL InitAct();
 	void SwJog(int nAxisID, int nDir, BOOL bOn = TRUE);
 	int GetVsBufLastSerial();
 	int GetVsUpBufLastSerial();
 	int GetVsDnBufLastSerial();
 
-	void DoBoxSw();
-	void DoEmgSw();
-	void DoSens();
-	void DoInterlock();
-
-	BOOL SetCollision(double dCollisionMargin);
 	void DispStsMainMsg(int nIdx = 0);
-	void SetPlcParam();
 
 
 	BOOL SortingInUp(CString sPath, int nIndex);
@@ -284,8 +253,6 @@ public:
 	DWORD m_dwRead2dSt, m_dwRead2dEd;
 
 	BOOL m_bRcvSig[_SigInx::_EndIdx];
-	//stRcvSig m_stRcvSig;
-	CMpDevice* m_pMpe;
 	CPtAlign m_Align[2];	// [0] : LeftCam , [1] : RightCam
 #ifdef USE_VISION
 	CVision* m_pVision[2];	// [0] : LeftCam , [1] : RightCam
@@ -309,7 +276,6 @@ public:
 	BOOL m_bTIM_INIT_VIEW;
 	BOOL m_bCam, m_bReview;
 
-	BOOL m_bTIM_CHK_RCV_CURR_INFO_SIG;
 	BOOL m_bTIM_CHK_RCV_MON_DISP_MAIN_SIG;
 
 	DWORD m_dwThreadTick[MAX_THREAD];
@@ -417,7 +383,6 @@ public:
 	BOOL m_bShowMyMsg;
 	CWnd *m_pMyMsgForeground;
 
-	BOOL m_bRejectDone[2][MAX_STRIP_NUM]; // Shot[2], Strip[4] - [좌/우][] : 스트립에 펀칭한 피스 수 count가 스트립 폐기 설정수 완료 여부 
 
 	CString m_sDispSts[2];
 
@@ -454,8 +419,6 @@ public:
 	void StopFromThread();
 	void BuzzerFromThread(BOOL bOn, int nCh = 0);
 
-
-	void GetPlcParam();
 	BOOL WatiDispMain(int nDelay);
 
 	void RestoreReelmap();
@@ -469,11 +432,8 @@ public:
 	BOOL WaitClrDispMsg();
 	LONG OnQuitDispMsg(UINT wParam, LONG lParam);
 	void ShowDlg(int nID);
-	void DispIo();
-	void DispDatabaseConnection();
 
 	void TowerLamp(COLORREF color, BOOL bOn, BOOL bWink = FALSE);
-	void DispTowerWinker();
 	int MyPassword(CString strMsg, int nCtrlId = 0);
 
 	void GetEnc();
@@ -518,21 +478,13 @@ public:
 
 	void Shift2Buf();
 	void Shift2Mk();
-	BOOL IsMkFd();				// not used
-	BOOL IsAoiFd();				// not used
-	void SetMkFd(double dDist);
 	void SetDelay(int mSec, int nId = 0);
 	BOOL WaitDelay(int nId = 0);				// F:Done, T:On Waiting....
 	void SetDelay0(int mSec, int nId = 0);
 	BOOL WaitDelay0(int nId = 0);				// F:Done, T:On Waiting....
 	BOOL GetDelay(int &mSec, int nId = 0);	// F:Done, T:On Waiting....
 	BOOL GetDelay0(int &mSec, int nId = 0);	// F:Done, T:On Waiting....
-	BOOL IsMkFdDone();
-	BOOL IsAoiFdDone();
-	double GetAoi2InitDist();
-	double GetMkInitDist();
 	void UpdateWorking();
-	double GetMkRemain();
 	void Stop();
 	void ShowLive(BOOL bShow = TRUE);
 	void SetLotSt();
@@ -543,19 +495,9 @@ public:
 	void SetDelay1(int mSec, int nId = 0);
 	BOOL WaitDelay1(int nId = 0);				// F:Done, T:On Waiting....
 
-	BOOL IsAoiTblVac();
-	BOOL IsAoiTblVacDone();
-	BOOL IsTest();
-	BOOL IsTestUp();
-	BOOL IsTestDn();
-	BOOL IsTestDone();
-	BOOL IsTestDoneUp();
-	BOOL IsTestDoneDn();
 	BOOL IsStop();
 	BOOL IsRun();
 
-	int GetSerial();
-	void SetMkFdLen();
 	double GetMkFdLen();
 	double GetTotVel();
 	double GetPartVel();
@@ -661,16 +603,11 @@ public:
 	BOOL GetMkOffset(CfPoint &OfSt);
 	BOOL IsAoiLdRun();
 
-	void Winker(int nId, int nDly = 20); // 0:Ready, 1:Reset, 2:Run, 3:Stop
-	void ResetWinker(); // 0:Ready, 1:Reset, 2:Run, 3:Stop
-	void SetOrigin();
 	void SetLotEnd(int nSerial);
 	int GetLotEndSerial();
 	void ModelChange(int nAoi = 0); // 0 : AOI-Up , 1 : AOI-Dn
 	void UpdateRst();
 	int GetAutoStep();
-	void TimWinker(int nId, int nDly = 5);
-	void StopTimWinker(int nId);
 	BOOL IsShowLive();
 	BOOL IsChkTmpStop();
 	BOOL ChkLastProc();
@@ -682,8 +619,6 @@ public:
 	BOOL IsReview();
 	BOOL IsReview0();
 	BOOL IsReview1();
-	BOOL IsJogRtDn();
-	BOOL IsJogRtUp();
 	void OpenShareUp(BOOL bOpen = TRUE);
 	void OpenShareDn(BOOL bOpen = TRUE);
 	BOOL IsOpenShareUp();
@@ -697,12 +632,6 @@ public:
 	BOOL IsVs();
 	BOOL IsVsUp();
 	BOOL IsVsDn();
-	void SetDummyUp();
-	void SetDummyDn();
-	BOOL MakeDummyUp(int nErr);
-	BOOL MakeDummyDn(int nErr);
-	int GetAoiUpSerial();
-	int GetAoiDnSerial();
 	BOOL GetAoiUpVsStatus();
 	BOOL GetAoiDnVsStatus();
 	BOOL IsDoneDispMkInfo();
@@ -716,34 +645,21 @@ public:
 	void OpenReelmapUp();
 	void OpenReelmapDn();
 	BOOL IsRunAxisX();
-	void StopAllMk();
 	void EStop();
 	void SetAlignPos();
 	void SetAlignPosUp();
 	void SetAlignPosDn();
-	void MpeWrite();
 	void IoWrite(CString sMReg, long lData);
-	BOOL IsRdyTest();
 
 
 	BOOL LoadPcrUp(int nSerial, BOOL bFromShare = FALSE);
 	BOOL LoadPcrDn(int nSerial, BOOL bFromShare = FALSE);
-	void MoveAoi(double dOffset);
-	void MoveMk(double dOffset);
-	void InitIoWrite();
 
 	void SetLastProc();
 	BOOL IsLastProc();
 	BOOL IsLastJob(int nAoi); // 0 : AOI-Up , 1 : AOI-Dn , 2 : AOI-UpDn
 
-	void MonPlcAlm();
-	void MonMsgBox();
 	void MonDispMain();
-	void PlcAlm(BOOL bMon, BOOL bClr);
-	void FindAlarm();
-	void ResetMonAlm();
-	void ClrAlarm();
-	void ResetClear();
 
 	void ChkTempStop(BOOL bChk);
 	void ChgLot();
@@ -754,9 +670,6 @@ public:
 	void CycleStop();
 	BOOL ChkLotCutPos();
 	BOOL OpenReelmapFromBuf(int nSerial);
-	int GetAoiUpDummyShot();
-	int GetAoiDnDummyShot();
-	void SetAoiDummyShot(int nAoi, int nDummy);
 
 	void SetPathAtBuf();
 	void SetPathAtBufUp();
@@ -778,8 +691,6 @@ public:
 	BOOL RemakeReelmap();
 	BOOL IsDoneRemakeReelmap();
 
-	void SetReject();
-
 	BOOL ChkLightErr();
 	BOOL IsOnMarking0();
 	BOOL IsOnMarking1();
@@ -799,24 +710,14 @@ public:
 	BOOL IsInitPos0();
 	BOOL StartLive0();
 	BOOL StopLive0();
-	BOOL IsRdyTest0();
-	BOOL IsJogRtDn0();
-	BOOL IsJogRtUp0();
-
-	BOOL IsRdyTest1();
 
 	BOOL IsEngraveFdSts();
 	BOOL IsEngraveFd();
 	void SetEngraveFdSts();
 	void SetEngraveStopSts();
 	void SetEngraveSts(int nStep);
-	void SetEngraveFd();
-	void SetEngraveFd(double dDist);
-	void MoveEngrave(double dOffset);
 
 	double GetEngraveFdLen();
-	double GetAoiInitDist();
-	double GetAoiRemain();
 	void SetEngraveFdPitch(double dPitch);
 	BOOL IsConnected();
 	void DestroyView();
@@ -916,7 +817,6 @@ public:
 	void OpenReelmapInnerUp();
 	void OpenReelmapInnerDn();
 	void DispDefImgInner();
-	BOOL IsDoneDispMkInfoInner();
 	BOOL SetSerialReelmapInner(int nSerial, BOOL bDumy = FALSE);
 	BOOL SetSerialMkInfoInner(int nSerial, BOOL bDumy = FALSE);
 
@@ -956,8 +856,6 @@ protected:
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	afx_msg void OnClose();
-	afx_msg void OnDestroy();
 };
 
 #ifndef _DEBUG  // GvisR2R_LaserView.cpp의 디버그 버전

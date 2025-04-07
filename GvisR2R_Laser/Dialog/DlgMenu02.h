@@ -84,18 +84,12 @@ class CDlgMenu02 : public CDialog
 	void InitStcData();
 	void InitBtn();
 	void InitLabel();
-//	void InitGL();
 	void InitSlider();
-	void DispBufEnc();
 	void DispAxisPos();
 	void DispCenterMark();
 	void MarkingOff();
-//	CfPoint GetPcsCenterOffset(CPoint pt);
 	void MsClr(int nMsId);
 	void ShowDlg(int nID);
-	
-// 	void InitResMeas();
-// 	void SetResMeas(int nStep);
 
 	void Disp();
 	void Input_myStcData(int nIdx, int nCtlId); // , CPoint ptSt, int nDir);
@@ -115,7 +109,6 @@ public:
 	double m_dMkFdOffsetX[2][4], m_dMkFdOffsetY[2][4];// 2Cam / 4Point Align
 	double m_dAoiUpFdOffsetX, m_dAoiUpFdOffsetY;
 	double m_dAoiDnFdOffsetX, m_dAoiDnFdOffsetY;
-// 	BOOL m_bMkDnSolOff;
 
 	double m_dOneShotRemainLen;
 	void DispOneShotRemainLen();
@@ -132,21 +125,15 @@ public:
 
 	int GetJogSpd();
 	void SetJogSpd();
-	//void SetJogSpd2();
 	void SetJogSpd(int nSpd);
-	//void SetJogSpd2(int nSpd);
 	void SetLight(int nVal=-1);
 	void ResetLight();
 	BOOL MovePos(int nPos);
-	//BOOL MovePos2(int nPos);
 	BOOL MovePinPos();
-	//BOOL MoveAlign0(int nPos);
 	BOOL Grab(int nPos, BOOL bMove=FALSE);
 	BOOL OnePointAlign(CfPoint &ptPnt);
 	BOOL GetPmRst0(double &dX, double &dY, double &dAgl, double &dScr);
 	BOOL GetPmRst1(double &dX, double &dY, double &dAgl, double &dScr);
-	//BOOL TwoPointAlign(int nPos);
-	//BOOL TwoPointAlign0(int nPos);
 
 
 	void SetLight2(int nVal = -1);
@@ -157,26 +144,18 @@ public:
 
 	void SwMyBtnDown(int nCtrlID);
 	void SwMyBtnUp(int nCtrlID);
-	void SwMarking();
-	//void SwMarking2();
 
-//	void SetMkPos(CfPoint ptOfst);
 	void SetMkCurPos(int nCam);
 	void SetMkDlyOff(int nCam, int mSec=WAIT_MARKING);
 	void SetPinPos(int nCam, CfPoint ptPnt);
-//	void DispLocalSpec();
-// 	void SetPcsOffset();
 	void ChgModel();
 	void ChgModelUp();
 	void ChgModelDn();
 
-// 	void PinSave();
 	void ResetMotion(int nMsId);
 
 	BOOL ShowKeypad(int nCtlID, CPoint ptSt=(0, 0), int nDir=TO_NONE);
 
-	BOOL DoAlign0(int nPos, BOOL bDraw=FALSE);
-//	BOOL DoAlign1(int nPos, BOOL bDraw=FALSE);
 
 	void ResetMkTestBtn();
 	void InitCadImg();
@@ -231,7 +210,6 @@ protected:
 	afx_msg void OnChkMkOffsetSt();
 	afx_msg void OnChkMkOffsetEd();
 	afx_msg void OnBtnAlignMove();
-	afx_msg void OnBtnAlign();
 	afx_msg void OnBtnGrab();
 	afx_msg void OnBtnHomeSave();
 	afx_msg void OnStcAlignStdScr();
@@ -247,14 +225,10 @@ public:
 	afx_msg void OnStnClickedStc40();
 	afx_msg void OnStnClickedStc17();
 	afx_msg void OnStnClickedStc19();
-	afx_msg void OnStnClickedStc36();
 	afx_msg void OnStnClickedStc45();
-	afx_msg void OnStnClickedStc180();
 	afx_msg void OnStnClickedStc184();
 	afx_msg void OnStnClickedStc218();
 	afx_msg void OnStnClickedStc225();
-	afx_msg void OnBnClickedBtnBuffInitSave1();
-	afx_msg void OnBnClickedBtnBuffInitMove1();
 	afx_msg void OnStnClickedStc38();
 	afx_msg void OnStnClickedStc191();
 	afx_msg void OnBnClickedBtn2dReading();

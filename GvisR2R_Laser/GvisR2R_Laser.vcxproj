@@ -208,7 +208,6 @@
     <ClInclude Include="Device\Mdx2500Def.h" />
     <ClInclude Include="Device\Motion.h" />
     <ClInclude Include="Device\MotionParam.h" />
-    <ClInclude Include="Device\MpDevice.h" />
     <ClInclude Include="Device\MyFileErrMap.h" />
     <ClInclude Include="Device\NmcAxis.h" />
     <ClInclude Include="Device\NmcDevice.h" />
@@ -302,7 +301,6 @@
     <ClCompile Include="Device\Light.cpp" />
     <ClCompile Include="Device\Mdx2500.cpp" />
     <ClCompile Include="Device\Motion.cpp" />
-    <ClCompile Include="Device\MpDevice.cpp" />
     <ClCompile Include="Device\MyFileErrMap.cpp" />
     <ClCompile Include="Device\NmcAxis.cpp" />
     <ClCompile Include="Device\NmcDevice.cpp" />

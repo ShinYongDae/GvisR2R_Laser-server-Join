@@ -124,7 +124,6 @@ public:
 	CString GetStTime();
 	CString GetRunTime();
 	CString GetEdTime();
-	int GetSerial();
 	BOOL SetSerial(int nSerial, BOOL bDumy=FALSE);
 	void UpdateWorking();
 	void UpdateData();
@@ -176,7 +175,6 @@ public:
 
 	void EnableBtn(BOOL bEnable=TRUE);
 	BOOL IsEnableBtn();
-	void ChkPartialSpd();
 	void ResetLastProc();
 	void UpdateTotVel(CString sVel);
 	void SetDualTest(BOOL bOn);

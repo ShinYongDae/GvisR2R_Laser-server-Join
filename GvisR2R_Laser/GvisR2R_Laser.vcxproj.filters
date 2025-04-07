@@ -228,9 +228,6 @@
     <ClInclude Include="Dialog\DlgClient.h">
       <Filter>Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="Device\MpDevice.h">
-      <Filter>Device</Filter>
-    </ClInclude>
     <ClInclude Include="Dialog\DlgKeyNum.h">
       <Filter>Dialog</Filter>
     </ClInclude>
@@ -478,9 +475,6 @@
     </ClCompile>
     <ClCompile Include="Dialog\DlgClient.cpp">
       <Filter>Dialog</Filter>
-    </ClCompile>
-    <ClCompile Include="Device\MpDevice.cpp">
-      <Filter>Device</Filter>
     </ClCompile>
     <ClCompile Include="Dialog\DlgKeyNum.cpp">
       <Filter>Dialog</Filter>

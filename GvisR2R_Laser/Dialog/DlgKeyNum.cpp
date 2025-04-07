@@ -1000,12 +1000,6 @@ void CDlgKeyNum::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 	if(nIDEvent == TIM_SHOW_KEYPADNUM)
 	{
 		KillTimer(TIM_SHOW_KEYPADNUM);
-// 		if(!m_bTIM_DLG_KEYBDNUM_Lock)
-// 		{
-// 			m_bTIM_DLG_KEYBDNUM_Lock = TRUE;
-// 			this->PostMessage(WM_MY_KEYPADNUM,0,0);
-// 			//DispIo();
-// 		}
 		if(!this->IsWindowVisible())
 			this->ShowWindow(SW_SHOW);
 

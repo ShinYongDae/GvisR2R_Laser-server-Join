@@ -29,7 +29,7 @@ CEngrave::CEngrave(CString sAddrCli, CString sAddrSvr, CString sPortSvr, CWnd* p
 	if(pParent)
 		m_hParentWnd = pParent->GetSafeHwnd();
 
-	m_bTIM_CHK_RCV_SIG = FALSE;
+	//m_bTIM_CHK_RCV_SIG = FALSE;
 	for (nMsgID = 0; nMsgID < _SigInx::_EndIdx; nMsgID++)
 	{
 		m_bSendSig[nMsgID] = FALSE;
@@ -69,7 +69,7 @@ CEngrave::CEngrave(CString sAddrCli, CString sAddrSvr, CString sPortSvr, CWnd* p
 
 CEngrave::~CEngrave()
 {
-	m_bTIM_CHK_RCV_SIG = FALSE;
+	//m_bTIM_CHK_RCV_SIG = FALSE;
 }
 
 
@@ -458,20 +458,20 @@ void CEngrave::OnTimer(UINT_PTR nIDEvent)
 		//if(!m_pServer->IsConnected(m_strAddrCli))
 		//	SetTimer(TIM_CONNECT + 1, 1000, NULL);
 		break;
-	case TIM_CHK_RCV_SIG:
-		KillTimer(TIM_CHK_RCV_SIG);
-		for (nMsgID = 0; nMsgID < _SigInx::_EndIdx; nMsgID++)
-		{
-			if (m_bSendSig[nMsgID])		// 상대방이 받지 못하면 500mSec 후에 다시 신호를 전송함.
-			{
-				SetSignal(nMsgID, m_nSendSigData[nMsgID]);		// 1 : Return RCV_Signal, 0 : No Return
-				if (!m_nSendSigData[nMsgID])
-					m_bSendSig[nMsgID] = FALSE;
-			}
-		}
-		if(m_bTIM_CHK_RCV_SIG)
-			SetTimer(TIM_CHK_RCV_SIG, 500, NULL);
-		break;
+	//case TIM_CHK_RCV_SIG:
+	//	KillTimer(TIM_CHK_RCV_SIG);
+	//	for (nMsgID = 0; nMsgID < _SigInx::_EndIdx; nMsgID++)
+	//	{
+	//		if (m_bSendSig[nMsgID])		// 상대방이 받지 못하면 500mSec 후에 다시 신호를 전송함.
+	//		{
+	//			SetSignal(nMsgID, m_nSendSigData[nMsgID]);		// 1 : Return RCV_Signal, 0 : No Return
+	//			if (!m_nSendSigData[nMsgID])
+	//				m_bSendSig[nMsgID] = FALSE;
+	//		}
+	//	}
+	//	if(m_bTIM_CHK_RCV_SIG)
+	//		SetTimer(TIM_CHK_RCV_SIG, 500, NULL);
+	//	break;
 	}
 	CWnd::OnTimer(nIDEvent);
 }
@@ -1714,7 +1714,6 @@ void CEngrave::GetCurrentInfoSignal(SOCKET_DATA SockData)
 		case _SigInx::_IsGetCurrentInfoSignal:
 			//m_bRcvSig[_SigInx::_IsGetCurrentInfoSignal] = TRUE;
 			pDoc->BtnStatus.EngAuto.IsGetCurrentInfoSignal = (SockData.nData1 > 0) ? TRUE : FALSE;
-			pView->m_bTIM_CHK_RCV_CURR_INFO_SIG = FALSE;
 			break;
 		case _SigInx::_IsGetMonDispMainSignal:
 			//m_bRcvSig[_SigInx::_IsGetMonDispMainSignal] = TRUE;
@@ -1991,12 +1990,6 @@ void CEngrave::GetOpInfo(SOCKET_DATA SockData)
 
 				::WritePrivateProfileString(_T("Last Job"), _T("Reel Total Length"), pDoc->WorkingInfo.LastJob.sReelTotLen, PATH_WORKING_INFO);
 				::WritePrivateProfileString(_T("Lot"), _T("LOT_TOTAL_REEL_DIST"), pDoc->WorkingInfo.Lot.sTotalReelDist, PATH_WORKING_INFO);
-
-#ifdef USE_MPE
-				lData = (long)(_tstof(pDoc->WorkingInfo.LastJob.sReelTotLen) * 1000.0);
-				if (pView && pView->m_pMpe)
-					pView->m_pMpe->Write(_T("ML45000"), lData);	// 전체 Reel 길이 (단위 M * 1000)
-#endif
 			}
 			break;
 		case _ItemInx::_OnePnlLen:
@@ -2010,10 +2003,6 @@ void CEngrave::GetOpInfo(SOCKET_DATA SockData)
 				::WritePrivateProfileString(_T("Last Job"), _T("One Panel Length"), pDoc->WorkingInfo.Motion.sMkFdDist, PATH_WORKING_INFO);
 				::WritePrivateProfileString(_T("Motion"), _T("MARKING_FEEDING_SERVO_DIST"), pDoc->WorkingInfo.Motion.sMkFdDist, PATH_WORKING_INFO);
 				::WritePrivateProfileString(_T("Motion"), _T("AOI_FEEDING_SERVO_DIST"), pDoc->WorkingInfo.Motion.sMkFdDist, PATH_WORKING_INFO);
-#ifdef USE_MPE
-				lData = (long)(pDoc->m_pReelMap->m_dPnlLen * 1000.0);
-				pView->m_pMpe->Write(_T("ML45032"), lData);	// 한 판넬 길이 (단위 mm * 1000)
-#endif
 			}
 			break;
 		case _ItemInx::_TempStopLen:
@@ -2027,10 +2016,6 @@ void CEngrave::GetOpInfo(SOCKET_DATA SockData)
 					pDoc->m_pReelMap->m_dTempPauseLen = _tstof(pDoc->WorkingInfo.LastJob.sTempPauseLen);
 				::WritePrivateProfileString(_T("Last Job"), _T("Temporary Pause Length"), pDoc->WorkingInfo.LastJob.sTempPauseLen, PATH_WORKING_INFO);
 
-#ifdef USE_MPE
-				lData = (long)(_tstof(pDoc->WorkingInfo.LastJob.sTempPauseLen) * 1000.0);
-				pView->m_pMpe->Write(_T("ML45006"), lData);	// 일시정지 길이 (단위 M * 1000)
-#endif
 			}
 			break;
 		case _ItemInx::_LotCutLen:
@@ -2053,10 +2038,6 @@ void CEngrave::GetOpInfo(SOCKET_DATA SockData)
 					pDoc->m_pReelMap->m_dLotCutPosLen = _tstof(pDoc->WorkingInfo.LastJob.sLotCutPosLen);
 				::WritePrivateProfileString(_T("Last Job"), _T("Lot Cut Position Length"), pDoc->WorkingInfo.LastJob.sLotCutPosLen, PATH_WORKING_INFO);
 
-#ifdef USE_MPE
-				lData = (long)(_tstof(pDoc->WorkingInfo.LastJob.sLotCutPosLen) * 1000.0);
-				pView->m_pMpe->Write(_T("ML45004"), lData);	// Lot 분리 후 절단위치 (단위 M * 1000)
-#endif
 			}
 			break;
 		case _ItemInx::_LmtTotYld:
@@ -2121,13 +2102,6 @@ void CEngrave::GetOpInfo(SOCKET_DATA SockData)
 
 				::WritePrivateProfileString(_T("Last Job"), _T("Ultra Sonic Cleanner Start Time"), pDoc->WorkingInfo.LastJob.sUltraSonicCleannerStTim, PATH_WORKING_INFO);
 				lData = (long)(_tstof(pDoc->WorkingInfo.LastJob.sUltraSonicCleannerStTim) * 100.0);
-#ifdef USE_MPE
-				if (pView && pView->m_pMpe)
-				{
-					pView->m_pMpe->Write(_T("MW05940"), (long)lData);	// AOI_Dn (단위 [초] * 100) : 1 is 10 mSec.
-					pView->m_pMpe->Write(_T("MW05942"), (long)lData);	// AOI_Up (단위 [초] * 100) : 1 is 10 mSec.
-				}
-#endif
 			}
 			break;
 		case _ItemInx::_EngItsCode:
@@ -2160,11 +2134,6 @@ void CEngrave::GetInfo(SOCKET_DATA SockData)
 				m_bGetInfo = TRUE;
 				pDoc->WorkingInfo.LastJob.bTempPause = (SockData.nData1 > 0) ? TRUE : FALSE;
 				pView->m_bRcvSig[_SigInx::_TempPause] = TRUE;
-//				::WritePrivateProfileString(_T("Last Job"), _T("Use Temporary Pause"), pDoc->WorkingInfo.LastJob.bTempPause ? _T("1") : _T("0"), PATH_WORKING_INFO);
-//#ifdef USE_MPE
-//				if (pView && pView->m_pMpe)
-//					pView->m_pMpe->Write(_T("MB440183"), pDoc->WorkingInfo.LastJob.bTempPause ? 1 : 0);
-//#endif
 			}
 			break;
 		}
@@ -2967,22 +2936,12 @@ void CEngrave::GetFdInfo(SOCKET_DATA SockData)
 
 			::WritePrivateProfileString(_T("Motion"), _T("MARKING_FEEDING_JOG_VEL"), pDoc->WorkingInfo.Motion.sMkJogVel, PATH_WORKING_INFO);
 			::WritePrivateProfileString(_T("Motion"), _T("AOI_FEEDING_JOG_VEL"), pDoc->WorkingInfo.Motion.sAoiJogVel, PATH_WORKING_INFO);
-#ifdef USE_MPE
-			lData = (long)(_tstof(pDoc->WorkingInfo.Motion.sMkJogVel) * 1000.0);
-			if(pView && pView->m_pMpe)
-				pView->m_pMpe->Write(_T("ML45038"), lData);	// 연속공급 속도 (단위 mm/sec * 1000)
-#endif
 			break;
 		case _ItemInx::_FdAcc:
 			pDoc->WorkingInfo.Motion.sMkJogAcc = pDoc->WorkingInfo.Motion.sAoiJogAcc = CharToString(SockData.strData);
 
 			::WritePrivateProfileString(_T("Motion"), _T("MARKING_FEEDING_JOG_ACC"), pDoc->WorkingInfo.Motion.sMkJogAcc, PATH_WORKING_INFO);
 			::WritePrivateProfileString(_T("Motion"), _T("AOI_FEEDING_JOG_ACC"), pDoc->WorkingInfo.Motion.sAoiJogAcc, PATH_WORKING_INFO);
-#ifdef USE_MPE
-			lData = (long)(_tstof(pDoc->WorkingInfo.Motion.sMkJogAcc) * 1000.0);
-			if (pView && pView->m_pMpe)
-				pView->m_pMpe->Write(_T("ML45040"), lData);	// 연속공급 가속도 (단위 mm/s^2 * 1000)
-#endif
 			break;
 		case _ItemInx::_OnePnlLen:
 			pDoc->WorkingInfo.Motion.sMkFdDist = CharToString(SockData.strData);
@@ -2992,22 +2951,12 @@ void CEngrave::GetFdInfo(SOCKET_DATA SockData)
 
 			::WritePrivateProfileString(_T("Motion"), _T("MARKING_FEEDING_SERVO_VEL"), pDoc->WorkingInfo.Motion.sMkFdVel, PATH_WORKING_INFO);
 			::WritePrivateProfileString(_T("Motion"), _T("AOI_FEEDING_SERVO_VEL"), pDoc->WorkingInfo.Motion.sMkFdVel, PATH_WORKING_INFO);
-#ifdef USE_MPE
-			lData = (long)(_tstof(pDoc->WorkingInfo.Motion.sMkFdVel) * 1000.0);
-			if (pView && pView->m_pMpe)
-				pView->m_pMpe->Write(_T("ML45034"), lData);	// 한 판넬 Feeding 속도 (단위 mm/sec * 1000)
-#endif
 			break;
 		case _ItemInx::_OnePnlAcc:
 			pDoc->WorkingInfo.Motion.sMkFdAcc = CharToString(SockData.strData);
 
 			::WritePrivateProfileString(_T("Motion"), _T("MARKING_FEEDING_SERVO_ACC"), pDoc->WorkingInfo.Motion.sMkFdAcc, PATH_WORKING_INFO);
 			::WritePrivateProfileString(_T("Motion"), _T("AOI_FEEDING_SERVO_ACC"), pDoc->WorkingInfo.Motion.sMkFdAcc, PATH_WORKING_INFO);
-#ifdef USE_MPE
-			lData = (long)(_tstof(pDoc->WorkingInfo.Motion.sMkFdAcc) * 1000.0);
-			if (pView && pView->m_pMpe)
-				pView->m_pMpe->Write(_T("ML45036"), lData);	// 한 판넬 Feeding 가속도 (단위 mm/s^2 * 1000)
-#endif
 			break;
 		case _ItemInx::_FdDiffMax:
 			pDoc->WorkingInfo.Motion.sLmtFdErr = CharToString(SockData.strData);
@@ -3055,31 +3004,16 @@ void CEngrave::GetAoiInfo(SOCKET_DATA SockData)
 			pDoc->WorkingInfo.Motion.sAoiTq = CharToString(SockData.strData);
 
 			::WritePrivateProfileString(_T("Motion"), _T("AOI_TENSION_SERVO_TORQUE"), pDoc->WorkingInfo.Motion.sAoiTq, PATH_WORKING_INFO);
-#ifdef USE_MPE
-			lData = (long)(_tstof(pDoc->WorkingInfo.Motion.sAoiTq) * 1000.0);
-			if (pView && pView->m_pMpe)
-				pView->m_pMpe->Write(_T("ML45042"), lData);	// 검사부 Tension 모터 토크값 (단위 Kgf * 1000)
-#endif
 			break;
 		case _ItemInx::_AoiBuffShotNum:
 			pDoc->WorkingInfo.Motion.sFdAoiAoiDistShot = CharToString(SockData.strData);
 
 			::WritePrivateProfileString(_T("Motion"), _T("FEEDING_AOI_AOI_SHOT_NUM"), pDoc->WorkingInfo.Motion.sFdAoiAoiDistShot, PATH_WORKING_INFO);
-#ifdef USE_MPE
-			lData = (long)(_tstoi(pDoc->WorkingInfo.Motion.sFdAoiAoiDistShot) * 1000);
-			if (pView && pView->m_pMpe)
-				pView->m_pMpe->Write(_T("ML45010"), lData);	// AOI(상)에서 AOI(하) Shot수 (단위 Shot수 * 1000)
-#endif
 			break;
 		case _ItemInx::_AoiMkLen:
 			pDoc->WorkingInfo.Motion.sFdMkAoiInitDist = CharToString(SockData.strData);
 
 			::WritePrivateProfileString(_T("Motion"), _T("FEEDING_PUNCH_AOI_INIT_DIST"), pDoc->WorkingInfo.Motion.sFdMkAoiInitDist, PATH_WORKING_INFO);
-#ifdef USE_MPE
-			lData = (long)(_tstof(pDoc->WorkingInfo.Motion.sFdMkAoiInitDist) * 1000.0);
-			if (pView && pView->m_pMpe)
-				pView->m_pMpe->Write(_T("ML45008"), lData);	// AOI(하)에서 마킹까지 거리 (단위 mm * 1000)
-#endif
 			break;
 		default:
 			break;
@@ -3113,21 +3047,11 @@ void CEngrave::GetMkInfo(SOCKET_DATA SockData)
 			pDoc->WorkingInfo.Motion.sMkTq = CharToString(SockData.strData);
 
 			::WritePrivateProfileString(_T("Motion"), _T("MARKING_TENSION_SERVO_TORQUE"), pDoc->WorkingInfo.Motion.sMkTq, PATH_WORKING_INFO);
-#ifdef USE_MPE
-			lData = (long)(_tstof(pDoc->WorkingInfo.Motion.sMkTq) * 1000.0);
-			if (pView && pView->m_pMpe)
-				pView->m_pMpe->Write(_T("ML45044"), lData);	// 마킹부 Tension 모터 토크값 (단위 Kgf * 1000)
-#endif
 			break;
 		case _ItemInx::_MkBuffInitPos:
 			pDoc->WorkingInfo.Motion.sStBufPos = CharToString(SockData.strData);
 
 			::WritePrivateProfileString(_T("Motion"), _T("START_BUFFER_POSITION"), pDoc->WorkingInfo.Motion.sStBufPos, PATH_WORKING_INFO);
-#ifdef USE_MPE
-			lData = (long)(_tstof(pDoc->WorkingInfo.Motion.sStBufPos) * 1000.0);
-			if (pView && pView->m_pMpe)
-				pView->m_pMpe->Write(_T("ML45016"), lData);	// 버퍼 관련 설정 롤러 초기위치(단위 mm * 1000)
-#endif
 			break;
 		case _ItemInx::_MkBuffCurrPos:
 			pDoc->m_dMkBuffCurrPos = (double)SockData.fData1;

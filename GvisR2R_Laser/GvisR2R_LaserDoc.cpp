@@ -6037,10 +6037,6 @@ void CGvisR2R_LaserDoc::SetMkFdPitch(double dPitch)
 	sVal.Format(_T("%.3f"), dPitch);
 	WorkingInfo.Motion.sMkFdLead = sVal;
 	::WritePrivateProfileString(_T("Motion"), _T("MARKING_FEEDING_DRUM_LEAD_PITCH"), sVal, sPath);
-#ifdef USE_MPE
-	long lData = (long)(dPitch * 1000.0);
-	pView->m_pMpe->Write(_T("ML45014"), lData);	// 마킹부 Feeding 롤러 Lead Pitch (단위 mm * 1000)
-#endif
 }
 
 double CGvisR2R_LaserDoc::GetMkFdPitch()

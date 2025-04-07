@@ -72,8 +72,6 @@ public:
 
 	//=============================================================================================
 
-	stMpeIoWrite m_pIo[TOT_M_IO];
-
 	int m_nPrevSerial;
 	int AoiDummyShot[2]; // [Up/Dn]
 

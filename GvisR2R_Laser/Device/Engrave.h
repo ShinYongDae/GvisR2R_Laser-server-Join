@@ -5,7 +5,7 @@
 #include "EngraveDef.h"
 
 #define TIM_CONNECT	1
-#define TIM_CHK_RCV_SIG	100
+//#define TIM_CHK_RCV_SIG	100
 
 
 class CEngrave : public CWnd
@@ -18,7 +18,7 @@ class CEngrave : public CWnd
 	CString	m_strAddrCli;
 	int m_nServerID;
 
-	BOOL m_bTIM_CHK_RCV_SIG;
+	//BOOL m_bTIM_CHK_RCV_SIG;
 	BOOL m_bWaitForResponse;
 	CString m_strResponse;
 	int m_nCmd;

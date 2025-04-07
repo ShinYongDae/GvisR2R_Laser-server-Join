@@ -73,7 +73,6 @@
 	//#define	USE_XMP
 	//#define	USE_MPE
 	//#define	USE_SMAC
-	//#define	USE_FLUCK
 
 	#define PATH_PIN_IMG			_T("C:\\R2RSet\\Pin\\Pin.TIF")
 	#define PATH_ALIGN0_IMG			_T("C:\\R2RSet\\Align\\Align0.TIF")
@@ -1935,43 +1934,6 @@ struct stStatus
 		bDoorUcF[0] = FALSE; bDoorUcF[1] = FALSE; bDoorUcF[2] = FALSE; bDoorUcF[3] = FALSE;
 		bDoorRe[0] = FALSE; bDoorRe[1] = FALSE; bDoorRe[2] = FALSE; bDoorRe[3] = FALSE; bDoorRe[4] = FALSE;
 		bDoorReF[0] = FALSE; bDoorReF[1] = FALSE; bDoorReF[2] = FALSE; bDoorReF[3] = FALSE; bDoorReF[4] = FALSE;
-	}
-};
-
-
-// struct stAlignMark
-// {
-// 	float X1, Y1;
-// 	float X2, Y2;
-// 
-// 	stAlignMark()
-// 	{
-// 		X1=0.0; Y1=0.0;
-// 		X2=0.0; Y2=0.0;
-// 	}
-// };
-
-// struct stPieceMark
-// {
-// 	float X, Y;
-// 
-// 	stPieceMark()
-// 	{
-// 		X=0.0; Y=0.0;
-// 	}
-// };
-
-struct stMpeIoWrite
-{
-	int nIdx;
-	CString sAddr;
-	long lData;
-
-	stMpeIoWrite()
-	{
-		nIdx = -1;
-		sAddr = _T("");
-		lData = 0;
 	}
 };
 

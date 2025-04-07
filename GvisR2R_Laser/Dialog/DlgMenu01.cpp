@@ -11,7 +11,7 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
+ 
 #include "../MainFrm.h"
 #include "../GvisR2R_LaserDoc.h"
 #include "../GvisR2R_LaserView.h"
@@ -107,7 +107,6 @@ BEGIN_MESSAGE_MAP(CDlgMenu01, CDialog)
 	ON_WM_SHOWWINDOW()
 	ON_BN_CLICKED(IDC_CHK_USER_INFO, OnChkUserInfo)
 	ON_WM_PAINT()
-//	ON_BN_CLICKED(IDC_CHK_TP_STOP, OnChkTpStop)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_CHK_EJECT_BUFFER, OnChkEjectBuffer)
 	ON_BN_CLICKED(IDC_CHK_REVIEW, OnChkReview)
@@ -2523,7 +2522,6 @@ void CDlgMenu01::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 		KillTimer(TIM_DISP_MK_CNT);
 		//DispMkCnt();
 		//ChkMkLimit();
-		//ChkPartialSpd();
 		if(m_bTIM_DISP_MK_CNT)
 			SetTimer(TIM_DISP_MK_CNT, 300, NULL);
 	}
@@ -2864,7 +2862,6 @@ BOOL CDlgMenu01::SetSerialReelmap(int nSerial, BOOL bDumy)
 {
 	if(nSerial <= 0)
 	{
-		//pView->MsgBox(_T("Serial Error.6"));
 		return 0;
 	}
 	m_nSerial = nSerial;
@@ -2887,32 +2884,8 @@ BOOL CDlgMenu01::SetSerialMkInfo(int nSerial, BOOL bDumy)
 		DispMkInfo();
 	}
 	return TRUE;
-
-//	CString sPath;
-//	if(pDoc->MakeMkDir())
-	//{
-	//	if(m_nSerial != nSerial)
-	//	{
-	//		m_nSerial = nSerial;
-
-	//		if(nSerial == pView->m_nLotEndSerial)
-	//			int nBreak = 1;
-
-	//		//if(nSerial < pView->GetLotEndSerial() || !pView->GetLotEndSerial())
-	//		if(nSerial <= pView->m_nLotEndSerial || !pView->m_nLotEndSerial)
-	//			DispMkInfo();
-	//	}
-	//	return TRUE;
-	//}
-
-	//return FALSE;
 }
 
-
-int CDlgMenu01::GetSerial()
-{
-	return m_nSerial;
-}
 
 void CDlgMenu01::ResetSerial()
 {
@@ -2933,41 +2906,27 @@ void CDlgMenu01::ResetSerial()
 	{
 		myBtn[6].SetCheck(FALSE);
 		m_bLotEnd = FALSE;
-#ifdef USE_MPE
-		if(pView->m_pMpe)
-			pView->m_pMpe->Write(_T("MB440180"), 0);			// 작업종료(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
-#endif
 	}
 
 	if(myBtn[4].GetCheck())
 	{
 		pView->m_bReMk = FALSE;
 		myBtn[4].SetCheck(FALSE);
-#ifdef USE_MPE
-		if(pView->m_pMpe)
-			pView->m_pMpe->Write(_T("MB440182"), 0);			// 재마킹(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
-#endif
 	}
 }
 
 void CDlgMenu01::UpdateData()
 {
 	CString sVal;
+	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 
 	myStcData[0].SetText(pDoc->WorkingInfo.LastJob.sSelUserName);	// 운용자
-	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
+	myStcData[1].SetText(pDoc->WorkingInfo.LastJob.sModelUp);		// 모델
+	myStcData[2].SetText(pDoc->WorkingInfo.LastJob.sLayerUp);		// 상면레이어
+	myStcData[3].SetText(pDoc->WorkingInfo.LastJob.sLotUp);			// 로트
 	if(bDualTest)
 	{
-		//myStcData[1].SetText(pDoc->WorkingInfo.LastJob.sModelDn);		// 모델
-		//myStcData[3].SetText(pDoc->WorkingInfo.LastJob.sLotDn);		// 로트
-		//myStcData[2].SetText(pDoc->WorkingInfo.LastJob.sLayerUp);		// 상면레이어
 		myStcData[75].SetText(pDoc->WorkingInfo.LastJob.sLayerDn);		// 하면레이어
-	}
-	//else
-	{
-		myStcData[1].SetText(pDoc->WorkingInfo.LastJob.sModelUp);		// 모델
-		myStcData[3].SetText(pDoc->WorkingInfo.LastJob.sLotUp);			// 로트
-		myStcData[2].SetText(pDoc->WorkingInfo.LastJob.sLayerUp);		// 상면레이어
 	}
 	
 	double dTotLen = _tstof(pDoc->WorkingInfo.LastJob.sReelTotLen) * 1000.0;
@@ -2978,18 +2937,14 @@ void CDlgMenu01::UpdateData()
 
 	double dFdTotLen = pView->GetMkFdLen();
 
-	//sVal.Format(_T("%d"), (int)(dFdTotLen / dTotLen * 100.0));
 	sVal.Format(_T("%d"), (int)(pDoc->Menu01Status.Info.dTotWorkRto));
 	myStcData[5].SetText(sVal);			// 전체진행율
 
-	//sVal.Format(_T("%d"), (int)(dFdTotLen / dTotLen * 100.0));
-// 	sVal.Format(_T("%d"), (int)(dFdTotLen / dLotLen * 100.0));
 	sVal.Format(_T("%d"), (int)(pDoc->Menu01Status.Info.dLotWorkRto));
 	myStcData[6].SetText(sVal);			// 로트진행율
 
 	myStcData[6].SetText(_T(""));		// 로트진행율
 
-	//myStcData[10].SetText(_T("Off"));	// 로트 분리
 	myStcData[10].SetText(pDoc->WorkingInfo.LastJob.sStripOutRatio);	// 스트립 양폐율[%]
 	myStcData[10].SetBkColor(RGB_WHITE);
 
@@ -3004,24 +2959,18 @@ void CDlgMenu01::UpdateData()
 	if(pDoc->WorkingInfo.LastJob.bTempPause)
 	{
 		myBtn[0].SetCheck(TRUE);
-
-// 		sVal.Format(_T("%.1f"), pDoc->m_pReelMap->m_dTempPauseLen * 1000.0);
 		myStcData[9].SetText(pDoc->WorkingInfo.LastJob.sTempPauseLen);	// 일시정지길이
 	}
 	else
 	{
 		myBtn[0].SetCheck(FALSE);
-
-// 		sVal.Format(_T("%.1f"), pDoc->m_pReelMap->m_dTempPauseLen * 1000.0);
 		myStcData[9].SetText(pDoc->WorkingInfo.LastJob.sTempPauseLen);	// 일시정지길이
 	}
 
 	myBtn[2].SetCheck(pDoc->WorkingInfo.LastJob.bVerify);
 	GetDlgItem(IDC_STC_REVIEW_LEN)->SetWindowText(pDoc->WorkingInfo.LastJob.sVerifyLen);
 
-
 	((CButton*)GetDlgItem(IDC_CHK_2LAYER))->SetCheck(pDoc->WorkingInfo.LastJob.bUse2Layer);
-
 }
 
 void CDlgMenu01::UpdateWorking()
@@ -3035,67 +2984,46 @@ void CDlgMenu01::UpdateWorking()
 	double dTotLen = _tstof(pDoc->WorkingInfo.LastJob.sReelTotLen) * 1000.0;
 	double dLotLen = _tstof(pDoc->WorkingInfo.LastJob.sLotSepLen) * 1000.0;
 
-	//sVal.Format(_T("%d"), (int)(dFdTotLen / dTotLen * 100.0));
 	sVal.Format(_T("%d"), (int)(pDoc->Menu01Status.Info.dTotWorkRto));
 	myStcData[5].SetText(sVal);			// 전체진행율
 
 	if(pDoc->m_pReelMap->m_bUseLotSep)
 	{
-		//sVal.Format(_T("%d"), (int)(dFdTotLen / dLotLen * 100.0));
 		sVal.Format(_T("%d"), (int)(pDoc->Menu01Status.Info.dLotWorkRto));
 		myStcData[6].SetText(sVal);		// 로트진행율
 	}
 	else
 	{
 		myStcData[6].SetText(_T(""));		// 로트진행율
-		//myStcData[14].SetText(_T(""));		// 진행Lot시리얼
 	}
 
-	//sVal.Format(_T("%d"), pDoc->WorkingInfo.LastJob.nVerifyPeriod);
 	sVal.Format(_T("%d"), (int)(pDoc->Menu01Status.Info.nVerifyImgNum));
 	myStcData[14].SetText(sVal);
 
-	//sVal.Format(_T("%.1f"), pView->GetTotVel());
 	sVal.Format(_T("%.1f"), (double)(pDoc->Menu01Status.Info.dTotSpd));
 	myStcData[7].SetText(sVal);			// 전체속도
 
 	if(pDoc->GetLastShotMk() > 0)
 		UpdateTotVel(sVal);
 
-	//sVal.Format(_T("%.1f"), pView->GetPartVel());
 	sVal.Format(_T("%.1f"), (double)(pDoc->Menu01Status.Info.dPartSpd));
 	myStcData[8].SetText(sVal);			// 구간속도
 
 	// 마킹부/검사부 : Distance (FdDone)
-	//sVal.Format(_T("%.2f"), dFdTotLen / 1000.0);	// [M]
 	sVal.Format(_T("%.2f"), (double)(pDoc->Menu01Status.Info.dDoneLenMk));
 	myStcData[12].SetText(sVal);			// 마킹부 : Distance (FdDone)
 
 	BOOL bDualTest = pDoc->WorkingInfo.LastJob.bDualTest;
 	if(bDualTest)
 	{
-		//sVal.Format(_T("%.2f"), pView->GetAoiDnFdLen() / 1000.0);	// [M]
 		sVal.Format(_T("%.2f"), (double)(pDoc->Menu01Status.Info.dDoneLengthAoiDn));
 		myStcData[13].SetText(sVal);			// 검사부(하) : Distance (FdDone)
 	}
-	//sVal.Format(_T("%.2f"), pView->GetAoiUpFdLen() / 1000.0);	// [M]
 	sVal.Format(_T("%.2f"), (double)(pDoc->Menu01Status.Info.dDoneLenAoiUp));
 	myStcData[74].SetText(sVal);			// 검사부(상) : Distance (FdDone)
 
-	//sVal.Format(_T("%.2f"), pView->GetEngraveFdLen() / 1000.0);	// [M]
 	sVal.Format(_T("%.2f"), (double)(pDoc->Menu01Status.Info.dDoneLengthEng));
 	myStcData[83].SetText(sVal);			// 각인부 : Distance (FdDone)
-
-#ifdef USE_MPE
-	if(pView->m_pMpe)
-	{
-		pView->m_pMpe->Write(_T("ML45072"), (long)dFdTotLen);	// 마킹부 진행량(mm단위로 피딩 후에 PC가 기록함) - 20141104
-		if(bDualTest)
-			pView->m_pMpe->Write(_T("ML45074"), (long)(pView->GetAoiDnFdLen()));	// AOI(하) 진행량(mm단위로 피딩 후에 PC가 기록함) - 20141104
-		pView->m_pMpe->Write(_T("ML45076"), (long)(pView->GetAoiUpFdLen()));	// AOI(상) 진행량(mm단위로 피딩 후에 PC가 기록함) - 20141104
-		pView->m_pMpe->Write(_T("ML45080"), (long)(pView->GetEngraveFdLen()));	// 각인부 진행량(mm단위로 피딩 후에 PC가 기록함)
-	}
-#endif
 }
 
 void CDlgMenu01::UpdateTotVel(CString sVel)
@@ -3792,20 +3720,12 @@ void CDlgMenu01::LotEnd()
 	{
 		m_bLotEnd = FALSE;
 		myBtn[6].SetCheck(FALSE);
-#ifdef USE_MPE
-		if(pView->m_pMpe)
-			pView->m_pMpe->Write(_T("MB440180"), 0);			// 작업종료(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
-#endif
 	}
 
 	if(myBtn[4].GetCheck())
 	{
 		pView->m_bReMk = FALSE;
 		myBtn[4].SetCheck(FALSE);
-#ifdef USE_MPE
-		if(pView->m_pMpe)
-			pView->m_pMpe->Write(_T("MB440182"), 0);			// 재마킹(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
-#endif
 	}
 }
 
@@ -3833,15 +3753,12 @@ void CDlgMenu01::OnChkEjectBuffer()
 	BOOL bOn = myBtn[3].GetCheck();
 	if(bOn && !m_bLastProc && pView->IsBuffer())
 	{
-//		if(IDNO == pView->DoMyMsgBox(_T("잔량처리를 하시겠습니까?"), MB_YESNO))
 		if(IDNO == pView->MsgBox(_T("잔량처리를 하시겠습니까?"), 0, MB_YESNO))
 			myBtn[3].SetCheck(FALSE);
 		else
 		{
-//			if(IDNO == pView->DoMyMsgBox(_T("AOI 상면부터 잔량처리를 하시겠습니까?"), MB_YESNO))
 			if(IDNO == pView->MsgBox(_T("AOI 상면부터 잔량처리를 하시겠습니까?"), 0, MB_YESNO))
 			{
-//				if(IDNO == pView->DoMyMsgBox(_T("AOI 하면부터 잔량처리를 하시겠습니까?"), MB_YESNO))
 				if(IDNO == pView->MsgBox(_T("AOI 하면부터 잔량처리를 하시겠습니까?"), 0, MB_YESNO))
 				{
 					ResetLastProc();
@@ -3851,20 +3768,12 @@ void CDlgMenu01::OnChkEjectBuffer()
 				{
 					m_bLastProcFromUp = FALSE;
 					m_bLastProc = TRUE;
-#ifdef USE_MPE
-					pView->m_pMpe->Write(_T("MB440186"), 1);			// 잔량처리 AOI(하) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
-					pView->m_pMpe->Write(_T("MB440181"), 1);					// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
-#endif
 				}
 			}
 			else
 			{
 				m_bLastProcFromUp = TRUE;
 				m_bLastProc = TRUE;
-#ifdef USE_MPE
-				pView->m_pMpe->Write(_T("MB440185"), 1);				// 잔량처리 AOI(상) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
-				pView->m_pMpe->Write(_T("MB440181"), 1);			// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
-#endif
 			}
 		}
 	}
@@ -3872,8 +3781,6 @@ void CDlgMenu01::OnChkEjectBuffer()
 	{
 		if(m_bLastProc && pView->IsBuffer())
 		{
-			//pView->MyMsgBox(_T("현재 잔량처리를 하고 있는 중입니다.");
-//			if(IDYES == pView->DoMyMsgBox(_T("잔량처리를 해제 하시겠습니까?"), MB_YESNO))
 			if(IDYES == pView->MsgBox(_T("잔량처리를 해제 하시겠습니까?"), 0, MB_YESNO))
 			{
 				ResetLastProc();
@@ -3890,14 +3797,6 @@ void CDlgMenu01::ResetLastProc()
 	m_bLastProc = FALSE;
 	m_bLastProcFromUp = FALSE;
 	m_bLastProcFromEng = FALSE;
-#ifdef USE_MPE
-	if(pView->m_pMpe)
-	{
-		pView->m_pMpe->Write(_T("MB440185"), 0);			// 잔량처리 AOI(상) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
-		pView->m_pMpe->Write(_T("MB440186"), 0);			// 잔량처리 AOI(상) 부터(PC가 On시키고, PLC가 확인하고 Off시킴)-20141112
-		pView->m_pMpe->Write(_T("MB440181"), 0);			// 잔량처리(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
-	}
-#endif
 }
 
 void CDlgMenu01::OnChkReview() 
@@ -4011,20 +3910,14 @@ void CDlgMenu01::UpdateLotTime()
 void CDlgMenu01::OnChkLotEnd() 
 {
 	// TODO: Add your control notification handler code here
-	// IDC_CHK_LOT_END
 	BOOL bOn = myBtn[6].GetCheck();
 	if(bOn && !m_bLotEnd)
 	{
-//		if(IDNO == pView->DoMyMsgBox(_T("작업종료를 하시겠습니까?"), MB_YESNO))
 		if(IDNO == pView->MsgBox(_T("작업종료를 하시겠습니까?"), 0, MB_YESNO))
 			myBtn[6].SetCheck(FALSE);
 		else
 		{
 			m_bLotEnd = TRUE;
-#ifdef USE_MPE
-			if(pView->m_pMpe)
-				pView->m_pMpe->Write(_T("MB440180"), 1);			// 작업종료(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
-#endif
 		}
 	}
 	else
@@ -4192,20 +4085,10 @@ void CDlgMenu01::SetTempStop(BOOL bOn)
 	if(bOn)
 	{
 		myBtn[0].SetCheck(TRUE);
-#ifdef USE_MPE
-		pView->m_pMpe->Write(_T("MB440183"), 1);
-#endif
-// 		sVal.Format(_T("%.1f"), pDoc->m_pReelMap->m_dTempPauseLen * 1000.0);
-//		myStcData[9].SetText(pDoc->WorkingInfo.LastJob.sTempPauseLen);	// 일시정지길이
 	}
 	else
 	{
 		myBtn[0].SetCheck(FALSE);
-#ifdef USE_MPE
-		pView->m_pMpe->Write(_T("MB440183"), 0);
-#endif
-// 		sVal.Format(_T("%.1f"), pDoc->m_pReelMap->m_dTempPauseLen * 1000.0);
-//		myStcData[9].SetText(pDoc->WorkingInfo.LastJob.sTempPauseLen);	// 일시정지길이
 	}
 }
 
@@ -4337,60 +4220,7 @@ void CDlgMenu01::OnChkRemarking()
 	{
 		;
 	}
-
-/*	BOOL bOn = myBtn[4].GetCheck();
-	if(bOn && !m_bLotEnd)
-	{
-//		if(IDNO == pView->DoMyMsgBox(_T("재마킹 작업을 하시겠습니까?"), MB_YESNO))
-		if(IDNO == pView->MsgBox(_T("재마킹 작업을 하시겠습니까?"), 0, MB_YESNO))
-			myBtn[4].SetCheck(FALSE);
-		else
-		{
-			pView->m_bReMk = TRUE;
-			if(pView->m_pMpe)
-				pView->m_pMpe->Write(_T("MB440182"), 1);			// 재마킹(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
-		}
-	}
-	else
-	{
-		if(m_bLotEnd)
-		{
-			pView->MsgBox(_T("현재 재마킹 작업을 하고 있는 중입니다."));
-			myBtn[4].SetCheck(TRUE);
-		}
-	}*/
 	this->MoveWindow(m_pRect, TRUE);
-}
-
-void CDlgMenu01::ChkPartialSpd()
-{
-	if(pDoc->Status.bAuto)
-	{
-		if(pView->IsRun())
-		{
-			if(pView->m_nStepAuto >= AT_LP)
-			{
-				double dVel = pView->GetPartVel();
-				if(dVel < _tstof(pDoc->WorkingInfo.LastJob.sPartialSpd) && !m_bLowPartialSpd)
-				{
-					m_bLowPartialSpd = TRUE;
-					myStcData[8].SetFontSize(13);
-					myStcData[8].SetFontBold(TRUE);
-					myStcData[8].SetTextColor(RGB_WHITE);
-					myStcData[8].SetBkColor(RGB_RED);
-					return;
-				}
-				else if(dVel >= _tstof(pDoc->WorkingInfo.LastJob.sPartialSpd) && m_bLowPartialSpd)
-				{
-					m_bLowPartialSpd = FALSE;
-					myStcData[8].SetFontSize(12);
-					myStcData[8].SetFontBold(FALSE);
-					myStcData[8].SetTextColor(RGB_BLACK);
-					myStcData[8].SetBkColor(RGB_WHITE);
-				}
-			}
-		}
-	}
 }
 
 void CDlgMenu01::SetDualTest(BOOL bOn)
@@ -4958,49 +4788,6 @@ LRESULT CDlgMenu01::OnMyBtnDblClk(WPARAM wPara, LPARAM lPara)
 
 	return 0L;
 }
-/*
-void CDlgMenu01::ChkTpStop()
-{
-	BOOL bUse = !pDoc->WorkingInfo.LastJob.bTempPause;
-	Sleep(100);
-
-	if (bUse)
-	{
-#ifdef USE_MPE
-		pView->m_pMpe->Write(_T("MB440183"), 1);
-#endif
-		pView->ChkTempStop(TRUE);
-		if (!myBtn[0].GetCheck())
-		{
-			myBtn[0].SetCheck(TRUE);
-			//bUse = TRUE;
-			//pView->IoWrite(_T("MB440183", 1);	// 일시정지사용(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
-		}
-	}
-	else
-	{
-#ifdef USE_MPE
-		pView->m_pMpe->Write(_T("MB440183"), 0);
-#endif
-		pView->ChkTempStop(FALSE);
-
-		if (myBtn[0].GetCheck())
-		{
-			myBtn[0].SetCheck(FALSE);
-			//bUse = FALSE;
-			//pView->IoWrite(_T("MB440183", 0);	// 일시정지사용(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
-		}
-	}
-
-	pDoc->WorkingInfo.LastJob.bTempPause = bUse;
-	if (pDoc->m_pReelMap)
-		pDoc->m_pReelMap->m_bUseTempPause = bUse;
-
-	CString sData = bUse ? _T("1") : _T("0");
-	::WritePrivateProfileString(_T("Last Job"), _T("Use Temporary Pause"), sData, PATH_WORKING_INFO);
-	this->MoveWindow(m_pRect, TRUE);
-}
-*/
 
 void CDlgMenu01::ChkTpStop()
 {
@@ -5009,29 +4796,19 @@ void CDlgMenu01::ChkTpStop()
 
 	if (bUse)
 	{
-#ifdef USE_MPE
-		pView->m_pMpe->Write(_T("MB440183"), 1);
-#endif
 		pView->ChkTempStop(TRUE);
 		if (!myBtn[0].GetCheck())
 		{
 			myBtn[0].SetCheck(TRUE);
-			//bUse = TRUE;
-			//pView->IoWrite(_T("MB440183", 1);	// 일시정지사용(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
 		}
 	}
 	else
 	{
-#ifdef USE_MPE
-		pView->m_pMpe->Write(_T("MB440183"), 0);
-#endif
 		pView->ChkTempStop(FALSE);
 
 		if (myBtn[0].GetCheck())
 		{
 			myBtn[0].SetCheck(FALSE);
-			//bUse = FALSE;
-			//pView->IoWrite(_T("MB440183", 0);	// 일시정지사용(PC가 On시키고, PLC가 확인하고 Off시킴)-20141031
 		}
 	}
 

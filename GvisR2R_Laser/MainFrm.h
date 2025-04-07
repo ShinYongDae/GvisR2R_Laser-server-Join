@@ -55,7 +55,6 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnClose();
 	afx_msg void OnAppMinimize();
-	afx_msg void OnDatabaseConnection();
 	afx_msg void OnOption01();
 };
 

@@ -956,24 +956,9 @@ void CDlgKeyNum1::KillFocus(int nID)
 void CDlgKeyNum1::OnTimer(UINT_PTR nIDEvent)//(UINT nIDEvent)
 {
 	// TODO: Add your message handler code here and/or call default
-// 	if(nIDEvent == TIM_SHOW_KEYPADNUM)
-// 	{
-// 		KillTimer(TIM_SHOW_KEYPADNUM);
-// 		if(!this->IsWindowVisible())
-// 		{
-// 			ShowWindow(SW_SHOW);
-// 			SetTimer(TIM_SHOW_KEYPADNUM, 300, NULL);
-// 		}
-// 	}
 	if(nIDEvent == TIM_SHOW_KEYPADNUM)
 	{
 		KillTimer(TIM_SHOW_KEYPADNUM);
-// 		if(!m_bTIM_DLG_KEYBDNUM_Lock)
-// 		{
-// 			m_bTIM_DLG_KEYBDNUM_Lock = TRUE;
-// 			this->PostMessage(WM_MY_KEYPADNUM,0,0);
-// 			//DispIo();
-// 		}
 		if(!this->IsWindowVisible())
 			this->ShowWindow(SW_SHOW);
 

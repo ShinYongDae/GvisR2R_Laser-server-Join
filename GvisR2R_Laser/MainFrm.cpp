@@ -26,7 +26,6 @@ IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_DESTROY()
-	ON_COMMAND(ID_DATABASE_CONNECTION, &CMainFrame::OnDatabaseConnection)
 	ON_WM_CLOSE()
 	ON_COMMAND(ID_APP_MINIMIZE, &CMainFrame::OnAppMinimize)
 	ON_COMMAND(ID_OPTION01, &CMainFrame::OnOption01)
@@ -295,13 +294,6 @@ void CMainFrame::OnClose()
 	//}
 #endif
 	CFrameWnd::OnClose();
-}
-
-
-void CMainFrame::OnDatabaseConnection()
-{
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	pView->DispDatabaseConnection();
 }
 
 void CMainFrame::OnAppMinimize()

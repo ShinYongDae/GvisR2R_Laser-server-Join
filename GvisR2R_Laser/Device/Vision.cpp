@@ -3060,67 +3060,7 @@ void CVision::DispAxisPos(BOOL bForceWrite)
 			//m_pMilDrawOverlay->DrawText(m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+m_nDisplayAxisPosLineHeight*1, szText);
 			m_pMil->DrawText(szText, m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+m_nDisplayAxisPosLineHeight*1, M_COLOR_GREEN);
 		}
-#ifdef USE_MPE
-		dFdEnc = (double)pDoc->m_pMpeData[0][0];	// 마킹부 Feeding 엔코더 값(단위 mm )
-		if(fabs(m_dFdEnc-dFdEnc)>0.05 || bForceWrite)
-		{
-			m_dFdEnc = dFdEnc;
-			//sprintf(szText, "R:%3.2f", dFdEnc/1000.0); // [M]
-			_stprintf(szText, TEXT("Rp:%3.2f"), dFdEnc/1000.0); // [M]
-			//m_pMilDrawOverlay->DrawText(m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+(m_nDisplayAxisPosLineHeight*2), szText);
-			m_pMil->DrawText(szText, m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+m_nDisplayAxisPosLineHeight*2, M_COLOR_GREEN);
 	}
-		dFdEnc = (double)pDoc->m_pMpeData[1][0];	// 각인부 Feeding 엔코더 값(단위 mm)
-		if (fabs(m_dFdEnc - dFdEnc) > 0.05 || bForceWrite)
-	{
-			m_dFdEnc = dFdEnc;
-			//sprintf(szText, "R:%3.2f", dFdEnc/1000.0); // [M]
-			_stprintf(szText, TEXT("Re:%3.2f"), dFdEnc / 1000.0); // [M]
-			//m_pMilDrawOverlay->DrawText(m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+(m_nDisplayAxisPosLineHeight*2), szText);
-			m_pMil->DrawText(szText, m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y + m_nDisplayAxisPosLineHeight * 3, M_COLOR_GREEN);
-	}
-#endif
-	}
-//	else if(m_nIdx==1)
-//	{
-//		if(fabs(m_dEnc[AXIS_X1]-pView->m_dEnc[AXIS_X1])>0.005 || bForceWrite)
-//		{
-//			m_dEnc[AXIS_X1] = pView->m_dEnc[AXIS_X1];
-//			//sprintf(szText, "X1:%3.3f", m_dEnc[AXIS_X1]);
-//			_stprintf(szText, TEXT("X1:%3.3f"), m_dEnc[AXIS_X1]);
-// 			//m_pMilDrawOverlay->DrawClear();
-//			//m_pMilDrawOverlay->DrawText(m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+m_nDisplayAxisPosLineHeight*0, szText);
-//			m_pMil->DrawText(szText, m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+m_nDisplayAxisPosLineHeight*0, M_COLOR_GREEN);
-//		}
-//		if(fabs(m_dEnc[AXIS_Y1]-pView->m_dEnc[AXIS_Y1])>0.005 || bForceWrite)
-//		{
-//			m_dEnc[AXIS_Y1] = pView->m_dEnc[AXIS_Y1];
-//			//sprintf(szText, "Y1:%3.3f", m_dEnc[AXIS_Y1]);
-//			_stprintf(szText, TEXT("Y1:%3.3f"), m_dEnc[AXIS_Y1]);
-//			//m_pMilDrawOverlay->DrawText(m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+m_nDisplayAxisPosLineHeight*1, szText);
-//			m_pMil->DrawText(szText, m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+m_nDisplayAxisPosLineHeight*1, M_COLOR_GREEN);
-//		}
-//#ifdef USE_MPE
-//		double dBufEnc = (double)pDoc->m_pMpeData[0][1]	/ 1000.0;	// 마킹부 버퍼 엔코더 값(단위 mm * 1000)
-//		if(fabs(m_dBufEnc-dBufEnc)>0.05 || bForceWrite)
-//		{
-//			m_dBufEnc = dBufEnc;
-//			//sprintf(szText, "B:%3.1f", dBufEnc);
-//			_stprintf(szText, TEXT("B:%3.1f"), dBufEnc);
-//			//m_pMilDrawOverlay->DrawText(m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+(m_nDisplayAxisPosLineHeight*2), szText);
-//			m_pMil->DrawText(szText, m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+m_nDisplayAxisPosLineHeight*2, M_COLOR_GREEN);
-//		}
-//		dFdEnc = (double)pDoc->m_pMpeData[1][1];	// 각인부 Feeding 엔코더 값(단위 mm)
-//		if (fabs(m_dFdEnc - dFdEnc) > 0.05 || bForceWrite)
-//		{
-//			m_dFdEnc = dFdEnc;
-//			//sprintf(szText, "R:%3.2f", dFdEnc/1000.0); // [M]
-//			_stprintf(szText, TEXT("Re:%3.2f"), dFdEnc / 1000.0); // [M]
-//			//m_pMilDrawOverlay->DrawText(m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y+(m_nDisplayAxisPosLineHeight*2), szText);
-//			m_pMil->DrawText(szText, m_ptDisplayAxisPosOffset.x, m_ptDisplayAxisPosOffset.y + m_nDisplayAxisPosLineHeight * 3, M_COLOR_GREEN);
-//		}
-//#endif
-//	}
 }
 
 BOOL CVision::UploadPinImg()
