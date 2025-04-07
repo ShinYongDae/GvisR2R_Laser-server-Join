@@ -129,10 +129,10 @@ FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,14,14,20,20
     LTEXT           "GvisR2R_Laser, 버전 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
-    LTEXT           "Copyright (C) 2025.04.02",IDC_STATIC,42,26,114,8
+    LTEXT           "Copyright (C) 2025.04.03",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,40,50,14,WS_GROUP
     LTEXT           "펀칭부 통신 최적화",IDC_STATIC,7,35,104,8
-    LTEXT           "...",IDC_STATIC,7,54,104,8
+    LTEXT           "이어가기시 Last Shot 초기화 방지",IDC_STATIC,7,54,104,8
     LTEXT           "Mode Laser 추가",IDC_STATIC,7,44,104,8
 END
 

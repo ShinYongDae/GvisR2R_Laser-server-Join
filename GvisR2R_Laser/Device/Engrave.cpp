@@ -1531,8 +1531,10 @@ void CEngrave::GetSignalEngraveAutoSequence(SOCKET_DATA SockData)
 		{
 		case _SigInx::_EngAutoInit:
 			//m_bRcvSig[_SigInx::_EngAutoInit] = TRUE;
-			pDoc->BtnStatus.EngAuto.Init = TRUE;
-			pView->SwReset();
+			//pDoc->BtnStatus.EngAuto.Init = TRUE;
+			pDoc->BtnStatus.EngAuto.Init = (SockData.nData1 > 0) ? TRUE : FALSE;
+			pView->EngAutoInit();
+			//pView->SwReset();
 			//pDoc->BtnStatus.EngAuto.Init = (SockData.nData1 > 0) ? TRUE : FALSE;
 			break;
 		case _SigInx::_EngAutoInitCont:

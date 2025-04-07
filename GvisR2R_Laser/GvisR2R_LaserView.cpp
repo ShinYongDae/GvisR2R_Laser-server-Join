@@ -13693,10 +13693,30 @@ void CGvisR2R_LaserView::ChkErrorRead2dCode()
 	}
 }
 
+void CGvisR2R_LaserView::EngAutoInit()
+{
+	if (pDoc->BtnStatus.EngAuto.Init)
+	{
+		pView->m_bCont = FALSE;
+
+		pDoc->m_bDoneChgLot = FALSE;
+		pView->m_nNewLot = 0;
+		pDoc->SetEngraveLastShot(0);
+		pDoc->SetCurrentInfoEngShotNum(0);
+		pDoc->SetCurrentInfoReadShotNum(0);
+		InitAutoEng();
+	}
+}
+
 void CGvisR2R_LaserView::EngAutoInitCont()
 {
 	pView->m_bCont = TRUE;
+
+	pDoc->m_bDoneChgLot = FALSE;
+	pView->m_nNewLot = 0;
+	InitAutoEng();
 }
+
 void CGvisR2R_LaserView::SwReset()
 {
 	ClrDispMsg();
@@ -13726,26 +13746,26 @@ BOOL CGvisR2R_LaserView::DoReset()
 
 		pView->ClrDispMsg();
 
-		//if (IDNO == pView->MsgBox(_T("초기화를 하시겠습니까?"), 0, MB_YESNO))
-		//	bInit = FALSE;
-		//else
-		//{
+		if (IDNO == pView->MsgBox(_T("초기화를 하시겠습니까?"), 0, MB_YESNO))
+			bInit = FALSE;
+		else
+		{
 			pDoc->m_bDoneChgLot = FALSE;
 			pView->m_nNewLot = 0;
 			pDoc->SetEngraveLastShot(0);
 			pDoc->SetCurrentInfoEngShotNum(0);
 			pDoc->SetCurrentInfoReadShotNum(0);
-		//}
+		}
 			pView->m_bCont = FALSE;
-		//if (!bInit)
-		//{
-		//	if (IDNO == pView->MsgBox(_T("이어가기를 하시겠습니까?"), 0, MB_YESNO))
-		//	{
-		//		pView->m_bCont = FALSE;
-		//		return FALSE;
-		//	}
-		//	pView->m_bCont = TRUE;
-		//}
+			if (!bInit)
+			{
+				if (IDNO == pView->MsgBox(_T("이어가기를 하시겠습니까?"), 0, MB_YESNO))
+				{
+					pView->m_bCont = FALSE;
+					return FALSE;
+				}
+				pView->m_bCont = TRUE;
+			}
 
 		InitAutoEng();
 		return TRUE;

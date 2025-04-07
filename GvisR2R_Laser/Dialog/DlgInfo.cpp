@@ -1470,8 +1470,8 @@ void CDlgInfo::SetTestMode(int nMode)
 	if (pView && pView->m_pEngrave)
 	{
 		pView->m_pEngrave->SetTestMode();	//_ItemInx::_TestMode
-		Sleep(300);
-		pView->m_pEngrave->SetTestMode();	//_ItemInx::_TestMode
+		//Sleep(300);
+		//pView->m_pEngrave->SetTestMode();	//_ItemInx::_TestMode
 	}
 #endif
 
@@ -1502,7 +1502,7 @@ void CDlgInfo::SetTestMode(int nMode)
 void CDlgInfo::SetDualTest(BOOL bOn)
 {
 	pDoc->WorkingInfo.LastJob.bDualTest = bOn;
-
+	SetTestMode(MODE_NONE);
 	CString sData = bOn ? _T("1") : _T("0");
 	::WritePrivateProfileString(_T("Last Job"), _T("Use Dual AOI"), sData, PATH_WORKING_INFO);
 
@@ -2030,7 +2030,8 @@ void CDlgInfo::OnBnClickedChkUseAoiDualIts()
 	else
 	{
 		pDoc->WorkingInfo.System.bUseDualIts = FALSE;
-		SetTestMode(MODE_NONE);
+		//SetTestMode(MODE_NONE);
+		SetDualTest(TRUE);
 	}
 
 	sData = pDoc->WorkingInfo.System.bUseDualIts ? _T("1") : _T("0");
@@ -2046,11 +2047,10 @@ void CDlgInfo::OnBnClickedChkUseAoiDual2dIts()
 	BOOL bOn = myBtn[26].GetCheck();
 	if (bOn)
 	{
-		ShowDlg(IDD_DLG_UTIL_02);
-
 		pDoc->WorkingInfo.System.bUseDual2dIts = TRUE;
 		//pView->MpeWrite(_T("MB40009A"), 1);															// 각인부\r미사용
 		SetTestMode(MODE_LASER);
+		ShowDlg(IDD_DLG_UTIL_02);
 
 		myBtn[25].SetCheck(FALSE);
 		pDoc->WorkingInfo.System.bUseDualIts = FALSE;
@@ -2062,7 +2062,8 @@ void CDlgInfo::OnBnClickedChkUseAoiDual2dIts()
 	{
 		pDoc->WorkingInfo.System.bUseDual2dIts = FALSE;
 		//pView->MpeWrite(_T("MB40009A"), 1);															// 각인부\r미사용
-		SetTestMode(MODE_NONE);
+		//SetTestMode(MODE_NONE);
+		SetDualTest(TRUE);
 	}
 
 	sData = pDoc->WorkingInfo.System.bUseDual2dIts ? _T("1") : _T("0");
@@ -2111,7 +2112,7 @@ void CDlgInfo::DispDualTest()
 		GetDlgItem(IDC_CHK_USE_AOI_DUAL_ITS)->ShowWindow(SW_HIDE);
 		GetDlgItem(IDC_CHK_USE_AOI_DUAL_2D_ITS)->ShowWindow(SW_HIDE);
 		//pView->MpeWrite(_T("MB40009A"), 1);															// 각인부\r미사용
-		SetTestMode(MODE_NONE);
+		SetTestMode(pDoc->WorkingInfo.LastJob.nTestMode);
 		pDoc->WorkingInfo.System.bUseDualIts = FALSE;
 		pDoc->WorkingInfo.System.bUseDual2dIts = FALSE;
 		pDoc->SetMkInfo(_T("Signal"), _T("UseDualIts"), pDoc->WorkingInfo.System.bUseDualIts);
