@@ -252,7 +252,6 @@ public:
 	BOOL m_bStopFromThread, m_bBuzzerFromThread;
 	DWORD m_dwRead2dSt, m_dwRead2dEd;
 
-	BOOL m_bRcvSig[_SigInx::_EndIdx];
 	CPtAlign m_Align[2];	// [0] : LeftCam , [1] : RightCam
 #ifdef USE_VISION
 	CVision* m_pVision[2];	// [0] : LeftCam , [1] : RightCam

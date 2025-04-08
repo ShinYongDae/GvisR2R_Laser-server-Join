@@ -64,11 +64,6 @@ CGvisR2R_LaserView::CGvisR2R_LaserView()
 	m_bJobEnd = FALSE;
 	m_sMsg = _T("");
 
-	for (i = 0; i < _SigInx::_EndIdx; i++)
-	{
-		m_bRcvSig[i] = FALSE;
-	}
-
 	m_bShift2Mk = FALSE;
 
 	m_bBufEmpty[0] = FALSE;
@@ -8592,9 +8587,11 @@ BOOL CGvisR2R_LaserView::GetCurrentInfoSignal()
 
 BOOL CGvisR2R_LaserView::GetMonDispMainSignal()
 {
-	if (m_bRcvSig[_SigInx::_GetMonDispMainSignal])
+	if (!m_pEngrave) return FALSE;
+
+	if (m_pEngrave->m_bRcvSig[_SigInx::_GetMonDispMainSignal])
 	{
-		m_bRcvSig[_SigInx::_GetMonDispMainSignal] = FALSE;
+		m_pEngrave->m_bRcvSig[_SigInx::_GetMonDispMainSignal] = FALSE;
 		MonDispMain();
 	}
 

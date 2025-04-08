@@ -185,7 +185,8 @@ int CEngrave::OnServerReceived(WPARAM wParam, LPARAM lParam)
 
 	if (nMsgID == _SigInx::_MyMsgYes || nMsgID == _SigInx::_MyMsgNo || nMsgID == _SigInx::_MyMsgOk)
 	{
-		GetSysSignal(rSockData);
+		//GetSysSignal(rSockData);
+		GetSignalMyMsg(rSockData);
 		return 1;
 	}
 
@@ -1652,24 +1653,22 @@ void CEngrave::GetSignalMyMsg(SOCKET_DATA SockData)
 		switch (nMsgId)
 		{
 		case _SigInx::_MyMsgYes:
-			//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgYes, FALSE);
-
 			m_bRcvSig[_SigInx::_MyMsgYes] = TRUE;
-			pView->m_bRcvSig[_SigInx::_MyMsgYes] = TRUE;
+			//pView->m_bRcvSig[_SigInx::_MyMsgYes] = TRUE;
 			//pView->SetMyMsgYes();
 			break;
 		case _SigInx::_MyMsgNo:
 			//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgNo, FALSE);
 
 			m_bRcvSig[_SigInx::_MyMsgNo] = TRUE;
-			pView->m_bRcvSig[_SigInx::_MyMsgNo] = TRUE;
+			//pView->m_bRcvSig[_SigInx::_MyMsgNo] = TRUE;
 			//pView->SetMyMsgNo();
 			break;
 		case _SigInx::_MyMsgOk:
 			pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgOk, FALSE);
 
 			m_bRcvSig[_SigInx::_MyMsgOk] = TRUE;
-			pView->m_bRcvSig[_SigInx::_MyMsgOk] = TRUE;
+			//pView->m_bRcvSig[_SigInx::_MyMsgOk] = TRUE;
 			//pView->SetMyMsgOk();
 			break;
 			// Is
@@ -1700,15 +1699,15 @@ void CEngrave::GetCurrentInfoSignal(SOCKET_DATA SockData)
 		switch (nMsgId)
 		{
 		case _SigInx::_GetCurrentInfoSignal:
-			//m_bRcvSig[_SigInx::_GetCurrentInfoSignal] = TRUE;
+			m_bRcvSig[_SigInx::_GetCurrentInfoSignal] = TRUE;
 			pDoc->BtnStatus.EngAuto.GetCurrentInfoSignal = (SockData.nData1 > 0) ? TRUE : FALSE;
-			pView->m_bRcvSig[SockData.nData1] = TRUE;
+			//pView->m_bRcvSig[SockData.nData1] = TRUE;
 			//pView->m_bRcvSig[_SigInx::_GetCurrentInfoSignal] = TRUE;
 			break;
 		case _SigInx::_GetMonDispMainSignal:
-			//m_bRcvSig[_SigInx::_GetMonDispMainSignal] = TRUE;
+			m_bRcvSig[_SigInx::_GetMonDispMainSignal] = TRUE;
 			pDoc->BtnStatus.EngAuto.GetMonDispMainSignal = (SockData.nData1 > 0) ? TRUE : FALSE;
-			pView->m_bRcvSig[_SigInx::_GetMonDispMainSignal] = TRUE;
+			//pView->m_bRcvSig[_SigInx::_GetMonDispMainSignal] = TRUE;
 			break;
 			// Is
 		case _SigInx::_IsGetCurrentInfoSignal:
@@ -2133,7 +2132,7 @@ void CEngrave::GetInfo(SOCKET_DATA SockData)
 			{
 				m_bGetInfo = TRUE;
 				pDoc->WorkingInfo.LastJob.bTempPause = (SockData.nData1 > 0) ? TRUE : FALSE;
-				pView->m_bRcvSig[_SigInx::_TempPause] = TRUE;
+				//pView->m_bRcvSig[_SigInx::_TempPause] = TRUE;
 			}
 			break;
 		}
