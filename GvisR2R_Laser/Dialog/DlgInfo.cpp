@@ -713,12 +713,14 @@ void CDlgInfo::Disp()
 			pView->m_pDlgMenu01->EnableItsMode(FALSE);
 		break;
 	case MODE_INNER:	// 1 
+	//case MODE_LASER:	// 3 
 		myBtn[23].SetCheck(TRUE); // IDC_CHK_USE_AOI_INNER
 		myBtn[24].SetCheck(FALSE); // IDC_CHK_USE_AOI_OUTER
 		if (pView->m_pDlgMenu01)
 			pView->m_pDlgMenu01->EnableItsMode(FALSE);
 		break;
 	case MODE_OUTER:	// 2 
+	//case MODE_ITS:		// 4 
 		myBtn[23].SetCheck(FALSE); // IDC_CHK_USE_AOI_INNER
 		myBtn[24].SetCheck(TRUE); // IDC_CHK_USE_AOI_OUTER
 		if (pView->m_pDlgMenu01)
@@ -1411,10 +1413,12 @@ void CDlgInfo::SetTestMode(int nMode)
 			pView->m_pDlgMenu01->EnableItsMode(FALSE);
 		break;
 	case MODE_INNER:
+	case MODE_LASER:
 		if (pView->m_pDlgMenu01)
 			pView->m_pDlgMenu01->EnableItsMode(FALSE);
 		break;
 	case MODE_OUTER:
+	case MODE_ITS:
 		if (pView->m_pDlgMenu01)
 			pView->m_pDlgMenu01->EnableItsMode();
 		break;
@@ -1843,7 +1847,7 @@ void CDlgInfo::OnBnClickedChk1188()
 
 void CDlgInfo::UpdateData()
 {
-	//pDoc->GetMkInfo();
+	pDoc->GetMkInfo();
 	Disp();
 }
 

@@ -2895,8 +2895,8 @@ void CDlgMenu01::ResetSerial()
 	if(myBtn[3].GetCheck())
 	{
 		myBtn[3].SetCheck(FALSE);
-		if (MODE_INNER != pDoc->GetTestMode())
-		m_bLastProcFromUp = TRUE;
+		if (MODE_INNER != pDoc->GetTestMode() && MODE_LASER != pDoc->GetTestMode())
+			m_bLastProcFromUp = TRUE;
 		else
 			m_bLastProcFromEng = TRUE;
 		m_bLastProc = FALSE;
@@ -3708,7 +3708,7 @@ void CDlgMenu01::LotEnd()
 
 	if(m_bLastProc)
 	{
-		if (MODE_INNER != pDoc->GetTestMode())
+		if (MODE_INNER != pDoc->GetTestMode() && MODE_LASER != pDoc->GetTestMode())
 		m_bLastProcFromUp = TRUE;
 		else
 			m_bLastProcFromEng = TRUE;
@@ -3733,7 +3733,7 @@ void CDlgMenu01::SetLastProc()
 {
 	if(!m_bLastProc)
 	{
-		if (MODE_INNER != pDoc->GetTestMode())
+		if (MODE_INNER != pDoc->GetTestMode() && MODE_LASER != pDoc->GetTestMode())
 		m_bLastProcFromUp = TRUE;
 		else
 			m_bLastProcFromEng = TRUE;

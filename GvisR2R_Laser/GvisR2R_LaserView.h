@@ -325,7 +325,7 @@ public:
 	DWORD m_dwLotSt, m_dwLotEd;
 	long m_lFuncId;
 	BOOL m_bDrawGL;
-	BOOL m_bCont;
+	BOOL m_bCont, m_bContF;
 	DWORD m_dwStMkDn[2];
 	BOOL m_bInit;
 	BOOL m_bSwStopNow;

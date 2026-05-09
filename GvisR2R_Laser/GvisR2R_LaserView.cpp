@@ -224,6 +224,7 @@ CGvisR2R_LaserView::CGvisR2R_LaserView()
 
 	m_bDrawGL = TRUE;
 	m_bCont = FALSE;
+	m_bContF = FALSE;
 	m_bCam = FALSE;
 	m_bReview = FALSE;
 
@@ -737,6 +738,17 @@ void CGvisR2R_LaserView::OnTimer(UINT_PTR nIDEvent)
 	{
 		KillTimer(TIM_MPE_IO);
 
+		//if (pView->m_bCont && !pView->m_bContF)
+		//{
+		//	pView->m_bContF = TRUE;
+		//	pDoc->GetMkInfo();
+		//}
+		//else if (!pView->m_bCont && pView->m_bContF)
+		//{
+		//	pView->m_bContF = FALSE;
+		//	pDoc->GetMkInfo();
+		//}
+
 		DoIO(); // DoAutoEng()
 
 		ChkMyMsg();
@@ -780,6 +792,10 @@ void CGvisR2R_LaserView::OnTimer(UINT_PTR nIDEvent)
 		ChkSaftySen();
 		ChkDoor();
 		ChkRcvSig();
+
+		if (!pDoc->Status.bAuto)
+			pDoc->GetMkInfo();
+		
 
 		if (m_bTIM_DISP_STATUS)
 			SetTimer(TIM_DISP_STATUS, 500, NULL);
@@ -9427,6 +9443,7 @@ void CGvisR2R_LaserView::EngAutoInit()
 		pDoc->SetCurrentInfoEngShotNum(0);
 		pDoc->SetCurrentInfoReadShotNum(0);
 		InitAutoEng();
+		//pDoc->GetMkInfo();
 	}
 }
 
@@ -9437,6 +9454,7 @@ void CGvisR2R_LaserView::EngAutoInitCont()
 	pDoc->m_bDoneChgLot = FALSE;
 	pView->m_nNewLot = 0;
 	InitAutoEng();
+	//pDoc->GetMkInfo();
 }
 
 void CGvisR2R_LaserView::SwReset()
@@ -9469,7 +9487,9 @@ BOOL CGvisR2R_LaserView::DoReset()
 		pView->ClrDispMsg();
 
 		if (IDNO == pView->MsgBox(_T("초기화를 하시겠습니까?"), 0, MB_YESNO))
+		{
 			bInit = FALSE;
+		}
 		else
 		{
 			pDoc->m_bDoneChgLot = FALSE;
@@ -9478,18 +9498,21 @@ BOOL CGvisR2R_LaserView::DoReset()
 			pDoc->SetCurrentInfoEngShotNum(0);
 			pDoc->SetCurrentInfoReadShotNum(0);
 		}
-			pView->m_bCont = FALSE;
-			if (!bInit)
+
+		pView->m_bCont = FALSE;
+		if (!bInit)
+		{
+			if (IDNO == pView->MsgBox(_T("이어가기를 하시겠습니까?"), 0, MB_YESNO))
 			{
-				if (IDNO == pView->MsgBox(_T("이어가기를 하시겠습니까?"), 0, MB_YESNO))
-				{
-					pView->m_bCont = FALSE;
-					return FALSE;
-				}
-				pView->m_bCont = TRUE;
+				pView->m_bCont = FALSE;
+				return FALSE;
 			}
+			//pDoc->GetMkInfo();
+			pView->m_bCont = TRUE;
+		}
 
 		InitAutoEng();
+		//pDoc->GetMkInfo();
 		return TRUE;
 	}
 

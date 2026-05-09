@@ -225,7 +225,9 @@ void CDlgUtil02::DoConfirm()
 	if ((pDoc->WorkingInfo.LastJob.sModelUp != pDoc->m_sModelUp) && !pDoc->m_sModelUp.IsEmpty())
 	{
 		pDoc->WorkingInfo.LastJob.sModelUp = pDoc->m_sModelUp;
-		//pView->m_bLoadMstInfo = TRUE;
+		pView->m_bLoadMstInfo = TRUE;
+		pDoc->m_bLoadMstInfo[0] = TRUE;
+		pDoc->m_bLoadMstInfo[1] = TRUE;
 	}
 	//if ((pDoc->WorkingInfo.LastJob.sModelDn != pDoc->m_sModelDn) && !pDoc->m_sModelDn.IsEmpty())
 	//{

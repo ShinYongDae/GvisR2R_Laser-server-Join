@@ -434,7 +434,7 @@ double CReelMap::GetAdjRatio()
 
 BOOL CReelMap::Open(CString sPath)
 {
-	if (pDoc->GetTestMode() == MODE_OUTER)
+	if (pDoc->GetTestMode() == MODE_OUTER/* || pDoc->GetTestMode() == MODE_ITS*/)
 		MakeItsReelmapHeader();
 
 	return MakeHeader(sPath);
@@ -442,7 +442,7 @@ BOOL CReelMap::Open(CString sPath)
 
 BOOL CReelMap::OpenUser(CString sPath)
 {
-	if (pDoc->GetTestMode() == MODE_OUTER)
+	if (pDoc->GetTestMode() == MODE_OUTER/* || pDoc->GetTestMode() == MODE_ITS*/)
 		MakeItsReelmapHeader();
 
 	return MakeHeader(sPath);
@@ -453,7 +453,7 @@ BOOL CReelMap::Open()
 	CString sPath = CopyRmapFromPunch(m_nLayer);	
 	//CString sPath = GetRmapPath(m_nLayer);
 	//m_sPathShare = sPath;
-	if (pDoc->GetTestMode() == MODE_OUTER)
+	if (pDoc->GetTestMode() == MODE_OUTER/* || pDoc->GetTestMode() == MODE_ITS*/)
 		MakeItsReelmapHeader();
 
 	return MakeHeader(sPath);
@@ -462,7 +462,7 @@ BOOL CReelMap::Open()
 
 BOOL CReelMap::OpenUser(CString sPath, CString sModel, CString sLayer, CString sLot)
 {
-	if (pDoc->GetTestMode() == MODE_OUTER)
+	if (pDoc->GetTestMode() == MODE_OUTER/* || pDoc->GetTestMode() == MODE_ITS*/)
 		MakeItsReelmapHeader();
 
 	return MakeHeader(sPath);
@@ -527,12 +527,12 @@ BOOL CReelMap::Write(int nSerial, int nLayer)
 		return 0;
 	}
 
-	if (pDoc->GetTestMode() == MODE_OUTER)
+	if (pDoc->GetTestMode() == MODE_OUTER/* || pDoc->GetTestMode() == MODE_ITS*/)
 		MakeItsReelmapHeader();
 
 	MakeHeader(m_sPathShare);
 
-	if (pDoc->GetTestMode() == MODE_INNER)
+	if (pDoc->GetTestMode() == MODE_INNER  || pDoc->GetTestMode() == MODE_LASER)
 		pDoc->SetItsSerialInfo(nSerial);
 
 	int nIdx = pDoc->GetPcrIdx1(nSerial, pDoc->m_bNewLotShare[1]);
@@ -805,12 +805,12 @@ BOOL CReelMap::Write(int nSerial, int nLayer, CString sPath)
 		return 0;
 	}
 
-	if (pDoc->GetTestMode() == MODE_OUTER)
+	if (pDoc->GetTestMode() == MODE_OUTER/* || pDoc->GetTestMode() == MODE_ITS*/)
 		MakeItsReelmapHeader();
 
 	MakeHeader(sPath);
 
-	if (pDoc->GetTestMode() == MODE_INNER)
+	if (pDoc->GetTestMode() == MODE_INNER || pDoc->GetTestMode() == MODE_LASER)
 		pDoc->SetItsSerialInfo(nSerial);
 
 	int nIdx = pDoc->GetPcrIdx1(nSerial, pDoc->m_bNewLotShare[1]);
@@ -5216,7 +5216,7 @@ BOOL CReelMap::WriteIts(int nItsSerial)
 		return FALSE;
 	}
 
-	if (pDoc->GetTestMode() != MODE_OUTER)
+	if (pDoc->GetTestMode() != MODE_OUTER/* && pDoc->GetTestMode() != MODE_ITS*/)
 		return FALSE;
 
 	CString str, sPath;

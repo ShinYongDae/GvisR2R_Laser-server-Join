@@ -3698,7 +3698,7 @@ BOOL CGvisR2R_LaserDoc::InitReelmap()
 		}
 		m_pReelMapAllDn = new CReelMap(RMAP_ALLDN, MAX_DISP_PNL, nTotPcs);
 
-		if (pDoc->GetTestMode() != MODE_OUTER)
+		if (pDoc->GetTestMode() != MODE_OUTER/* && pDoc->GetTestMode() != MODE_ITS*/)
 			m_pReelMap = m_pReelMapAllUp;
 		else
 		{
@@ -3713,7 +3713,7 @@ BOOL CGvisR2R_LaserDoc::InitReelmap()
 	}
 	else
 	{
-		if (pDoc->GetTestMode() != MODE_OUTER)
+		if (pDoc->GetTestMode() != MODE_OUTER/* && pDoc->GetTestMode() != MODE_ITS*/)
 			m_pReelMap = m_pReelMapUp;
 		else
 		{
@@ -3776,7 +3776,7 @@ BOOL CGvisR2R_LaserDoc::InitReelmapUp()
 		}
 		m_pReelMapAllUp = new CReelMap(RMAP_ALLUP, MAX_DISP_PNL, nTotPcs);
 
-		if (pDoc->GetTestMode() != MODE_OUTER)
+		if (pDoc->GetTestMode() != MODE_OUTER/* && pDoc->GetTestMode() != MODE_ITS*/)
 			m_pReelMap = m_pReelMapAllUp;
 		else
 		{
@@ -3786,7 +3786,7 @@ BOOL CGvisR2R_LaserDoc::InitReelmapUp()
 	}
 	else
 	{
-		if (pDoc->GetTestMode() != MODE_OUTER)
+		if (pDoc->GetTestMode() != MODE_OUTER/* && pDoc->GetTestMode() != MODE_ITS*/)
 			m_pReelMap = m_pReelMapUp;
 		else
 		{
@@ -4197,7 +4197,7 @@ BOOL CGvisR2R_LaserDoc::GetAoiInfoUp(int nSerial, int *pNewLot, BOOL bFromBuf) /
 		if (m_pReelMapUp)
 			m_pReelMapUp->ResetReelmapPath();
 
-		if (GetTestMode() == MODE_OUTER)
+		if (GetTestMode() == MODE_OUTER )
 		{
 			BOOL bDualTestInner;
 			CString sLot, sLayerUp, sLayerDn, str;
@@ -7150,7 +7150,7 @@ void CGvisR2R_LaserDoc::GetCurrentInfo()
 	CString sPath = WorkingInfo.System.sPathEngCurrInfo;
 	TCHAR szData[512];
 
-	if (sPath.IsEmpty() || (GetTestMode() != MODE_INNER && GetTestMode() != MODE_OUTER && GetTestMode() != MODE_LASER))
+	if (sPath.IsEmpty() || (GetTestMode() != MODE_INNER && GetTestMode() != MODE_OUTER && GetTestMode() != MODE_LASER && GetTestMode() != MODE_ITS))
 		return;
 
 	if (0 < ::GetPrivateProfileString(_T("Infomation"), _T("Dual Test"), NULL, szData, sizeof(szData), sPath))
@@ -9040,6 +9040,10 @@ void CGvisR2R_LaserDoc::GetMkInfo()
 	if (0 < ::GetPrivateProfileString(_T("Signal"), _T("FixBed"), NULL, szData, sizeof(szData), sPath))
 		pDoc->WorkingInfo.LastJob.bContFixDef = (_ttoi(szData) > 0) ? TRUE : FALSE;
 
+	if(pDoc->WorkingInfo.System.bUseDual2dIts)
+		WorkingInfo.LastJob.nTestMode = MODE_LASER;
+	else if(pDoc->WorkingInfo.System.bUseDualIts)
+		WorkingInfo.LastJob.nTestMode = MODE_ITS;
 }
 
 void CGvisR2R_LaserDoc::SetMkInfo(CString sMenu, CString sItem, BOOL bOn)
