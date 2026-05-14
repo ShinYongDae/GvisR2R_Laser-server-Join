@@ -2183,8 +2183,12 @@ void CEngrave::GetInfo(SOCKET_DATA SockData)
 			{
 				m_bGetInfo = TRUE;
 				pDoc->WorkingInfo.LastJob.sLayerUp = CharToString(SockData.strData);
-				if(!pDoc->WorkingInfo.LastJob.bDualTest)
+				if (!pDoc->WorkingInfo.LastJob.bDualTest)
+				{
 					pView->m_bLoadMstInfo = TRUE;
+					pDoc->m_bLoadMstInfo[0] = TRUE;
+					pDoc->m_bLoadMstInfo[1] = TRUE;
+				}
 			}
 			break;
 		case _ItemInx::_LayerDnName:
@@ -2192,8 +2196,12 @@ void CEngrave::GetInfo(SOCKET_DATA SockData)
 			{
 				m_bGetInfo = TRUE;
 				pDoc->WorkingInfo.LastJob.sLayerDn = CharToString(SockData.strData);
-				if(pDoc->WorkingInfo.LastJob.bDualTest)
+				if (pDoc->WorkingInfo.LastJob.bDualTest)
+				{
 					pView->m_bLoadMstInfo = TRUE;
+					pDoc->m_bLoadMstInfo[0] = TRUE;
+					pDoc->m_bLoadMstInfo[1] = TRUE;
+				}
 			}
 			break;
 		case _ItemInx::_LoadMstInfo:

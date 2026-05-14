@@ -1408,11 +1408,11 @@ BOOL CGvisR2R_LaserDoc::LoadWorkingInfo()
 
 
 	// [Last Job]
-	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("ModelUp Name"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
+	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Model Name"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
 		WorkingInfo.LastJob.sModelUp = CString(szData);
 	else
 	{
-		if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Model Name"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
+		if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("ModelUp Name"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
 			WorkingInfo.LastJob.sModelUp = CString(szData);
 		else
 		{
@@ -1433,11 +1433,11 @@ BOOL CGvisR2R_LaserDoc::LoadWorkingInfo()
 		}
 	}
 
-	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("LotUp No"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
+	if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Lot No"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
 		m_sLotNum = WorkingInfo.LastJob.sLotUp = WorkingInfo.LastJob.sLotDn = CString(szData);
 	else
 	{
-		if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("Lot No"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
+		if (0 < ::GetPrivateProfileString(_T("Last Job"), _T("LotUp No"), NULL, szData, sizeof(szData), sPath))//WorkingInfo.System.sPathEngCurrInfo))
 			m_sLotNum = WorkingInfo.LastJob.sLotUp = WorkingInfo.LastJob.sLotDn = CString(szData);
 		else
 		{
@@ -7142,6 +7142,9 @@ void CGvisR2R_LaserDoc::SetCurrentInfo()
 		sData = WorkingInfo.LastJob.sLayerDn;
 		::WritePrivateProfileString(_T("Infomation"), _T("Current Layer Dn"), sData, sPath);
 	}
+
+	if (pView->m_pEngrave)
+		pView->m_pEngrave->SetModelUpName(); // _stItemInx::_ModelUpName
 }
 
 void CGvisR2R_LaserDoc::GetCurrentInfo()

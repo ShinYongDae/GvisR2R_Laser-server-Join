@@ -1586,6 +1586,8 @@ UINT CGvisR2R_LaserView::ThreadProc2(LPVOID lpContext)
 			{
 				pThread->DispDefImg();
 				pThread->UpdateLotTime();
+				if (pThread->m_pDlgMenu01)
+					pThread->m_pDlgMenu01->UpdateData();
 
 				Sleep(0);
 			}
