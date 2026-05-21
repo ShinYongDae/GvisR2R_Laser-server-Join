@@ -2104,13 +2104,13 @@ void CEngrave::GetOpInfo(SOCKET_DATA SockData)
 			}
 			break;
 		case _ItemInx::_EngItsCode:
-			if (pDoc->WorkingInfo.LastJob.sEngItsCode != CharToString(SockData.strData))
-			{
-				m_bGetOpInfo = TRUE;
-				pDoc->m_sItsCode = pDoc->m_sOrderNum = pDoc->WorkingInfo.LastJob.sEngItsCode = CharToString(SockData.strData);
-				pDoc->SetEngItsCode(pDoc->WorkingInfo.LastJob.sEngItsCode);
-				//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Order Num"), pDoc->WorkingInfo.LastJob.sEngOrderNum, PATH_WORKING_INFO);
-			}
+			//if (pDoc->WorkingInfo.LastJob.sEngItsCode != CharToString(SockData.strData))
+			//{
+			//	m_bGetOpInfo = TRUE;
+			//	pDoc->m_sItsCode = pDoc->m_sOrderNum = pDoc->WorkingInfo.LastJob.sEngItsCode = CharToString(SockData.strData);
+			//	pDoc->SetEngItsCode(pDoc->WorkingInfo.LastJob.sEngItsCode);
+			//	//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Order Num"), pDoc->WorkingInfo.LastJob.sEngOrderNum, PATH_WORKING_INFO);
+			//}
 			break;
 		}
 	}
