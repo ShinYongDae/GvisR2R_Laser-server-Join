@@ -1269,6 +1269,13 @@ void CDlgInfo::OnBtnExit()
 	if (pView->m_pDlgMenu01)
 		pView->m_pDlgMenu01->UpdateData();
 
+#ifdef USE_ENGRAVE
+	if (pView && pView->m_pEngrave)
+	{
+		pView->m_pEngrave->SetTestMode();	//_ItemInx::_TestMode
+	}
+#endif
+
 	OnOK();
 }
 

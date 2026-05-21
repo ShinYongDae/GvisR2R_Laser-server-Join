@@ -2152,8 +2152,11 @@ void CEngrave::GetInfo(SOCKET_DATA SockData)
 			if (pDoc->WorkingInfo.LastJob.sModelUp != CharToString(SockData.strData))
 			{
 				m_bGetInfo = TRUE;
-				pDoc->WorkingInfo.LastJob.sModelUp = CharToString(SockData.strData);
-				//pView->m_bLoadMstInfo = TRUE;
+				if (pDoc->GetTestMode() == MODE_NONE)
+				{
+					pDoc->WorkingInfo.LastJob.sModelUp = CharToString(SockData.strData);
+					pView->m_bLoadMstInfo = TRUE;
+				}
 			}
 			break;
 		//case _ItemInx::_ModelDnName:
@@ -2168,26 +2171,31 @@ void CEngrave::GetInfo(SOCKET_DATA SockData)
 			if (pDoc->WorkingInfo.LastJob.sLotUp != CharToString(SockData.strData))
 			{
 				m_bGetInfo = TRUE;
-				pDoc->WorkingInfo.LastJob.sLotUp = CharToString(SockData.strData);
+				if (pDoc->GetTestMode() == MODE_NONE)
+					pDoc->WorkingInfo.LastJob.sLotUp = CharToString(SockData.strData);
 			}
 			break;
 		case _ItemInx::_LotDnName:
 			if (pDoc->WorkingInfo.LastJob.sLotDn != CharToString(SockData.strData))
 			{
 				m_bGetInfo = TRUE;
-				pDoc->WorkingInfo.LastJob.sLotDn = CharToString(SockData.strData);
+				if (pDoc->GetTestMode() == MODE_NONE)
+					pDoc->WorkingInfo.LastJob.sLotDn = CharToString(SockData.strData);
 			}
 			break;
 		case _ItemInx::_LayerUpName:
 			if (pDoc->WorkingInfo.LastJob.sLayerUp != CharToString(SockData.strData))
 			{
 				m_bGetInfo = TRUE;
-				pDoc->WorkingInfo.LastJob.sLayerUp = CharToString(SockData.strData);
-				if (!pDoc->WorkingInfo.LastJob.bDualTest)
+				if (pDoc->GetTestMode() == MODE_NONE)
 				{
-					pView->m_bLoadMstInfo = TRUE;
-					pDoc->m_bLoadMstInfo[0] = TRUE;
-					pDoc->m_bLoadMstInfo[1] = TRUE;
+					pDoc->WorkingInfo.LastJob.sLayerUp = CharToString(SockData.strData);
+					if (!pDoc->WorkingInfo.LastJob.bDualTest)
+					{
+						pView->m_bLoadMstInfo = TRUE;
+						pDoc->m_bLoadMstInfo[0] = TRUE;
+						pDoc->m_bLoadMstInfo[1] = TRUE;
+					}
 				}
 			}
 			break;
@@ -2195,12 +2203,15 @@ void CEngrave::GetInfo(SOCKET_DATA SockData)
 			if (pDoc->WorkingInfo.LastJob.sLayerDn != CharToString(SockData.strData))
 			{
 				m_bGetInfo = TRUE;
-				pDoc->WorkingInfo.LastJob.sLayerDn = CharToString(SockData.strData);
-				if (pDoc->WorkingInfo.LastJob.bDualTest)
+				if (pDoc->GetTestMode() == MODE_NONE)
 				{
-					pView->m_bLoadMstInfo = TRUE;
-					pDoc->m_bLoadMstInfo[0] = TRUE;
-					pDoc->m_bLoadMstInfo[1] = TRUE;
+					pDoc->WorkingInfo.LastJob.sLayerDn = CharToString(SockData.strData);
+					if (pDoc->WorkingInfo.LastJob.bDualTest)
+					{
+						pView->m_bLoadMstInfo = TRUE;
+						pDoc->m_bLoadMstInfo[0] = TRUE;
+						pDoc->m_bLoadMstInfo[1] = TRUE;
+					}
 				}
 			}
 			break;

@@ -8963,7 +8963,7 @@ void CGvisR2R_LaserDoc::GetMkInfo()
 	if (0 < ::GetPrivateProfileString(_T("Signal"), _T("Use Dual AOI"), NULL, szData, sizeof(szData), sPath))
 		WorkingInfo.LastJob.bDualTest = (_ttoi(szData) > 0) ? TRUE : FALSE;
 
-	WorkingInfo.LastJob.nTestMode = MODE_NONE;
+	//WorkingInfo.LastJob.nTestMode = MODE_NONE;
 	if (0 < ::GetPrivateProfileString(_T("Signal"), _T("Inner Test On"), NULL, szData, sizeof(szData), sPath))
 	{
 		if ((_ttoi(szData) > 0) ? TRUE : FALSE)

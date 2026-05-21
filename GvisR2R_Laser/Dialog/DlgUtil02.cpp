@@ -200,7 +200,9 @@ void CDlgUtil02::DoConfirm()
 	m_sLotNum.MakeUpper();
 	pDoc->m_sLotNum = m_sLotNum;
 	pDoc->m_sProcessNum = m_sProcessNum;
-
+	m_LayerComboUp.GetWindowText(pDoc->m_sLayerUp);
+	m_LayerComboDn.GetWindowText(pDoc->m_sLayerDn);
+	m_ModelComboUp.GetWindowText(pDoc->m_sModelUp);
 
 /*
 	pDoc->m_sLotNum.Delete(0, 1);
