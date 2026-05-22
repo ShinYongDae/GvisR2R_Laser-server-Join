@@ -131,9 +131,9 @@ BEGIN
     LTEXT           "GvisR2R_Laser, 버전 1.0",IDC_STATIC,42,14,114,8,SS_NOPREFIX
     LTEXT           "Copyright (C) 2026.05.22",IDC_STATIC,42,26,114,8
     DEFPUSHBUTTON   "확인",IDOK,113,40,50,14,WS_GROUP
-    LTEXT           "Its code 네트웤입력 차단",IDC_STATIC,7,35,104,8
+    LTEXT           "부팅시 Last Job 모델 로딩",IDC_STATIC,7,35,104,8
     LTEXT           "이어가기시 Last Shot 초기화 방지",IDC_STATIC,7,54,104,8
-    LTEXT           "Confirm Patch",IDC_STATIC,7,44,104,8
+    LTEXT           "Modify GetAlarmMsg()",IDC_STATIC,7,44,104,8
 END
 
 IDD_GVISR2R_LASER_FORM DIALOGEX 0, 0, 723, 645

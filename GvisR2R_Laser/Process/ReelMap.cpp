@@ -1196,6 +1196,410 @@ void CReelMap::ClrPcs()
 		}
 	}
 }
+//
+//BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
+//{
+//	m_sPathBuf = CopyRmapFromPunch(m_nLayer);
+//	//m_sPathBuf = GetRmapPath(m_nLayer);
+//
+//	CDataFile *pDataFile = new CDataFile;
+//	CString sMsg;
+//	int nRepeat = 0;
+//
+//	while(!pDataFile->Open(m_sPathBuf))
+//	{
+//		Sleep(500);
+//		if (!pDataFile->Open(m_sPathBuf))
+//		{
+//			Sleep(500);
+//			if (!pDataFile->Open(m_sPathBuf))
+//			{
+//				Sleep(500);
+//				if (!pDataFile->Open(m_sPathBuf))
+//				{
+//					if (nRepeat > 20)
+//					{
+//						sMsg.Format(_T("릴맵파일을 읽지 못했습니다.\r\n%s\r\n릴맵파일을 다시 읽으시겠습니까?"), m_sPathBuf);
+//						if (IDNO == pView->MsgBox(sMsg, 0, MB_YESNO))
+//						{
+//							;
+//						}
+//					}
+//					else
+//					{
+//						nRepeat++;
+//						Sleep(500);
+//					}
+//				}
+//				else
+//					break;
+//			}
+//			else
+//				break;
+//		}
+//		else
+//			break;
+//	}
+//	
+//	m_nSerial = nMkPnl; // 8
+//
+//	int nMkedPnl = nTotPnl-m_nSelMarkingPnl-1; // 8-2-1 = 5
+//	int nPrevPnl = m_nSelMarkingPnl; // 2
+//
+//	int nFromPnl = nMkPnl-nMkedPnl-1; // 8-5-1 = 2
+//
+//	CString sPnl, sRow, sVal;
+//	TCHAR sep[] = { _T(",/;\r\n\t") };
+//	TCHAR szData[MAX_PATH];
+//	int k, i, nR, nC, nP, nInc=0;
+//	//int nCol, nRow;
+//	int nLoadPnl, nDefCode;
+//	int nNodeX = pDoc->m_Master[0].m_pPcsRgn->nCol; // 10
+//	int nNodeY = pDoc->m_Master[0].m_pPcsRgn->nRow; // 5
+//
+//	for(k=nTotPnl-1; k>=0; k--) // k = 7 ~ 0
+//	{
+//		nInc++;
+//		nLoadPnl = nInc+nFromPnl; // 1 + 2 = 3 ~ 8 + 2 = 10
+//
+//		if(pDoc->WorkingInfo.LastJob.bLotSep)
+//		{
+//			if(nLoadPnl > pDoc->m_nLotLastShot && !pDoc->m_bDoneChgLot)
+//			{
+//				for(int aa=k; aa>=0; aa--)
+//				{
+//					m_pPnlNum[aa] = nLoadPnl = -1;
+//					m_pPnlDefNum[aa] = -1;
+//				}
+//				break;
+//			}
+//		}
+//
+//
+//		if( nLoadPnl > (pView->m_nLotEndSerial+pDoc->AoiDummyShot[0]) && pView->m_nLotEndSerial > 0)
+//		{
+//			for(int bb=k; bb>=0; bb--)
+//			{
+//				m_pPnlNum[bb] = nLoadPnl = -1;
+//				m_pPnlDefNum[bb] = -1;
+//			}
+//			break;
+//		}
+//		else if(pView->ChkLastProc() && (nLoadPnl > pView->m_nLotEndSerial && pView->m_nLotEndSerial > 0))
+//		{
+//			for(int bb=k; bb>=0; bb--)
+//			{
+//				m_pPnlNum[bb] = nLoadPnl = -1;
+//				m_pPnlDefNum[bb] = -1;
+//			}
+//			break;
+//		}
+//		else if(nLoadPnl > pView->m_nLotEndSerial && pView->m_nLotEndSerial > 0)
+//		{
+//			for(int cc=k; cc>=0; cc--)
+//			{
+//				m_pPnlDefNum[cc] = -1;
+//			}
+//		}
+//
+//
+//		if(nLoadPnl <= 0)
+//		{
+//			m_pPnlNum[k] = -1;
+//			m_pPnlDefNum[k] = -1;
+//			for(i=0; i<nTotPcs; i++)
+//				pPcsDef[k][i] = DEF_NONE;
+//		}
+//		else
+//		{
+//			if(pDoc->WorkingInfo.LastJob.bLotSep && nLoadPnl > pDoc->m_nLotLastShot && !pDoc->m_bDoneChgLot)
+//			{
+//				m_pPnlNum[k] = 0;
+//				m_pPnlDefNum[k] = -1;
+//				break;
+//			}
+//			else if (nLoadPnl > pDoc->m_nBufLastShot)			//else if (nLoadPnl > pDoc->m_ListBuf[0].GetLast())
+//			{
+//				m_pPnlNum[k] = 0;
+//				m_pPnlDefNum[k] = -1;
+//				break;
+//			}
+//
+//			m_pPnlNum[k] = nLoadPnl; // 3 ~ 10
+//			//if (nLoadPnl <= pView->m_nLotEndSerial || pView->m_nLotEndSerial == 0)
+//			//{
+//			//	if (m_nLayer == RMAP_UP || m_nLayer == RMAP_DN || m_nLayer == RMAP_ALLUP || m_nLayer == RMAP_ALLDN)
+//			//		m_pPnlDefNum[k] = pDoc->m_pPcr[RMAP_ALLUP][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
+//			//	else if (m_nLayer == RMAP_INNER_UP || m_nLayer == RMAP_INNER_DN || m_nLayer == RMAP_INNER_ALLUP || m_nLayer == RMAP_INNER_ALLDN)
+//			//		m_pPnlDefNum[k] = pDoc->m_pPcrInner[RMAP_ALLUP][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
+//			//	else if (m_nLayer == RMAP_ITS)
+//			//		m_pPnlDefNum[k] = pDoc->m_pPcrIts[pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
+//			//	else
+//			//		return 0;
+//			//}
+//
+//			sPnl.Format(_T("%d"), nLoadPnl);
+//			if (0 < ::GetPrivateProfileString(sPnl, _T("Total Defects"), NULL, szData, sizeof(szData), m_sPathBuf))
+//				m_pPnlDefNum[k] = _ttoi(szData);
+//			else
+//			{
+//				m_pPnlNum[k] = -1;
+//				m_pPnlDefNum[k] = -1;
+//				for (i = 0; i < nTotPcs; i++)
+//					pPcsDef[k][i] = DEF_NONE;
+//				break;
+//				//if (!pView->m_bLastProc && !pDoc->WorkingInfo.LastJob.bSampleTest)
+//				//{
+//				//	{
+//				//		m_pPnlNum[k] = -1;
+//				//		m_pPnlDefNum[k] = -1;
+//				//		for (i = 0; i < nTotPcs; i++)
+//				//			pPcsDef[k][i] = DEF_NONE;
+//				//	}
+//				//}
+//				//else
+//				//{
+//				//	m_pPnlNum[k] = 0;
+//				//	m_pPnlDefNum[k] = -1;
+//
+//				//	for (nC = 0; nC < nNodeY; nC++)
+//				//	{
+//				//		if (nR % 2)	// 홀수.
+//				//			nP = nC + nNodeY * nR;
+//				//		else		// 짝수.				
+//				//			nP = nNodeY * (nR + 1) - (nC + 1);
+//
+//				//		if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
+//				//		{
+//				//			switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+//				//			{
+//				//			case 0:
+//				//				break;
+//				//			case 1:
+//				//				nP = pDoc->MirrorLR(nP);
+//				//				break;
+//				//			case 2:
+//				//				nP = pDoc->MirrorUD(nP);
+//				//				break;
+//				//			case 3:
+//				//				nP = pDoc->Rotate180(nP);
+//				//				break;
+//				//			default:
+//				//				break;
+//				//			}
+//				//		}
+//
+//				//		nDefCode = DEF_NONE;
+//				//		pPcsDef[k][nP] = nDefCode; // k=7, nP = PcsIdx : 좌상단에서 nP 0이 시작하여 ZigZeg로 우하단으로 증가
+//				//	}
+//
+//				//}
+//				////return 0;
+//				//break;
+//			}
+//
+//			for(nR=0; nR<nNodeX; nR++)  // nR = 0 ~ 5
+//			{
+//				sRow.Format(_T("%02d"), nR);
+//				
+//				if (0 < ::GetPrivateProfileString(sPnl, sRow, NULL, szData, sizeof(szData), m_sPathBuf)) // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일
+//				{
+//					for(nC=0; nC<nNodeY; nC++)
+//					{
+//						if(nC==0)
+//							sVal = _tcstok(szData,sep);
+//						else
+//							sVal = _tcstok(NULL,sep);
+//						
+//						if(nR%2)	// 홀수.
+//							nP = nC + nNodeY * nR;
+//						else		// 짝수.				
+//							nP = nNodeY * (nR+1) - (nC+1);
+//
+//						if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
+//						{
+//							switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+//							{
+//							case 0:
+//								break;
+//							case 1:
+//								nP = pDoc->MirrorLR(nP);
+//								break;
+//							case 2:
+//								nP = pDoc->MirrorUD(nP);
+//								break;
+//							case 3:
+//								nP = pDoc->Rotate180(nP);
+//								break;
+//							default:
+//								break;
+//							}
+//						}
+//
+//						nDefCode = _tstoi(sVal);
+//						pPcsDef[k][nP] = nDefCode; // k=7, nP = PcsIdx : 좌상단에서 nP 0이 시작하여 ZigZeg로 우하단으로 증가
+//
+//					}
+//				}
+//				else
+//				{
+//					Sleep(300);
+//
+//					if (0 < ::GetPrivateProfileString(sPnl, sRow, NULL, szData, sizeof(szData), m_sPathBuf))
+//					{
+//						for (nC = 0; nC < nNodeY; nC++)
+//						{
+//							if (nC == 0)
+//								sVal = _tcstok(szData, sep);
+//							else
+//								sVal = _tcstok(NULL, sep);
+//
+//							if (nR % 2)	// 홀수.
+//								nP = nC + nNodeY * nR;
+//							else		// 짝수.				
+//								nP = nNodeY * (nR + 1) - (nC + 1);
+//
+//							if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
+//							{
+//								switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+//								{
+//								case 0:
+//									break;
+//								case 1:
+//									nP = pDoc->MirrorLR(nP);
+//									break;
+//								case 2:
+//									nP = pDoc->MirrorUD(nP);
+//									break;
+//								case 3:
+//									nP = pDoc->Rotate180(nP);
+//									break;
+//								default:
+//									break;
+//								}
+//							}
+//
+//							nDefCode = _tstoi(sVal);
+//							pPcsDef[k][nP] = nDefCode; // k=7, nP = PcsIdx : 좌상단에서 nP 0이 시작하여 ZigZeg로 우하단으로 증가
+//					}
+//				}
+//				else
+//				{
+//					if (!bDumy)
+//					{
+//						if (!pView->m_bLastProc && !pDoc->WorkingInfo.LastJob.bSampleTest)
+//						{
+//							{
+//								m_pPnlNum[k] = -1;
+//								m_pPnlDefNum[k] = -1;
+//								for (i = 0; i < nTotPcs; i++)
+//									pPcsDef[k][i] = DEF_NONE;
+//							}
+//							//pView->Stop();
+//							//sMsg.Format(_T("릴맵 데이타를 불러 오지 못했습니다. - [Pnl: %s] [Row: %d]\r\n%s"), sPnl, nR, m_sPathBuf);
+// 						//	//sMsg.Format(_T("ReelmapData missed. - [Pnl: %d] [Row: %d]"), k, nR);
+//							//pView->MsgBox(sMsg); // 20160725-Temp
+//							//	if (pDataFile)
+//							//{
+//							//	delete pDataFile;
+//							//	pDataFile = NULL;
+//							//}
+//							////AfxMessageBox(sMsg);
+//							//return FALSE;
+//						}
+//						else
+//						{
+//							m_pPnlNum[k] = 0;
+//							m_pPnlDefNum[k] = -1;
+//
+//							for (nC = 0; nC < nNodeY; nC++)
+//							{
+//								if (nR % 2)	// 홀수.
+//									nP = nC + nNodeY * nR;
+//								else		// 짝수.				
+//									nP = nNodeY * (nR + 1) - (nC + 1);
+//
+//								if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
+//								{
+//									switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+//									{
+//									case 0:
+//										break;
+//									case 1:
+//										nP = pDoc->MirrorLR(nP);
+//										break;
+//									case 2:
+//										nP = pDoc->MirrorUD(nP);
+//										break;
+//									case 3:
+//										nP = pDoc->Rotate180(nP);
+//										break;
+//									default:
+//										break;
+//									}
+//								}
+//
+//								nDefCode = DEF_NONE;
+//								pPcsDef[k][nP] = nDefCode; // k=7, nP = PcsIdx : 좌상단에서 nP 0이 시작하여 ZigZeg로 우하단으로 증가
+//							}
+//
+//						}
+//					}
+//					else
+//					{
+//						for (nC = 0; nC < nNodeY; nC++)
+//						{
+//								if (nC == 0)
+//									sVal = _tcstok(szData, sep);
+//							else
+//									sVal = _tcstok(NULL, sep);
+//
+//								if (nR % 2)	// 홀수.
+//								nP = nC + nNodeY * nR;
+//							else		// 짝수.
+//									nP = nNodeY * (nR + 1) - (nC + 1);
+//
+//								if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
+//								{
+//									switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+//									{
+//									case 0:
+//										break;
+//									case 1:
+//										nP = pDoc->MirrorLR(nP);
+//										break;
+//									case 2:
+//										nP = pDoc->MirrorUD(nP);
+//										break;
+//									case 3:
+//										nP = pDoc->Rotate180(nP);
+//										break;
+//									default:
+//										break;
+//									}
+//								}
+//
+//								nDefCode = 0;
+//								pPcsDef[k][nP] = nDefCode; // k=7, nP = PcsIdx : 좌상단에서 nP 0이 시작하여 ZigZeg로 우하단으로 증가
+//
+//	 							//if(pDoc->WorkingInfo.LastJob.bContFixDef)
+//	 							//	SetFixPcs(nC, nR);
+//							}
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
+//
+//	if(pDataFile)
+//	{
+//		delete pDataFile;
+//		pDataFile = NULL;
+//	}
+//
+//	return TRUE;
+//}
 
 BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 {
@@ -1206,7 +1610,7 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 	CString sMsg;
 	int nRepeat = 0;
 
-	while(!pDataFile->Open(m_sPathBuf))
+	while (!pDataFile->Open(m_sPathBuf))
 	{
 		Sleep(500);
 		if (!pDataFile->Open(m_sPathBuf))
@@ -1240,33 +1644,33 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 		else
 			break;
 	}
-	
+
 	m_nSerial = nMkPnl; // 8
 
-	int nMkedPnl = nTotPnl-m_nSelMarkingPnl-1; // 8-2-1 = 5
+	int nMkedPnl = nTotPnl - m_nSelMarkingPnl - 1; // 8-2-1 = 5
 	int nPrevPnl = m_nSelMarkingPnl; // 2
 
-	int nFromPnl = nMkPnl-nMkedPnl-1; // 8-5-1 = 2
+	int nFromPnl = nMkPnl - nMkedPnl - 1; // 8-5-1 = 2
 
 	CString sPnl, sRow, sVal;
 	TCHAR sep[] = { _T(",/;\r\n\t") };
 	TCHAR szData[MAX_PATH];
-	int k, i, nR, nC, nP, nInc=0;
+	int k, i, nR, nC, nP, nInc = 0;
 	//int nCol, nRow;
 	int nLoadPnl, nDefCode;
 	int nNodeX = pDoc->m_Master[0].m_pPcsRgn->nCol; // 10
 	int nNodeY = pDoc->m_Master[0].m_pPcsRgn->nRow; // 5
 
-	for(k=nTotPnl-1; k>=0; k--) // k = 7 ~ 0
+	for (k = nTotPnl - 1; k >= 0; k--) // k = 7 ~ 0
 	{
 		nInc++;
-		nLoadPnl = nInc+nFromPnl; // 1 + 2 = 3 ~ 8 + 2 = 10
+		nLoadPnl = nInc + nFromPnl; // 1 + 2 = 3 ~ 8 + 2 = 10
 
-		if(pDoc->WorkingInfo.LastJob.bLotSep)
+		if (pDoc->WorkingInfo.LastJob.bLotSep)
 		{
-			if(nLoadPnl > pDoc->m_nLotLastShot && !pDoc->m_bDoneChgLot)
+			if (nLoadPnl > pDoc->m_nLotLastShot && !pDoc->m_bDoneChgLot)
 			{
-				for(int aa=k; aa>=0; aa--)
+				for (int aa = k; aa >= 0; aa--)
 				{
 					m_pPnlNum[aa] = nLoadPnl = -1;
 					m_pPnlDefNum[aa] = -1;
@@ -1276,140 +1680,145 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 		}
 
 
-		if( nLoadPnl > (pView->m_nLotEndSerial+pDoc->AoiDummyShot[0]) && pView->m_nLotEndSerial > 0)
+		if (nLoadPnl > (pView->m_nLotEndSerial + pDoc->AoiDummyShot[0]) && pView->m_nLotEndSerial > 0)
 		{
-			for(int bb=k; bb>=0; bb--)
+			for (int bb = k; bb >= 0; bb--)
 			{
 				m_pPnlNum[bb] = nLoadPnl = -1;
 				m_pPnlDefNum[bb] = -1;
 			}
 			break;
 		}
-		else if(pView->ChkLastProc() && (nLoadPnl > pView->m_nLotEndSerial && pView->m_nLotEndSerial > 0))
+		else if (pView->ChkLastProc() && (nLoadPnl > pView->m_nLotEndSerial && pView->m_nLotEndSerial > 0))
 		{
-			for(int bb=k; bb>=0; bb--)
+			for (int bb = k; bb >= 0; bb--)
 			{
 				m_pPnlNum[bb] = nLoadPnl = -1;
 				m_pPnlDefNum[bb] = -1;
 			}
 			break;
 		}
-		else if(nLoadPnl > pView->m_nLotEndSerial && pView->m_nLotEndSerial > 0)
+		else if (nLoadPnl > pView->m_nLotEndSerial && pView->m_nLotEndSerial > 0)
 		{
-			for(int cc=k; cc>=0; cc--)
+			for (int cc = k; cc >= 0; cc--)
 			{
 				m_pPnlDefNum[cc] = -1;
 			}
 		}
 
 
-		if(nLoadPnl <= 0)
+		if (nLoadPnl <= 0)
 		{
 			m_pPnlNum[k] = -1;
 			m_pPnlDefNum[k] = -1;
-			for(i=0; i<nTotPcs; i++)
+			for (i = 0; i < nTotPcs; i++)
 				pPcsDef[k][i] = DEF_NONE;
 		}
 		else
 		{
-			if(pDoc->WorkingInfo.LastJob.bLotSep && nLoadPnl > pDoc->m_nLotLastShot && !pDoc->m_bDoneChgLot)
-			{
-				m_pPnlNum[k] = 0;
-				m_pPnlDefNum[k] = -1;
-				break;
-			}
-			else if (nLoadPnl > pDoc->m_nBufLastShot)			//else if (nLoadPnl > pDoc->m_ListBuf[0].GetLast())
-			{
-				m_pPnlNum[k] = 0;
-				m_pPnlDefNum[k] = -1;
-				break;
-			}
+			//if(pDoc->WorkingInfo.LastJob.bLotSep && nLoadPnl > pDoc->m_nLotLastShot && !pDoc->m_bDoneChgLot)
+			//{
+			//	m_pPnlNum[k] = 0;
+			//	m_pPnlDefNum[k] = -1;
+			//	break;
+			//}
+			//else if (nLoadPnl > pDoc->m_nBufLastShot)			//else if (nLoadPnl > pDoc->m_ListBuf[0].GetLast())
+			//{
+			//	m_pPnlNum[k] = 0;
+			//	m_pPnlDefNum[k] = -1;
+			//	break;
+			//}
 
 			m_pPnlNum[k] = nLoadPnl; // 3 ~ 10
-			//if (nLoadPnl <= pView->m_nLotEndSerial || pView->m_nLotEndSerial == 0)
-			//{
-			//	if (m_nLayer == RMAP_UP || m_nLayer == RMAP_DN || m_nLayer == RMAP_ALLUP || m_nLayer == RMAP_ALLDN)
-			//		m_pPnlDefNum[k] = pDoc->m_pPcr[RMAP_ALLUP][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
-			//	else if (m_nLayer == RMAP_INNER_UP || m_nLayer == RMAP_INNER_DN || m_nLayer == RMAP_INNER_ALLUP || m_nLayer == RMAP_INNER_ALLDN)
-			//		m_pPnlDefNum[k] = pDoc->m_pPcrInner[RMAP_ALLUP][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
-			//	else if (m_nLayer == RMAP_ITS)
-			//		m_pPnlDefNum[k] = pDoc->m_pPcrIts[pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
-			//	else
-			//		return 0;
-			//}
+									 //if (nLoadPnl <= pView->m_nLotEndSerial || pView->m_nLotEndSerial == 0)
+									 //{
+									 //	if (m_nLayer == RMAP_UP || m_nLayer == RMAP_DN || m_nLayer == RMAP_ALLUP || m_nLayer == RMAP_ALLDN)
+									 //		m_pPnlDefNum[k] = pDoc->m_pPcr[RMAP_ALLUP][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
+									 //	else if (m_nLayer == RMAP_INNER_UP || m_nLayer == RMAP_INNER_DN || m_nLayer == RMAP_INNER_ALLUP || m_nLayer == RMAP_INNER_ALLDN)
+									 //		m_pPnlDefNum[k] = pDoc->m_pPcrInner[RMAP_ALLUP][pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
+									 //	else if (m_nLayer == RMAP_ITS)
+									 //		m_pPnlDefNum[k] = pDoc->m_pPcrIts[pDoc->GetPcrIdx1(nLoadPnl)]->m_nTotDef;
+									 //	else
+									 //		return 0;
+									 //}
 
 			sPnl.Format(_T("%d"), nLoadPnl);
 			if (0 < ::GetPrivateProfileString(sPnl, _T("Total Defects"), NULL, szData, sizeof(szData), m_sPathBuf))
 				m_pPnlDefNum[k] = _ttoi(szData);
 			else
 			{
-				if (!pView->m_bLastProc && !pDoc->WorkingInfo.LastJob.bSampleTest)
-				{
-					{
-						m_pPnlNum[k] = -1;
-						m_pPnlDefNum[k] = -1;
-						for (i = 0; i < nTotPcs; i++)
-							pPcsDef[k][i] = DEF_NONE;
-					}
-				}
-				else
-				{
-					m_pPnlNum[k] = 0;
-					m_pPnlDefNum[k] = -1;
+				m_pPnlNum[k] = -1;
+				m_pPnlDefNum[k] = -1;
+				for (i = 0; i < nTotPcs; i++)
+					pPcsDef[k][i] = DEF_NONE;
+				continue;
+				//if (!pView->m_bLastProc && !pDoc->WorkingInfo.LastJob.bSampleTest)
+				//{
+				//	{
+				//		m_pPnlNum[k] = -1;
+				//		m_pPnlDefNum[k] = -1;
+				//		for (i = 0; i < nTotPcs; i++)
+				//			pPcsDef[k][i] = DEF_NONE;
+				//	}
+				//}
+				//else
+				//{
+				//	m_pPnlNum[k] = 0;
+				//	m_pPnlDefNum[k] = -1;
 
+				//	for (nC = 0; nC < nNodeY; nC++)
+				//	{
+				//		if (nR % 2)	// 홀수.
+				//			nP = nC + nNodeY * nR;
+				//		else		// 짝수.				
+				//			nP = nNodeY * (nR + 1) - (nC + 1);
+
+				//		if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
+				//		{
+				//			switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+				//			{
+				//			case 0:
+				//				break;
+				//			case 1:
+				//				nP = pDoc->MirrorLR(nP);
+				//				break;
+				//			case 2:
+				//				nP = pDoc->MirrorUD(nP);
+				//				break;
+				//			case 3:
+				//				nP = pDoc->Rotate180(nP);
+				//				break;
+				//			default:
+				//				break;
+				//			}
+				//		}
+
+				//		nDefCode = DEF_NONE;
+				//		pPcsDef[k][nP] = nDefCode; // k=7, nP = PcsIdx : 좌상단에서 nP 0이 시작하여 ZigZeg로 우하단으로 증가
+				//	}
+
+				//}
+				////return 0;
+				//break;
+			}
+
+			for (nR = 0; nR < nNodeX; nR++)  // nR = 0 ~ 5
+			{
+				sRow.Format(_T("%02d"), nR);
+
+				if (0 < ::GetPrivateProfileString(sPnl, sRow, NULL, szData, sizeof(szData), m_sPathBuf)) // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일
+				{
 					for (nC = 0; nC < nNodeY; nC++)
 					{
+						if (nC == 0)
+							sVal = _tcstok(szData, sep);
+						else
+							sVal = _tcstok(NULL, sep);
+
 						if (nR % 2)	// 홀수.
 							nP = nC + nNodeY * nR;
 						else		// 짝수.				
 							nP = nNodeY * (nR + 1) - (nC + 1);
-
-						if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
-						{
-							switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
-							{
-							case 0:
-								break;
-							case 1:
-								nP = pDoc->MirrorLR(nP);
-								break;
-							case 2:
-								nP = pDoc->MirrorUD(nP);
-								break;
-							case 3:
-								nP = pDoc->Rotate180(nP);
-								break;
-							default:
-								break;
-							}
-						}
-
-						nDefCode = DEF_NONE;
-						pPcsDef[k][nP] = nDefCode; // k=7, nP = PcsIdx : 좌상단에서 nP 0이 시작하여 ZigZeg로 우하단으로 증가
-					}
-
-				}
-				//return 0;
-				break;
-			}
-
-			for(nR=0; nR<nNodeX; nR++)  // nR = 0 ~ 5
-			{
-				sRow.Format(_T("%02d"), nR);
-				
-				if (0 < ::GetPrivateProfileString(sPnl, sRow, NULL, szData, sizeof(szData), m_sPathBuf)) // DefCode 3D Array : [nSerial][nRow][nCol] - 릴맵파일
-				{
-					for(nC=0; nC<nNodeY; nC++)
-					{
-						if(nC==0)
-							sVal = _tcstok(szData,sep);
-						else
-							sVal = _tcstok(NULL,sep);
-						
-						if(nR%2)	// 홀수.
-							nP = nC + nNodeY * nR;
-						else		// 짝수.				
-							nP = nNodeY * (nR+1) - (nC+1);
 
 						if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
 						{
@@ -1476,82 +1885,82 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 
 							nDefCode = _tstoi(sVal);
 							pPcsDef[k][nP] = nDefCode; // k=7, nP = PcsIdx : 좌상단에서 nP 0이 시작하여 ZigZeg로 우하단으로 증가
-					}
-				}
-				else
-				{
-					if (!bDumy)
-					{
-						if (!pView->m_bLastProc && !pDoc->WorkingInfo.LastJob.bSampleTest)
-						{
-							{
-								m_pPnlNum[k] = -1;
-								m_pPnlDefNum[k] = -1;
-								for (i = 0; i < nTotPcs; i++)
-									pPcsDef[k][i] = DEF_NONE;
-							}
-							//pView->Stop();
-							//sMsg.Format(_T("릴맵 데이타를 불러 오지 못했습니다. - [Pnl: %s] [Row: %d]\r\n%s"), sPnl, nR, m_sPathBuf);
- 						//	//sMsg.Format(_T("ReelmapData missed. - [Pnl: %d] [Row: %d]"), k, nR);
-							//pView->MsgBox(sMsg); // 20160725-Temp
-							//	if (pDataFile)
-							//{
-							//	delete pDataFile;
-							//	pDataFile = NULL;
-							//}
-							////AfxMessageBox(sMsg);
-							//return FALSE;
-						}
-						else
-						{
-							m_pPnlNum[k] = 0;
-							m_pPnlDefNum[k] = -1;
-
-							for (nC = 0; nC < nNodeY; nC++)
-							{
-								if (nR % 2)	// 홀수.
-									nP = nC + nNodeY * nR;
-								else		// 짝수.				
-									nP = nNodeY * (nR + 1) - (nC + 1);
-
-								if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
-								{
-									switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
-									{
-									case 0:
-										break;
-									case 1:
-										nP = pDoc->MirrorLR(nP);
-										break;
-									case 2:
-										nP = pDoc->MirrorUD(nP);
-										break;
-									case 3:
-										nP = pDoc->Rotate180(nP);
-										break;
-									default:
-										break;
-									}
-								}
-
-								nDefCode = DEF_NONE;
-								pPcsDef[k][nP] = nDefCode; // k=7, nP = PcsIdx : 좌상단에서 nP 0이 시작하여 ZigZeg로 우하단으로 증가
-							}
-
 						}
 					}
 					else
 					{
-						for (nC = 0; nC < nNodeY; nC++)
+						if (!bDumy)
 						{
+							if (!pView->m_bLastProc && !pDoc->WorkingInfo.LastJob.bSampleTest)
+							{
+								{
+									m_pPnlNum[k] = -1;
+									m_pPnlDefNum[k] = -1;
+									for (i = 0; i < nTotPcs; i++)
+										pPcsDef[k][i] = DEF_NONE;
+								}
+								//pView->Stop();
+								//sMsg.Format(_T("릴맵 데이타를 불러 오지 못했습니다. - [Pnl: %s] [Row: %d]\r\n%s"), sPnl, nR, m_sPathBuf);
+								//	//sMsg.Format(_T("ReelmapData missed. - [Pnl: %d] [Row: %d]"), k, nR);
+								//pView->MsgBox(sMsg); // 20160725-Temp
+								//	if (pDataFile)
+								//{
+								//	delete pDataFile;
+								//	pDataFile = NULL;
+								//}
+								////AfxMessageBox(sMsg);
+								//return FALSE;
+							}
+							else
+							{
+								m_pPnlNum[k] = 0;
+								m_pPnlDefNum[k] = -1;
+
+								for (nC = 0; nC < nNodeY; nC++)
+								{
+									if (nR % 2)	// 홀수.
+										nP = nC + nNodeY * nR;
+									else		// 짝수.				
+										nP = nNodeY * (nR + 1) - (nC + 1);
+
+									if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
+									{
+										switch (pDoc->m_Master[1].MasterInfo.nActionCode)	// 0 : Rotation / Mirror 적용 없음(CAM Data 원본), 1 : 좌우 미러, 2 : 상하 미러, 3 : 180 회전, 4 : 270 회전(CCW), 5 : 90 회전(CW)
+										{
+										case 0:
+											break;
+										case 1:
+											nP = pDoc->MirrorLR(nP);
+											break;
+										case 2:
+											nP = pDoc->MirrorUD(nP);
+											break;
+										case 3:
+											nP = pDoc->Rotate180(nP);
+											break;
+										default:
+											break;
+										}
+									}
+
+									nDefCode = DEF_NONE;
+									pPcsDef[k][nP] = nDefCode; // k=7, nP = PcsIdx : 좌상단에서 nP 0이 시작하여 ZigZeg로 우하단으로 증가
+								}
+
+							}
+						}
+						else
+						{
+							for (nC = 0; nC < nNodeY; nC++)
+							{
 								if (nC == 0)
 									sVal = _tcstok(szData, sep);
-							else
+								else
 									sVal = _tcstok(NULL, sep);
 
 								if (nR % 2)	// 홀수.
-								nP = nC + nNodeY * nR;
-							else		// 짝수.
+									nP = nC + nNodeY * nR;
+								else		// 짝수.
 									nP = nNodeY * (nR + 1) - (nC + 1);
 
 								if (pDoc->WorkingInfo.System.bStripPcsRgnBin)	// DTS용
@@ -1577,8 +1986,8 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 								nDefCode = 0;
 								pPcsDef[k][nP] = nDefCode; // k=7, nP = PcsIdx : 좌상단에서 nP 0이 시작하여 ZigZeg로 우하단으로 증가
 
-	 							//if(pDoc->WorkingInfo.LastJob.bContFixDef)
-	 							//	SetFixPcs(nC, nR);
+														   //if(pDoc->WorkingInfo.LastJob.bContFixDef)
+														   //	SetFixPcs(nC, nR);
 							}
 						}
 					}
@@ -1587,7 +1996,7 @@ BOOL CReelMap::Disp(int nMkPnl, BOOL bDumy)
 		}
 	}
 
-	if(pDataFile)
+	if (pDataFile)
 	{
 		delete pDataFile;
 		pDataFile = NULL;

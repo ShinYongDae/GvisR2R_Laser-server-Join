@@ -1665,7 +1665,7 @@ void CEngrave::GetSignalMyMsg(SOCKET_DATA SockData)
 			//pView->SetMyMsgNo();
 			break;
 		case _SigInx::_MyMsgOk:
-			pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgOk, FALSE);
+			//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgOk, FALSE);
 
 			m_bRcvSig[_SigInx::_MyMsgOk] = TRUE;
 			//pView->m_bRcvSig[_SigInx::_MyMsgOk] = TRUE;
@@ -2104,13 +2104,13 @@ void CEngrave::GetOpInfo(SOCKET_DATA SockData)
 			}
 			break;
 		case _ItemInx::_EngItsCode:
-			//if (pDoc->WorkingInfo.LastJob.sEngItsCode != CharToString(SockData.strData))
-			//{
-			//	m_bGetOpInfo = TRUE;
-			//	pDoc->m_sItsCode = pDoc->m_sOrderNum = pDoc->WorkingInfo.LastJob.sEngItsCode = CharToString(SockData.strData);
-			//	pDoc->SetEngItsCode(pDoc->WorkingInfo.LastJob.sEngItsCode);
-			//	//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Order Num"), pDoc->WorkingInfo.LastJob.sEngOrderNum, PATH_WORKING_INFO);
-			//}
+			if (pDoc->WorkingInfo.LastJob.sEngItsCode != CharToString(SockData.strData))
+			{
+				m_bGetOpInfo = TRUE;
+				pDoc->m_sItsCode = pDoc->m_sOrderNum = pDoc->WorkingInfo.LastJob.sEngItsCode = CharToString(SockData.strData);
+				pDoc->SetEngItsCode(pDoc->WorkingInfo.LastJob.sEngItsCode);
+				//::WritePrivateProfileString(_T("Last Job"), _T("Engrave Order Num"), pDoc->WorkingInfo.LastJob.sEngOrderNum, PATH_WORKING_INFO);
+			}
 			break;
 		}
 	}
@@ -3320,7 +3320,8 @@ void CEngrave::GetAlarmMsg(SOCKET_DATA SockData)
 		{
 		case _stAlarmInx::_Alarm:
 			pDoc->m_sAlmMsg = CharToString(SockData.strData);
-			IsSetAlarm(pDoc->m_sAlmMsg);
+			pView->CycleStop();
+			//IsSetAlarm(pDoc->m_sAlmMsg);
 			break;
 		case _stAlarmInx::_IsAlarm:
 			;

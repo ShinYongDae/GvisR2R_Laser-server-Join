@@ -158,8 +158,8 @@ LRESULT CDlgMyMsgSub02::OnMyBtnDown(WPARAM wPara, LPARAM lPara)
 	case IDC_BTN_00: // Ok...
 		if (pView && pView->m_pEngrave)
 		{
-			pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgOk, TRUE);
-			//pView->m_pEngrave->SetMyMsgOk();	//_SigInx::_MyMsgOk
+			//pDoc->SetCurrentInfoSignal(_SigInx::_MyMsgOk, TRUE);
+			pView->m_pEngrave->SetMyMsgOk();	//_SigInx::_MyMsgOk
 		}
 		break;
 	}

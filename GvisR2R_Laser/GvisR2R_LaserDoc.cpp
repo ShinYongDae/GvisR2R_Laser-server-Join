@@ -8443,7 +8443,7 @@ CString CGvisR2R_LaserDoc::GetCurrentInfoBufDn()
 	CString sIdx = _T("");
 	int i = 0;
 	CString str = _T(""), sTemp = _T("");;
-	str = _T("DN: ");
+	str = _T("DB: ");
 
 	if (sPath.IsEmpty())
 		return str;
