@@ -3506,7 +3506,8 @@ void CGvisR2R_LaserView::Shift2Mk()
 		if (m_bLastProc && m_nBufDnSerial[0] == m_nLotEndSerial)
 		{
 			nSerial = m_nBufDnSerial[0];
-			if (nSerial > 0 && (nSerial % 2))
+			//if (nSerial > 0 && (nSerial % 2))
+			if (nSerial > 0)
 			{
 				pDoc->UpdateYield(nSerial);
 				pDoc->Shift2Mk(nSerial);	// Cam0
@@ -3517,24 +3518,24 @@ void CGvisR2R_LaserView::Shift2Mk()
 		else
 		{
 			nSerial = m_nBufDnSerial[0];
-			if (!m_bCont)
-			{
-				if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
-				{
-					pDoc->UpdateYield(nSerial);
-					pDoc->Shift2Mk(nSerial);	// Cam0
-					pDoc->UpdateYield(nSerial + 1);
-					pDoc->Shift2Mk(nSerial + 1);	// Cam1
-					if (m_pDlgFrameHigh)
-						m_pDlgFrameHigh->SetMkLastShot(nSerial + 1);
-				}
-				else
-				{
-					Stop();
-				}
-			}
-			else
-			{
+			//if (!m_bCont)
+			//{
+			//	if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
+			//	{
+			//		pDoc->UpdateYield(nSerial);
+			//		pDoc->Shift2Mk(nSerial);	// Cam0
+			//		pDoc->UpdateYield(nSerial + 1);
+			//		pDoc->Shift2Mk(nSerial + 1);	// Cam1
+			//		if (m_pDlgFrameHigh)
+			//			m_pDlgFrameHigh->SetMkLastShot(nSerial + 1);
+			//	}
+			//	else
+			//	{
+			//		Stop();
+			//	}
+			//}
+			//else
+			//{
 				if (nSerial > 0)
 				{
 					pDoc->UpdateYield(nSerial);
@@ -3544,11 +3545,11 @@ void CGvisR2R_LaserView::Shift2Mk()
 					if (m_pDlgFrameHigh)
 						m_pDlgFrameHigh->SetMkLastShot(nSerial + 1);
 				}
-				else
-				{
-					Stop();
-				}
-			}
+			//	else
+			//	{
+			//		Stop();
+			//	}
+			//}
 		}
 	}
 	else
@@ -3556,22 +3557,22 @@ void CGvisR2R_LaserView::Shift2Mk()
 		if (m_bLastProc && m_nBufUpSerial[0] == m_nLotEndSerial)
 		{
 			nSerial = m_nBufUpSerial[0];
-			if (!m_bCont)
-			{
-				if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
-				{
-					pDoc->UpdateYield(nSerial);
-					pDoc->Shift2Mk(nSerial);	// Cam0
-					if (m_pDlgFrameHigh)
-						m_pDlgFrameHigh->SetMkLastShot(nSerial);
-				}
-				else
-				{
-					Stop();
-				}
-			}
-			else
-			{
+			//if (!m_bCont)
+			//{
+			//	if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
+			//	{
+			//		pDoc->UpdateYield(nSerial);
+			//		pDoc->Shift2Mk(nSerial);	// Cam0
+			//		if (m_pDlgFrameHigh)
+			//			m_pDlgFrameHigh->SetMkLastShot(nSerial);
+			//	}
+			//	else
+			//	{
+			//		Stop();
+			//	}
+			//}
+			//else
+			//{
 				if (nSerial > 0)
 				{
 					pDoc->UpdateYield(nSerial);
@@ -3579,33 +3580,33 @@ void CGvisR2R_LaserView::Shift2Mk()
 					if (m_pDlgFrameHigh)
 						m_pDlgFrameHigh->SetMkLastShot(nSerial);
 				}
-				else
-				{
-					Stop();
-				}
-			}
+			//	else
+			//	{
+			//		Stop();
+			//	}
+			//}
 		}
 		else
 		{
 			nSerial = m_nBufUpSerial[0];
-			if (!m_bCont)
-			{
-				if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
-				{
-					pDoc->UpdateYield(nSerial);
-					pDoc->Shift2Mk(nSerial);	// Cam0
-					pDoc->UpdateYield(nSerial + 1);
-					pDoc->Shift2Mk(nSerial + 1);	// Cam1
-					if (m_pDlgFrameHigh)
-						m_pDlgFrameHigh->SetMkLastShot(nSerial + 1);
-				}
-				else
-				{
-					Stop();
-				}
-			}
-			else
-			{
+			//if (!m_bCont)
+			//{
+			//	if (nSerial > 0 && (nSerial % 2)) // First Shot number must be odd.
+			//	{
+			//		pDoc->UpdateYield(nSerial);
+			//		pDoc->Shift2Mk(nSerial);	// Cam0
+			//		pDoc->UpdateYield(nSerial + 1);
+			//		pDoc->Shift2Mk(nSerial + 1);	// Cam1
+			//		if (m_pDlgFrameHigh)
+			//			m_pDlgFrameHigh->SetMkLastShot(nSerial + 1);
+			//	}
+			//	else
+			//	{
+			//		Stop();
+			//	}
+			//}
+			//else
+			//{
 				if (nSerial > 0)
 				{
 					pDoc->UpdateYield(nSerial);
@@ -3615,11 +3616,11 @@ void CGvisR2R_LaserView::Shift2Mk()
 					if (m_pDlgFrameHigh)
 						m_pDlgFrameHigh->SetMkLastShot(nSerial + 1);
 				}
-				else
-				{
-					Stop();
-				}
-			}
+			//	else
+			//	{
+			//		Stop();
+			//	}
+			//}
 		}
 	}
 }
