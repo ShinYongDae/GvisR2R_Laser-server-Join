@@ -499,7 +499,7 @@ void CEngrave::GetSysSignal(SOCKET_DATA SockData)
 	GetSignalUncoiler(SockData);
 
 	GetSignalEngraveAutoSequence(SockData);
-	GetSignalMyMsg(SockData);
+	//GetSignalMyMsg(SockData);
 
 	GetSignal2dEng(SockData);
 	GetCurrentInfoSignal(SockData);
